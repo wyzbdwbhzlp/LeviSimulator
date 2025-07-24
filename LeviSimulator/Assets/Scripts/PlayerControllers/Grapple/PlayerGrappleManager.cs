@@ -4,7 +4,7 @@ using Utilities;
 
 namespace PlayerControllers.Grapple
 {
-    public class GrappleManager: Singleton<GrappleManager>
+    public class PlayerGrappleManager:MonoBehaviour
     {
         [Header("按键设定")]
         [SerializeField] private KeyCode grappleKey = KeyCode.Mouse0; // 鼠标左键
@@ -13,28 +13,24 @@ namespace PlayerControllers.Grapple
         [Header("场景引用")]
         [SerializeField] private GrappleHook grappleHook;
         [SerializeField] private GrappleCableRenderer grappleCableRenderer;
-        [SerializeField]private PlayerMovementController playerMovementController;
+        private PlayerInputRouter _playerInputRouter;
         
-        
-        private void Awake()
+
+        protected void Awake()
         {
-            if (grappleHook == null || grappleCableRenderer == null || playerMovementController == null)
+            if (grappleHook == null || grappleCableRenderer == null)
             {
                 LogUtil.LogError("钩爪,线渲染器或玩家移动组件未设置，请检查Inspector配置", true);
             }
         }
+        public void SetRouter(PlayerInputRouter playerInputRouter)
+        {
+            _playerInputRouter = playerInputRouter;
+        }
 
         private void Update()
         {
-            // 检测钩爪按键
-            if (Input.GetKeyDown(grappleKey))
-            {
-                grappleHook.StartGrapple();
-            }
-            else if (Input.GetKeyUp(grappleKey))
-            {
-                grappleHook.StopGrapple();
-            }
+            
 
             if (grappleHook.GrappleState != GrappleState.Idle)
             {
@@ -42,10 +38,18 @@ namespace PlayerControllers.Grapple
             }
             grappleCableRenderer.UpdateCable();
         }
+        public void StartGrapple()
+        {
+            grappleHook.StartGrapple();
+        }
+        public void StopGrapple()
+        {
+            grappleHook.StopGrapple();
+        }
         public void ExecuteGrappleJump()
         {
             var result=CalculateJumpVelocity();
-            playerMovementController.ApplyGrappleJump(result);
+            _playerInputRouter.MovementController.ApplyGrappleJump(result);
         }
 
         public Vector3 CalculateJumpVelocity()

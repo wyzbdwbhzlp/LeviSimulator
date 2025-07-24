@@ -12,6 +12,7 @@ namespace PlayerControllers
         [SerializeField][LabelText("鼠标灵敏度")]private float mouseSensitivity = 100f;
         [Header("依赖引用")]
         [SerializeField]private Transform playerBody;
+        private PlayerInputRouter _playerInputRouter;
         
         private void Update()
         {
@@ -24,6 +25,10 @@ namespace PlayerControllers
             mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
             playerBody.Rotate(Vector3.up * mouseX);
             transform.localRotation = Quaternion.Euler(transform.localRotation.eulerAngles.x - mouseY, 0f, 0f);
+        }
+        public void SetRouter(PlayerInputRouter playerInputRouter)
+        {
+            _playerInputRouter = playerInputRouter;
         }
 
 

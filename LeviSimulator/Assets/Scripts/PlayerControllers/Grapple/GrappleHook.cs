@@ -1,6 +1,8 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 using Utilities;
 
 namespace PlayerControllers.Grapple
@@ -20,7 +22,8 @@ namespace PlayerControllers.Grapple
         [Header("依赖引用")]
         [SerializeField][SceneObjectsOnly]private Transform cameraTransform; // 摄像机位置引用
         [SerializeField][SceneObjectsOnly]private Transform grappleTipTransform; // 钩爪尖端位置引用(钩爪起始点)
-        [SerializeField][SceneObjectsOnly]private GrappleManager grappleManager; // 钩爪管理器引用
+        [FormerlySerializedAs("grappleManager")] [SerializeField][SceneObjectsOnly]private PlayerGrappleManager playerGrappleManager; // 钩爪管理器引用
+        [SerializeField][SceneObjectsOnly]private PlayerMovementController playerMovementController; // 玩家移动控制器引用
         
         [Header("钩爪状态")]
         [ReadOnly][LabelText("钩爪是否抓取到了无效对象")][SerializeField]private bool isInvalidGrapple = false; 
@@ -35,10 +38,15 @@ namespace PlayerControllers.Grapple
 
         public void Awake()
         {
-            if(grappleManager == null)
+            if(playerGrappleManager == null)
             {
                 LogUtil.LogError("并未设置grappleManager", true);
             }
+        }
+
+        public void Start()
+        {
+            playerMovementController= PlayerInputRouter.Instance.MovementController; // 获取玩家移动控制器引用
         }
 
         public void StartGrapple()
@@ -82,7 +90,7 @@ namespace PlayerControllers.Grapple
             if(!isInvalidGrapple)
             {
                 grappleState = GrappleState.Grappling; 
-                grappleManager.ExecuteGrappleJump();// 执行钩爪跳跃
+                playerGrappleManager.ExecuteGrappleJump();// 执行钩爪跳跃
             }
             else
             {
@@ -93,7 +101,7 @@ namespace PlayerControllers.Grapple
         {
             grappleState = GrappleState.Idle; // 设置钩爪状态为待机
             isInvalidGrapple = false; 
-            PlayerMovementController.Instance.StopGrapple();
+            playerMovementController.StopGrapple();
         }
     }
 }
