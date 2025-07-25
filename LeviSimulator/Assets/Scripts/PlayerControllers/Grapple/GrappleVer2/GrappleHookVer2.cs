@@ -7,20 +7,20 @@ namespace PlayerControllers.Grapple.GrappleVer2
 {
     public class GrappleHookVer2 : MonoBehaviour,IGrapple
     {
-        [Header("钩爪设定")]
-        [SerializeField]private GameObject grapplePrefab; // 钩爪预制体
-        [SerializeField][ReadOnly] private GameObject grapplePrefabInstance; // 钩爪实例
-        [SerializeField] private GrappleState grappleState;
-        [SerializeField] private float grappleSpeed = 20f; 
-        [SerializeField] private float maxGrappleDistance = 20f; // 最大钩爪距离
-        [SerializeField] private LayerMask grappleLayer=default; // 钩爪可抓取的层
-        [Header("钩爪状态")]
+        [Title("钩爪设定")]
+        [SerializeField][LabelText("钩爪预制体")]private GameObject grapplePrefab; 
+        [SerializeField][ReadOnly][LabelText("钩爪实例")]private GameObject grapplePrefabInstance; 
+        [SerializeField][LabelText("钩爪发射器状态")]private GrappleState grappleState;
+        [SerializeField][LabelText("钩爪抓取速度")] private float grappleSpeed = 20f; 
+        [SerializeField][LabelText("钩爪最大抓取距离")]private float maxGrappleDistance = 20f; 
+        [SerializeField][LabelText("钩爪抓取层")]private LayerMask grappleLayer=default; 
+        [Title("钩爪状态")]
         [SerializeField][ReadOnly] private Vector3 grapplePoint; // 钩爪抓取点
         [SerializeField][ReadOnly] private float grappleFlightTime; // 钩爪飞行时间
         [SerializeField][ReadOnly] private bool isInvalidGrapple = false; // 是否抓取到了无效对象
-        [Header("依赖引用")]
-        private Transform cameraTransform; // 摄像机位置引用
-        private PlayerInputRouter playerInputRouter; // 玩家输入路由器引用
+        [Title("依赖引用")]
+        [ShowInInspector][ReadOnly]private Transform cameraTransform; // 摄像机位置引用
+        [ShowInInspector][ReadOnly]private PlayerInputRouter playerInputRouter; // 玩家输入路由器引用
         [SerializeField]private Transform grappleTipTransform; // 钩爪尖端位置引用(钩爪起始点)
         
         

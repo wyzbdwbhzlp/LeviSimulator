@@ -1,4 +1,5 @@
-﻿    using PlayerControllers.PlayerCharacterStatusStrategy;
+﻿    using System;
+    using PlayerControllers.PlayerCharacterStatusStrategy;
     using Sirenix.OdinInspector;
     using UnityEngine;
     using UnityEngine.InputSystem;
@@ -47,8 +48,9 @@
             }
             
             /// <summary>
-            ///   应用钩爪跳跃计算的速度
+            ///   应用钩爪跳跃计算的速度(Ver1用，已弃置)
             /// </summary>
+            [Obsolete]
             public void ApplyGrappleJump(Vector3 velocityToSet)
             {
                 LogUtil.Log($"计算的速度: {velocityToSet};");

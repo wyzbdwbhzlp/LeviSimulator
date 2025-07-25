@@ -7,7 +7,8 @@ using Utilities;
 
 namespace PlayerControllers.Grapple
 {
-    public class GrappleHook : MonoBehaviour,IGrapple
+    [Obsolete]
+    public class GrappleHook : MonoBehaviour,IGrapple 
     {
         [Header("钩爪设定")] 
         [LabelText("最大钩爪距离")]public float maxGrappleDistance = 20f;

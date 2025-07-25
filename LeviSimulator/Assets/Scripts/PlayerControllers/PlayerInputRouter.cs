@@ -11,15 +11,16 @@ namespace PlayerControllers
 {
     public class PlayerInputRouter:Singleton<PlayerInputRouter>
     {
-        [SerializeField]private PlayerMovementController _movementController;
-        [SerializeField]private PlayerCameraController _cameraController;
-        [SerializeField]private PlayerGrappleController _playerGrappleController;
+        [SerializeField][LabelText("玩家移动组件")]private PlayerMovementController _movementController;
+        [SerializeField][LabelText("玩家镜头组件")]private PlayerCameraController _cameraController;
+        [SerializeField][LabelText("玩家钩爪组件")]private PlayerGrappleController _playerGrappleController;
         [SerializeField]private PlayerInput playerInput;
-        [ShowInInspector]private IPlayerCharacterStatusStrategy _statusStrategy;
+        [ShowInInspector][ReadOnly]private IPlayerCharacterStatusStrategy _statusStrategy;
         public PlayerMovementController MovementController => _movementController;
         public PlayerCameraController CameraController => _cameraController;
         public PlayerGrappleController PlayerGrappleController => _playerGrappleController;
         public PlayerInput PlayerInput => playerInput;
+        public IPlayerCharacterStatusStrategy StatusStrategy => _statusStrategy;
         protected override void Awake()
         {
             base.Awake();
@@ -56,6 +57,9 @@ namespace PlayerControllers
             }
             _statusStrategy = new WalkingStatusStrategy();
             _statusStrategy.OnEnter(this);
+            
+            Cursor.lockState = CursorLockMode.Locked;  
+            Cursor.visible = false;            // 锁定鼠标光标并隐藏
         }
 
         public void Update()

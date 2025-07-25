@@ -15,7 +15,7 @@ namespace PlayerControllers.Grapple
     {
         private Vector3 recoveryVelocity;
         [Header("场景引用")]
-        [ShowInInspector] private IGrapple grappleHook;
+        [ShowInInspector][ReadOnly] private IGrapple grappleHook;
         [SerializeField] private GrappleCableRenderer grappleCableRenderer;
         private PlayerInputRouter _playerInputRouter;
         
@@ -51,29 +51,37 @@ namespace PlayerControllers.Grapple
             if (grappleHook.GrappleState != GrappleState.Idle)
             {
                 grappleHook.UpdateGrapple();
-                
+                if(grappleHook.GrappleState == GrappleState.Grappling)
+                {
+                    _playerInputRouter.DisablePlayerRbGravity();
+                }
             }
+
             grappleCableRenderer.UpdateCable();
         }
         public void StartGrapple()
         {
             grappleHook.StartGrapple();
-            _playerInputRouter.DisablePlayerRbGravity();
         }
         public void StopGrapple()
         {
-            HandleGrappleStop();
+            if (grappleHook.GrappleState==GrappleState.Grappling)
+                // 如果钩爪状态是抓取中，则处理抓取停止逻辑
+            {
+                HandleGrappleStop();
+            }
+
             grappleHook.StopGrapple();
-            
-            _playerInputRouter.EnablePlayerRbGravity();
-            _playerInputRouter.ChangeStatus(new FallingStatusStrategy());
-            _playerInputRouter.MovementController.PlayerRigidbody.linearVelocity = recoveryVelocity; // 恢复玩家速度
+             
         }
 
         private void HandleGrappleStop()
         {
             var rd= _playerInputRouter.MovementController.PlayerRigidbody;
-            recoveryVelocity = rd.linearVelocity;
+            recoveryVelocity = rd.linearVelocity; // 记录当前速度
+            _playerInputRouter.EnablePlayerRbGravity();
+            _playerInputRouter.ChangeStatus(new FallingStatusStrategy());
+            _playerInputRouter.MovementController.PlayerRigidbody.linearVelocity = recoveryVelocity; // 恢复玩家速度(惯性)
 
         }
 

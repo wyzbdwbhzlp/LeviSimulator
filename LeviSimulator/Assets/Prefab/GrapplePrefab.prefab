@@ -149,7 +149,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 707bf81836d64ad2b9752dc5c4ab74b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  gravitationalConstant: 100
-  mass: 1000
+  springStrength: 60
+  damping: 20
   stableZone: 3
+  usePlayerViewParameters: 1
+  playerViewParameters: 0.8
+  usePlayerViewAngleCheck: 1
+  maxAllowedViewAngle: 120
