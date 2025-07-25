@@ -5,7 +5,7 @@ using Utilities;
 
 namespace PlayerControllers.PlayerCharacterStatusStrategy
 {
-    public class WalkingStatusStrategyStrategy:IPlayerCharacterStatusStrategy
+    public class WalkingStatusStrategy:IPlayerCharacterStatusStrategy
     {
         private PlayerInputRouter PlayerInputRouter;
         private Vector2 _currentMoveInput;
@@ -18,7 +18,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
 
         public void LogicUpdate()
         {
-            PlayerInputRouter.MovementController.ApplyMovement(new Vector3(_currentMoveInput.x, 0, _currentMoveInput.y));
+            PlayerInputRouter.MovementController.ApplyMovement(_currentMoveInput);
         }
 
         public void OnEnter(PlayerInputRouter movementController)
@@ -59,7 +59,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
             {
                 case InputActionPhase.Started:
                     PlayerInputRouter.PlayerGrappleController.StartGrapple();
-                    LogUtil.Log("开始发射钩爪",true);
+                    LogUtil.Log("开始发射钩爪");
                     break;
                 case InputActionPhase.Canceled:
                     PlayerInputRouter.PlayerGrappleController.StopGrapple();

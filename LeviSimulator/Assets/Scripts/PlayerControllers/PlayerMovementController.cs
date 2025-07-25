@@ -19,7 +19,8 @@
             private PlayerInputRouter _playerInputRouter;
             private Vector3 playerVelocity;
             [SerializeField][ReadOnly]private bool isGrappling = false;
-      
+            public Rigidbody PlayerRigidbody=> rd;
+            public bool IsGrounded => isGrounded;
             protected void Awake()
             {
                 if (rd == null)
@@ -28,23 +29,11 @@
                 }
               
             }
-            private void Start()
-            {
-             
-
-            }
-            
-            private void Update()
-            {
-            }
+       
             private void FixedUpdate()
             {
                 CheckGrounded();
                 
-                if (isGrappling)
-                {
-                    rd.linearVelocity = playerVelocity; // 设置玩家速度为钩爪计算的速度
-                }
             }
             /// <summary>
             ///  处理玩家输入的移动
@@ -52,10 +41,11 @@
             public void ApplyMovement(Vector3 moveDirection)
             {
                 float moveX = moveDirection.x;
-                float moveZ = moveDirection.z;
+                float moveZ = moveDirection.y;
                 Vector3 move = transform.right * moveX + transform.forward * moveZ;
                 rd.linearVelocity = move * moveSpeed + new Vector3(0, rd.linearVelocity.y, 0); 
             }
+            
             /// <summary>
             ///   应用钩爪跳跃计算的速度
             /// </summary>
@@ -85,6 +75,15 @@
             public void SetRouter(PlayerInputRouter playerInputRouter)
             {
                 _playerInputRouter = playerInputRouter;
+            }
+
+            public void DisablePlayerRbGravity()
+            {
+                rd.useGravity = false;
+            }
+            public void EnablePlayerRbGravity()
+            {
+                rd.useGravity = true;
             }
         }
     }

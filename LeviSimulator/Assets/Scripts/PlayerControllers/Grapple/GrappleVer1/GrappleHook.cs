@@ -7,38 +7,48 @@ using Utilities;
 
 namespace PlayerControllers.Grapple
 {
-    public enum GrappleState
-    {
-        Idle, // 空闲状态
-        Flight, // 飞行状态
-        Grappling, // 钩爪状态
-    }
-    public class GrappleHook : MonoBehaviour
+    public class GrappleHook : MonoBehaviour,IGrapple
     {
         [Header("钩爪设定")] 
         [LabelText("最大钩爪距离")]public float maxGrappleDistance = 20f;
         [LabelText("钩爪可抓取的层")] public LayerMask grappleLayer; 
         [LabelText("钩爪抓取目标点的速度")] public float grappleSpeed = 5f; // 钩爪抓取目标点的速度
+        [LabelText("钩爪飞行时的过冲高度")] public float overshootYAxis = 2f;
         [Header("依赖引用")]
         [SerializeField][SceneObjectsOnly]private Transform cameraTransform; // 摄像机位置引用
         [SerializeField][SceneObjectsOnly]private Transform grappleTipTransform; // 钩爪尖端位置引用(钩爪起始点)
-        [FormerlySerializedAs("grappleManager")] [SerializeField][SceneObjectsOnly]private PlayerGrappleManager playerGrappleManager; // 钩爪管理器引用
+        [FormerlySerializedAs("playerGrappleManager")] [FormerlySerializedAs("grappleManager")] [SerializeField][SceneObjectsOnly]private PlayerGrappleController playerGrappleController; // 钩爪管理器引用
         [SerializeField][SceneObjectsOnly]private PlayerMovementController playerMovementController; // 玩家移动控制器引用
         
         [Header("钩爪状态")]
-        [ReadOnly][LabelText("钩爪是否抓取到了无效对象")][SerializeField]private bool isInvalidGrapple = false; 
-        [ReadOnly][LabelText("钩爪状态")][SerializeField] private GrappleState grappleState = GrappleState.Idle; 
+        [ReadOnly][LabelText("钩爪是否抓取到了无效对象")][SerializeField]private bool isInvalidGrapple = false;
+
+        [ReadOnly] [LabelText("钩爪状态")][SerializeField] private GrappleState grappleState;
         [ReadOnly][LabelText("钩爪飞行时间")][SerializeField]private float grappleFlightTime; 
         [ReadOnly][LabelText("钩爪抓取点")][SerializeField]private Vector3 grapplePoint; 
         
         public Transform GrappleTipTransform => grappleTipTransform; 
-        public bool IsInvalidGrapple => isInvalidGrapple;
-        public Vector3 GrapplePoint => grapplePoint;
-        public GrappleState GrappleState => grappleState; // 获取钩爪状态
+        public bool IsInvalidGrapple
+        {
+            get => isInvalidGrapple;
+            set => isInvalidGrapple = value;
+        }
+
+        public Vector3 GrapplePoint
+        {
+            get => grapplePoint;
+            set => grapplePoint = value;
+        }
+
+        public GrappleState GrappleState
+        {
+            get => grappleState; 
+            set => grappleState = value;
+        }
 
         public void Awake()
         {
-            if(playerGrappleManager == null)
+            if(playerGrappleController == null)
             {
                 LogUtil.LogError("并未设置grappleManager", true);
             }
@@ -47,7 +57,10 @@ namespace PlayerControllers.Grapple
         public void Start()
         {
             playerMovementController= PlayerInputRouter.Instance.MovementController; // 获取玩家移动控制器引用
+            grappleState= GrappleState.Idle; 
         }
+
+        
 
         public void StartGrapple()
         {
@@ -90,7 +103,8 @@ namespace PlayerControllers.Grapple
             if(!isInvalidGrapple)
             {
                 grappleState = GrappleState.Grappling; 
-                playerGrappleManager.ExecuteGrappleJump();// 执行钩爪跳跃
+                var result=CalculateJumpVelocity();
+                PlayerInputRouter.Instance.MovementController.ApplyGrappleJump(result);//单例应用钩爪速度
             }
             else
             {
@@ -102,6 +116,23 @@ namespace PlayerControllers.Grapple
             grappleState = GrappleState.Idle; // 设置钩爪状态为待机
             isInvalidGrapple = false; 
             playerMovementController.StopGrapple();
+        }
+        public Vector3 CalculateJumpVelocity()
+        {
+            var startPoint = transform.position;
+            var endPoint = this.GrapplePoint;
+            Vector3 lowestPoint = new Vector3(transform.position.x, transform.position.y - 1f, transform.position.z);
+            float grapplePointRelativeYPos = endPoint.y - lowestPoint.y;
+            float trajectoryHeight = grapplePointRelativeYPos + overshootYAxis;
+            
+            float gravity = Physics.gravity.y;
+            float displacementY = endPoint.y - startPoint.y;
+            Vector3 displacementXZ = new Vector3(endPoint.x - startPoint.x, 0f, endPoint.z - startPoint.z);
+            Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * trajectoryHeight);
+            Vector3 velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * trajectoryHeight / gravity) 
+                                                   + Mathf.Sqrt(2 * (displacementY - trajectoryHeight) / gravity));
+
+            return velocityXZ + velocityY;
         }
     }
 }

@@ -8,15 +8,23 @@ namespace PlayerControllers.Grapple
     {
         [Header("渲染设定")]
         [SerializeField][SceneObjectsOnly]private LineRenderer lineRenderer;
-        [SerializeField][SceneObjectsOnly]private GrappleHook grappleHook;
+        [SceneObjectsOnly]private IGrapple grappleHook;
         [SerializeField] [LabelText("有效钩爪线材质")]private Material validGrappleCableMaterial; // 钩爪线材质
         [SerializeField] [LabelText("无效钩爪线材质")]private Material invalidGrappleCableMaterial; // 无效钩爪线材质
         
         public void Start()
         {
-            if (grappleHook == null || lineRenderer == null)
+            if (lineRenderer == null)
             {
-                LogUtil.LogError("钩爪或线渲染器未设置，请检查配置。", true);
+                LogUtil.LogError("线渲染器未设置，请检查配置。", true);
+            }
+            if (grappleHook == null)
+            {
+                grappleHook = GetComponentInParent<IGrapple>();
+                if (grappleHook == null)
+                {
+                    LogUtil.LogError("钩爪组件未设置，请检查配置。", true);
+                }
             }
         }
         public void UpdateCable()

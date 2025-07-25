@@ -1,6 +1,7 @@
 ﻿using System;
 using PlayerControllers.Grapple;
 using PlayerControllers.PlayerCharacterStatusStrategy;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
@@ -12,12 +13,12 @@ namespace PlayerControllers
     {
         [SerializeField]private PlayerMovementController _movementController;
         [SerializeField]private PlayerCameraController _cameraController;
-        [SerializeField]private PlayerGrappleManager _playerGrappleController;
+        [SerializeField]private PlayerGrappleController _playerGrappleController;
         [SerializeField]private PlayerInput playerInput;
-        private IPlayerCharacterStatusStrategy _statusStrategy;
+        [ShowInInspector]private IPlayerCharacterStatusStrategy _statusStrategy;
         public PlayerMovementController MovementController => _movementController;
         public PlayerCameraController CameraController => _cameraController;
-        public PlayerGrappleManager PlayerGrappleController => _playerGrappleController;
+        public PlayerGrappleController PlayerGrappleController => _playerGrappleController;
         public PlayerInput PlayerInput => playerInput;
         protected override void Awake()
         {
@@ -27,13 +28,25 @@ namespace PlayerControllers
             if (_cameraController == null)
                 _cameraController= GetComponentInChildren<PlayerCameraController>();
             if (_playerGrappleController == null)
-                _playerGrappleController= GetComponentInChildren<PlayerGrappleManager>();
+                _playerGrappleController= GetComponentInChildren<PlayerGrappleController>();
             
             _movementController.SetRouter(this);
             _cameraController.SetRouter(this);
             _playerGrappleController.SetRouter(this);
             
         }
+        protected void OnEnable()
+        {
+            OnEventHandler.EnablePlayerRbGravity+= EnablePlayerRbGravity;
+            OnEventHandler.DisablePlayerRbGravity+= DisablePlayerRbGravity;
+        }
+
+        protected void OnDisable()
+        {
+            OnEventHandler.EnablePlayerRbGravity -= EnablePlayerRbGravity;
+            OnEventHandler.DisablePlayerRbGravity -= DisablePlayerRbGravity;
+        }
+        
 
         public void Start()
         {
@@ -41,7 +54,7 @@ namespace PlayerControllers
             {
                 LogUtil.LogError("PlayerInputRouter未正确获取到子模块");
             }
-            _statusStrategy = new WalkingStatusStrategyStrategy();
+            _statusStrategy = new WalkingStatusStrategy();
             _statusStrategy.OnEnter(this);
         }
 
@@ -63,6 +76,16 @@ namespace PlayerControllers
             _statusStrategy.OnExit();
             _statusStrategy = newStatusStrategy;
             _statusStrategy.OnEnter(this);
+        }
+
+        public void DisablePlayerRbGravity()
+        {
+            _movementController.DisablePlayerRbGravity();
+        }
+
+        public void EnablePlayerRbGravity()
+        {
+            _movementController.EnablePlayerRbGravity();
         }
     }
 }
