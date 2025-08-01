@@ -15,7 +15,7 @@ namespace PlayerControllers
         [SerializeField][LabelText("玩家镜头组件")]private PlayerCameraController _cameraController;
         [SerializeField][LabelText("玩家钩爪组件")]private PlayerGrappleController _playerGrappleController;
         [SerializeField]private PlayerInput playerInput;
-        [ShowInInspector][ReadOnly]private IPlayerCharacterStatusStrategy _statusStrategy;
+        [ShowInInspector]private IPlayerCharacterStatusStrategy _statusStrategy;
         public PlayerMovementController MovementController => _movementController;
         public PlayerCameraController CameraController => _cameraController;
         public PlayerGrappleController PlayerGrappleController => _playerGrappleController;
@@ -42,9 +42,9 @@ namespace PlayerControllers
             EventBroadcaster.DisablePlayerRbGravity+= DisablePlayerRbGravity;
             EventBroadcaster.EchoViewUIOpened+=OnEchoViewUIOpened;
             EventBroadcaster.EchoViewUIClosed+=OnEchoViewUIClosed;
+            PlayerInput.onActionTriggered+= HandleonActionTriggered;
         }
-
-
+        
 
 
         protected void OnDisable()
@@ -53,6 +53,7 @@ namespace PlayerControllers
             EventBroadcaster.DisablePlayerRbGravity -= DisablePlayerRbGravity;
             EventBroadcaster.EchoViewUIOpened -= OnEchoViewUIOpened;
             EventBroadcaster.EchoViewUIClosed -= OnEchoViewUIClosed;
+            PlayerInput.onActionTriggered-= HandleonActionTriggered;
         }
         
 
@@ -67,6 +68,21 @@ namespace PlayerControllers
             
             Cursor.lockState = CursorLockMode.Locked;  
             Cursor.visible = false;            // 锁定鼠标光标并隐藏
+        }
+        private void HandleonActionTriggered(InputAction.CallbackContext obj)
+        {
+            switch (obj.action.name)
+            {
+                case "Move":
+                    HandleMoveInput(obj);
+                    break;
+            }
+        }
+
+        private void HandleMoveInput(InputAction.CallbackContext callbackContext)
+        {
+            var moveInput= callbackContext.ReadValue<Vector2>();
+            _movementController.ApplyMovement(moveInput);
         }
 
         public void Update()

@@ -8,7 +8,6 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
     public class WalkingStatusStrategy:IPlayerCharacterStatusStrategy
     {
         private PlayerInputRouter PlayerInputRouter;
-        private Vector2 _currentMoveInput;
     
    
         public void HandleInput(PlayerInput input)
@@ -18,41 +17,60 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
 
         public void LogicUpdate()
         {
-            PlayerInputRouter.MovementController.ApplyMovement(_currentMoveInput);
         }
 
         public void OnEnter(PlayerInputRouter InputRouter)
         {
             PlayerInputRouter= InputRouter;
-            
             PlayerInputRouter.PlayerInput.onActionTriggered+= HandleonActionTriggered;
-            _currentMoveInput = Vector2.zero; 
+            
         }
         
         public void OnExit()
         {
             PlayerInputRouter.PlayerInput.onActionTriggered-= HandleonActionTriggered;
-            _currentMoveInput = Vector2.zero; 
+            LogUtil.Log("退出Walking状态");
         }
         public void HandleonActionTriggered(InputAction.CallbackContext obj)
         {
             switch (obj.action.name)
             {
-                case "Move":
-                    HandleMoveInput(obj);
-                    break;
                 case"LaunchGrapple":
                     HandleLaunchGrapple(obj);
+                    break;
+                case"Jump":
+                    HandleJumpInput(obj);
+                    break;
+                case"Slide":
+                    HandleSlideInput(obj);
+                    LogUtil.Log("开始滑行");
                     break;
             }
             
         }
 
-        private void HandleMoveInput(InputAction.CallbackContext callbackContext)
+        private void HandleSlideInput(InputAction.CallbackContext callbackContext)
         {
-            var moveInput= callbackContext.ReadValue<Vector2>();
-            _currentMoveInput = moveInput;
+            switch (callbackContext.phase)
+            {
+                case InputActionPhase.Started:
+                    //TODO PlayerInputRouter.MovementController.StartSlide();
+                    LogUtil.Log("尝试滑铲");
+                    break;
+            }
         }
+
+        private void HandleJumpInput(InputAction.CallbackContext callbackContext)
+        {
+            switch (callbackContext.phase)
+            {
+                case InputActionPhase.Started:
+                    PlayerInputRouter.MovementController.StartJump();
+                    LogUtil.Log("开始跳跃");
+                    break;
+            }
+        }
+        
         private void HandleLaunchGrapple(InputAction.CallbackContext callbackContext)
         {
             switch (callbackContext.phase)

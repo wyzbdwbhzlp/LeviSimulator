@@ -7,6 +7,8 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
     public class FallingStatusStrategy: IPlayerCharacterStatusStrategy
     {
         private PlayerInputRouter playerInputRouter;
+        private float extraFallForce = 3f;
+        private float maxFallSpeed = 8f;
         public void HandleInput(PlayerInput input)
         {
             
@@ -14,9 +16,21 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
 
         public void LogicUpdate()
         {
-            if(playerInputRouter.MovementController.IsGrounded)
+            if (playerInputRouter.MovementController.IsGrounded)
             {
                 playerInputRouter.ChangeStatus(new WalkingStatusStrategy());
+            }
+            else
+            {
+                float currentFallSpeed = -playerInputRouter.MovementController.PlayerRigidbody.linearVelocity.y;
+                
+                if (currentFallSpeed < maxFallSpeed)
+                {
+                    float speedRatio = currentFallSpeed / maxFallSpeed;
+                    float forceModifier = 1f - speedRatio;
+                    Vector3 forceToApply = Vector3.down * extraFallForce * forceModifier;
+                    playerInputRouter.MovementController.PlayerRigidbody.AddForce(forceToApply, ForceMode.Acceleration);
+                }
             }
            
         }
@@ -24,8 +38,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
         public void OnEnter(PlayerInputRouter input)
         {
             playerInputRouter= input;
-            playerInputRouter.MovementController.PlayerRigidbody.AddForce(Vector3.down*9f, ForceMode.Acceleration);//TODO 写死并不是好事
-            LogUtil.Log("进入Falling状态，给予玩家额外的向下重力");
+            LogUtil.Log("进入Falling状态，开始给予玩家额外的向下重力");
         }
 
         public void OnExit()
