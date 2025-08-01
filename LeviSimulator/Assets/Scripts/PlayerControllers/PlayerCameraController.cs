@@ -43,13 +43,15 @@ namespace PlayerControllers
 
                 xRotation -= mouseY;
                 xRotation = Mathf.Clamp(xRotation, -90f, 90f); // 防止过度旋转
-
+                
                 transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
                 playerBody.Rotate(Vector3.up * mouseX);  
             }
-            else if( callbackContext.phase == InputActionPhase.Canceled)
+            else if(callbackContext.phase == InputActionPhase.Canceled)
             {
+                
                 lookInput= Vector2.zero;
+                
             }
         }
 

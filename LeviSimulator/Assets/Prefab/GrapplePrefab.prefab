@@ -152,7 +152,10 @@ MonoBehaviour:
   springStrength: 60
   damping: 20
   stableZone: 3
-  usePlayerViewParameters: 1
-  playerViewParameters: 0.8
   usePlayerViewAngleCheck: 1
   maxAllowedViewAngle: 120
+  usePlayerViewParameters: 1
+  playerViewParameters: 0.5
+  usePlayerInputDirection: 1
+  playerInputDirectionBuff: 1
+  playerInputDirectionParameters: 0.3

@@ -38,14 +38,21 @@ namespace PlayerControllers
         }
         protected void OnEnable()
         {
-            OnEventHandler.EnablePlayerRbGravity+= EnablePlayerRbGravity;
-            OnEventHandler.DisablePlayerRbGravity+= DisablePlayerRbGravity;
+            EventBroadcaster.EnablePlayerRbGravity+= EnablePlayerRbGravity;
+            EventBroadcaster.DisablePlayerRbGravity+= DisablePlayerRbGravity;
+            EventBroadcaster.EchoViewUIOpened+=OnEchoViewUIOpened;
+            EventBroadcaster.EchoViewUIClosed+=OnEchoViewUIClosed;
         }
+
+
+
 
         protected void OnDisable()
         {
-            OnEventHandler.EnablePlayerRbGravity -= EnablePlayerRbGravity;
-            OnEventHandler.DisablePlayerRbGravity -= DisablePlayerRbGravity;
+            EventBroadcaster.EnablePlayerRbGravity -= EnablePlayerRbGravity;
+            EventBroadcaster.DisablePlayerRbGravity -= DisablePlayerRbGravity;
+            EventBroadcaster.EchoViewUIOpened -= OnEchoViewUIOpened;
+            EventBroadcaster.EchoViewUIClosed -= OnEchoViewUIClosed;
         }
         
 
@@ -90,6 +97,26 @@ namespace PlayerControllers
         public void EnablePlayerRbGravity()
         {
             _movementController.EnablePlayerRbGravity();
+        }
+        private void OnEchoViewUIOpened()
+        {
+            OnUIOpen();
+        }
+        private void OnEchoViewUIClosed()
+        {
+            OnUIClose();
+        }
+        private void OnUIOpen()
+        {
+            Cursor.lockState = CursorLockMode.None;  
+            Cursor.visible = true;        
+            playerInput.enabled = false;
+        }
+        private void OnUIClose()
+        {
+            Cursor.lockState = CursorLockMode.Locked;  
+            Cursor.visible = false;        
+            playerInput.enabled = true;
         }
     }
 }

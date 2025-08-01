@@ -21,9 +21,9 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
             PlayerInputRouter.MovementController.ApplyMovement(_currentMoveInput);
         }
 
-        public void OnEnter(PlayerInputRouter movementController)
+        public void OnEnter(PlayerInputRouter InputRouter)
         {
-            PlayerInputRouter= movementController;
+            PlayerInputRouter= InputRouter;
             
             PlayerInputRouter.PlayerInput.onActionTriggered+= HandleonActionTriggered;
             _currentMoveInput = Vector2.zero; 

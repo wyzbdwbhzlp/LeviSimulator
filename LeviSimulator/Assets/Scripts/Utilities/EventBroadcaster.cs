@@ -1,9 +1,12 @@
 ﻿using System;
+using Manager;
+using UIManager;
 using Unity.VisualScripting;
+using UnityEngine;
 
 namespace Utilities
 {
-    public static class OnEventHandler
+    public static class EventBroadcaster
     {
         public static event Action RequestStopGrappleEvent;
         public static void CallRequestStopGrappleEvent()
@@ -21,5 +24,17 @@ namespace Utilities
         {
             DisablePlayerRbGravity?.Invoke();
         }
+        
+        public static event Action EchoViewUIOpened;
+        public static void CallEchoViewUIOpened()
+        {
+            EchoViewUIOpened?.Invoke();
+        }
+        public static event Action EchoViewUIClosed;
+        public static void CallEchoViewUIClosed()
+        {
+            EchoViewUIClosed?.Invoke();
+        }
+
     }
 }

@@ -15,13 +15,19 @@
             [SerializeField]private float groundCheckDistance = 0.1f; // 地面检测距离
             [SerializeField]private LayerMask groundLayerMask; // 地面层
             [SerializeField][ReadOnly]private bool isGrounded = false; // 是否在地面上
-            [Header("依赖引用")]
+            [Header("当前参数")]
+            [SerializeField][ReadOnly]private Vector3 currentPlayerMovementTendency; 
             [SerializeField]private Rigidbody rd; 
             private PlayerInputRouter _playerInputRouter;
-            private Vector3 playerVelocity;
+            [SerializeField][ReadOnly]private Vector3 currentPlayerRdVelocity;
+            [SerializeField][ReadOnly]private float currentPlayerRdVelocityMagnitude;
             [SerializeField][ReadOnly]private bool isGrappling = false;
+            private Animation playerAnimation;
             public Rigidbody PlayerRigidbody=> rd;
             public bool IsGrounded => isGrounded;
+            public Vector3 CurrentPlayerMovementTendency => currentPlayerMovementTendency;
+            public Vector3 CurrentPlayerRdVelocity => currentPlayerRdVelocity;
+            
             protected void Awake()
             {
                 if (rd == null)
@@ -33,6 +39,8 @@
        
             private void FixedUpdate()
             {
+                currentPlayerRdVelocity= rd.linearVelocity;
+                currentPlayerRdVelocityMagnitude= currentPlayerRdVelocity.magnitude;
                 CheckGrounded();
                 
             }
@@ -44,6 +52,7 @@
                 float moveX = moveDirection.x;
                 float moveZ = moveDirection.y;
                 Vector3 move = transform.right * moveX + transform.forward * moveZ;
+                SetPlayerMovementTendency(move);
                 rd.linearVelocity = move * moveSpeed + new Vector3(0, rd.linearVelocity.y, 0); 
             }
             
@@ -54,7 +63,6 @@
             public void ApplyGrappleJump(Vector3 velocityToSet)
             {
                 LogUtil.Log($"计算的速度: {velocityToSet};");
-                playerVelocity = velocityToSet;
                 isGrappling = true;
             }
             public void StopGrapple()
@@ -71,7 +79,7 @@
                 
                 if (isGrounded && rd.linearVelocity.y < 0)
                 {
-                    rd.linearVelocity = new Vector3(rd.linearVelocity.x, 0, rd.linearVelocity.z);
+                    //rd.linearVelocity = new Vector3(rd.linearVelocity.x, 0, rd.linearVelocity.z);
                 }
             }
             public void SetRouter(PlayerInputRouter playerInputRouter)
@@ -86,6 +94,15 @@
             public void EnablePlayerRbGravity()
             {
                 rd.useGravity = true;
+            }
+            public void ResetPlayerMovementTendency()
+            {
+                currentPlayerMovementTendency = Vector3.zero;
+            }
+
+            public void SetPlayerMovementTendency(Vector3 movementTendency)
+            {
+                currentPlayerMovementTendency = movementTendency;
             }
         }
     }

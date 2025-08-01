@@ -34,11 +34,11 @@ namespace PlayerControllers.Grapple
         }
         private void OnEnable()
         {
-           OnEventHandler.RequestStopGrappleEvent+= StopGrapple;
+           EventBroadcaster.RequestStopGrappleEvent+= StopGrapple;
         }
         private void OnDisable()
         {
-            OnEventHandler.RequestStopGrappleEvent -= StopGrapple;
+            EventBroadcaster.RequestStopGrappleEvent -= StopGrapple;
         }
         public void SetRouter(PlayerInputRouter playerInputRouter)
         {
