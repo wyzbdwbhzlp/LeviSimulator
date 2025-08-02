@@ -259,6 +259,7 @@ GameObject:
   - component: {fileID: 118636214}
   - component: {fileID: 118636219}
   - component: {fileID: 118636221}
+  - component: {fileID: 118636224}
   - component: {fileID: 118636222}
   - component: {fileID: 118636223}
   - component: {fileID: 118636220}
@@ -374,11 +375,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHorizontalSpeed: 7
+  maxRunSpeedMultiplier: 1.5
   acceleration: 150
   deceleration: 100
   airAcceleration: 15
-  maxAirSpeed: 5
-  jumpForce: 5
+  maxAirSpeed: 7
+  jumpForce: 10
   groundCheckDistance: 1.2
   groundCheckRadius: 0.4
   groundLayerMask:
@@ -390,7 +392,11 @@ MonoBehaviour:
   rd: {fileID: 118636221}
   currentPlayerRdVelocity: {x: 0, y: 0, z: 0}
   currentPlayerRdVelocityMagnitude: 0
+  currentPlayerRdHorizontalVelocityMagnitude: 0
   isGrappling: 0
+  isAllowedToMove: 1
+  isSprinting: 0
+  IsCanWallRun: 0
 --- !u!114 &118636220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,7 +482,38 @@ MonoBehaviour:
   _movementController: {fileID: 118636219}
   _cameraController: {fileID: 449693301}
   _playerGrappleController: {fileID: 118636220}
+  _playerWallRunController: {fileID: 118636224}
   playerInput: {fileID: 118636222}
+  _statusStrategyName: 
+--- !u!114 &118636224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 118636213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 717c4a03df724a6c877dbd40752c51c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallMaxDistance: 1
+  wallLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  wallSpeedMultiplier: 1.2
+  minimumHeightForWallRun: 1.2
+  wallRunThresholdSpeed: 6
+  wallRunMinimumSpeed: 2
+  wallFriction: 3
+  wallJumpForce: 10
+  wallJumpAngle: 45
+  wallJumpBounceForce: 10
+  isWallRunning: 0
+  wallNormal: {x: 0, y: 0, z: 0}
+  wallForward: {x: 0, y: 0, z: 0}
+  wallRunTimer: 0
+  isCanWallRun: 0
 --- !u!1 &145513287
 GameObject:
   m_ObjectHideFlags: 0
@@ -866,8 +903,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mouseSensitivity: 0.6
   smoothness: 50
+  maxRollAngle: 15
+  rollSpeed: 5
   lookInput: {x: 0, y: 0}
   xRotation: 0
+  currentRollAngle: 0
   playerBody: {fileID: 118636217}
 --- !u!114 &449693302
 MonoBehaviour:
@@ -3223,6 +3263,10 @@ PrefabInstance:
     - target: {fileID: 6755084027253256115, guid: fc5a676d2c90b3d4f8a22e369c35950d, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7725550455073907413, guid: fc5a676d2c90b3d4f8a22e369c35950d, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

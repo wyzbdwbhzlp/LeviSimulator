@@ -143,5 +143,16 @@ namespace PlayerControllers
         {
             _playerInputRouter = playerInputRouter;
         }
+        public bool IsWallNearby()
+        {
+            foreach (var dir in wallCheckDirections)
+            {
+                if (Physics.Raycast(transform.position, transform.TransformDirection(dir), wallMaxDistance, wallLayerMask))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

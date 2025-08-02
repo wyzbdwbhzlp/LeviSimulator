@@ -47,17 +47,39 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
         {
             playerInputRouter= input;
             playerWallRunController = playerInputRouter.PlayerWallRunController;
+            playerInputRouter.PlayerInput.onActionTriggered+= HandleonActionTriggered;
             LogUtil.Log("进入Falling状态，开始给予玩家额外的向下重力");
         }
 
         public void OnExit()
         {
+            playerInputRouter.PlayerInput.onActionTriggered-= HandleonActionTriggered;
            
         }
 
         public void HandleonActionTriggered(InputAction.CallbackContext obj)
         {
-           
+            switch (obj.action.name)
+            {
+                case "LaunchGrapple":
+                    HandleLaunchGrapple(obj);
+                    break;
+            }
+
+        }
+
+        private void HandleLaunchGrapple(InputAction.CallbackContext callbackContext)
+        {
+            switch (callbackContext.phase)
+            {
+                case InputActionPhase.Started:
+                    playerInputRouter.PlayerGrappleController.StartGrapple();
+                    LogUtil.Log("开始发射钩爪");
+                    break;
+                case InputActionPhase.Canceled:
+                    playerInputRouter.PlayerGrappleController.StopGrapple();
+                    break;
+            }
         }
     }
 }

@@ -38,6 +38,13 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
             {
                 wallRunController.WallJump();
                 playerInputRouter.ChangeStatus(new JumpingStatusStrategy()); // 跳跃后进入跳跃状态
+                return;
+            }
+            switch (obj.action.name)
+            {
+                case "LaunchGrapple":
+                    HandleLaunchGrapple(obj);
+                    break;
             }
         }
 
@@ -49,5 +56,18 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
         }
 
         public void HandleInput(PlayerInput input) { }
+        private void HandleLaunchGrapple(InputAction.CallbackContext callbackContext)
+        {
+            switch (callbackContext.phase)
+            {
+                case InputActionPhase.Started:
+                    playerInputRouter.PlayerGrappleController.StartGrapple();
+                    LogUtil.Log("开始发射钩爪");
+                    break;
+                case InputActionPhase.Canceled:
+                    playerInputRouter.PlayerGrappleController.StopGrapple();
+                    break;
+            }
+        }
     }
 }

@@ -106,10 +106,17 @@
 
                 if (currentPlayerMovementTendency.magnitude > 0.1f) // 如果玩家有输入
                 {
-                    // 目标速度：朝向玩家输入的方向，速率为最大速度
                     Vector3 targetDirection = fixedPlayerMovementTendencyByPlayerLookAt.normalized;
+        
+                    //检测是否撞墙
+                    bool isAgainstWall = IsMovingAgainstWall(targetDirection);
+        
+                    if (isAgainstWall && !isGrounded)
+                    {
+                        return;
+                    }
+        
                     targetVelocity = targetDirection * actualMaxSpeed;
-                    // 加速时间：根据加速度计算从0到最大速度所需的时间
                     duration = actualMaxSpeed / acceleration;
                 }
                 else if (isGrounded) // 如果在地面上且无输入，则减速
@@ -208,7 +215,7 @@
                     fixedPlayerMovementTendencyByPlayerLookAt = Vector3.zero;
                     return;
                 }
-                wherePlayerLookAt.y = 0f; // 确保视角方向在水平面上
+                wherePlayerLookAt.y = 0f; 
                 // 将玩家的移动趋势修正为相对于玩家视角的方向
                 fixedPlayerMovementTendencyByPlayerLookAt = Quaternion.LookRotation(wherePlayerLookAt) * currentPlayerMovementTendency;
             }
@@ -226,6 +233,11 @@
                 {
                     LogUtil.Log("无法跳跃，当前不在地面上");
                 }
+            }
+            private bool IsMovingAgainstWall(Vector3 moveDirection)
+            {
+                // 检测移动方向是否有墙壁阻挡
+                return Physics.Raycast(transform.position, moveDirection, 0.7f, _playerInputRouter.PlayerWallRunController.WallLayerMask);
             }
         }
     }
