@@ -17,6 +17,10 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
 
         public void LogicUpdate()
         {
+            if (!PlayerInputRouter.MovementController.IsGrounded)
+            {
+                PlayerInputRouter.ChangeStatus(new FallingStatusStrategy());
+            }
         }
 
         public void OnEnter(PlayerInputRouter InputRouter)
@@ -45,8 +49,24 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
                     HandleSlideInput(obj);
                     LogUtil.Log("开始滑行");
                     break;
+                case"Sprint":
+                    HandleSprintInput(obj);
+                    break;
             }
             
+        }
+
+        private void HandleSprintInput(InputAction.CallbackContext callbackContext)
+        {
+            switch (callbackContext.phase)
+            {
+                case InputActionPhase.Performed:
+                    PlayerInputRouter.MovementController.TrySprint();
+                    break;
+                case InputActionPhase.Canceled:
+                    PlayerInputRouter.MovementController.StopSprint();
+                    break;
+            }
         }
 
         private void HandleSlideInput(InputAction.CallbackContext callbackContext)

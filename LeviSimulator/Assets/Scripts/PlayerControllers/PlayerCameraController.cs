@@ -10,10 +10,13 @@ namespace PlayerControllers
         [Title("鼠标控制设定")]
         [SerializeField][LabelText("鼠标灵敏度")]private float mouseSensitivity = 2f;
         [SerializeField][LabelText("平滑系数")]private float smoothness = 10f;
-        
+        [Title("滑墙视角设定")]
+        [SerializeField][LabelText("镜头翻滚角度")] private float maxRollAngle = 15f;
+        [SerializeField][LabelText("镜头翻滚速度")] private float rollSpeed = 5f;
         [Title("当前输入参数")]
         [SerializeField][ReadOnly]private Vector2 lookInput;
         [SerializeField][ReadOnly]private float xRotation = 0f;
+        [SerializeField][ReadOnly]private float currentRollAngle = 0f;
         [ShowInInspector][ReadOnly]public Vector3 PlayerLookAt=>transform.forward;
         
         [Title("依赖引用")]
@@ -69,17 +72,24 @@ namespace PlayerControllers
 
         private void ApplySmoothRotation()
         {
-           
+            // ... 原有的 xRotation 和 yRotation 计算 ...
             xRotation = Mathf.Lerp(xRotation, targetXRotation, smoothness * Time.deltaTime);
-            
-            
-            transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-            
             float currentY = playerBody.eulerAngles.y;
             float smoothY = Mathf.LerpAngle(currentY, targetYRotation, smoothness * Time.deltaTime);
+
+            // 新增：处理镜头翻滚
+            float targetRollAngle = 0f;
+            if (_playerInputRouter.PlayerWallRunController.IsWallRunning) // 需要在MovementController中将isWallRunning设为public
+            {
+                // 根据墙壁在左边还是右边决定翻滚方向
+                targetRollAngle = -_playerInputRouter.PlayerWallRunController.GetWallSide() * maxRollAngle; // 需要添加GetWallSide方法
+            }
+            currentRollAngle = Mathf.Lerp(currentRollAngle, targetRollAngle, rollSpeed * Time.deltaTime);
+
+            // 应用旋转
+            transform.localRotation = Quaternion.Euler(xRotation, 0f, currentRollAngle);
             playerBody.rotation = Quaternion.Euler(0f, smoothY, 0f);
         }
-
         private void OnDisable()
         {
             _playerInputRouter.PlayerInput.onActionTriggered -= HandleonActionTriggered;

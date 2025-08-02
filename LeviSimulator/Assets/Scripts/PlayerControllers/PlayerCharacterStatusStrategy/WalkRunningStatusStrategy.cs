@@ -8,38 +8,43 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
     public class WallRunningStatusStrategy : IPlayerCharacterStatusStrategy
     {
         private PlayerInputRouter playerInputRouter;
+        private PlayerMovementController movementController;
+        private PlayerWallRunController wallRunController;
 
         public void OnEnter(PlayerInputRouter input)
         {
             playerInputRouter = input;
-           // playerInputRouter.MovementController.StartWallRun(); // 通知控制器开始爬墙
+            movementController = playerInputRouter.MovementController;
+            wallRunController= playerInputRouter.PlayerWallRunController;
+            LogUtil.Log("进入滑墙状态");
+            wallRunController.StartWallRun(); 
+            wallRunController.wallRunTimer = 0f;
             playerInputRouter.PlayerInput.onActionTriggered += HandleonActionTriggered;
         }
 
         public void LogicUpdate()
         {
-            // 持续检查是否应该退出爬墙状态
-            // 1. 如果接触到地面
-            // 2. 如果不再检测到墙壁
-            // 3. 如果玩家停止向前移动
-           // if (playerInputRouter.MovementController.IsGrounded || !playerInputRouter.MovementController.CanWallRun())
+            if (!wallRunController.CanWallRun())
             {
+                wallRunController.WallJump();
                 playerInputRouter.ChangeStatus(new FallingStatusStrategy());
             }
+            wallRunController.wallRunTimer+= Time.deltaTime;
         }
 
         public void HandleonActionTriggered(InputAction.CallbackContext obj)
         {
             if (obj.action.name == "Jump" && obj.phase == InputActionPhase.Started)
             {
-                //playerInputRouter.MovementController.WallJump();
+                wallRunController.WallJump();
                 playerInputRouter.ChangeStatus(new JumpingStatusStrategy()); // 跳跃后进入跳跃状态
             }
         }
 
         public void OnExit()
         {
-            //playerInputRouter.MovementController.StopWallRun(); // 通知控制器停止爬墙
+            wallRunController.StopWallRun(); // 通知控制器停止
+            wallRunController.wallRunTimer = 0f;
             playerInputRouter.PlayerInput.onActionTriggered -= HandleonActionTriggered;
         }
 

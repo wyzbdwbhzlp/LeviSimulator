@@ -14,11 +14,14 @@ namespace PlayerControllers
         [SerializeField][LabelText("玩家移动组件")]private PlayerMovementController _movementController;
         [SerializeField][LabelText("玩家镜头组件")]private PlayerCameraController _cameraController;
         [SerializeField][LabelText("玩家钩爪组件")]private PlayerGrappleController _playerGrappleController;
+        [SerializeField][LabelText("玩家滑墙组件")]private PlayerWallRunController _playerWallRunController;
         [SerializeField]private PlayerInput playerInput;
-        [ShowInInspector]private IPlayerCharacterStatusStrategy _statusStrategy;
+        [SerializeField][LabelText("玩家状态策略")][ReadOnly]private string _statusStrategyName;
+        private IPlayerCharacterStatusStrategy _statusStrategy;
         public PlayerMovementController MovementController => _movementController;
         public PlayerCameraController CameraController => _cameraController;
         public PlayerGrappleController PlayerGrappleController => _playerGrappleController;
+        public PlayerWallRunController PlayerWallRunController => _playerWallRunController;
         public PlayerInput PlayerInput => playerInput;
         public IPlayerCharacterStatusStrategy StatusStrategy => _statusStrategy;
         protected override void Awake()
@@ -30,10 +33,18 @@ namespace PlayerControllers
                 _cameraController= GetComponentInChildren<PlayerCameraController>();
             if (_playerGrappleController == null)
                 _playerGrappleController= GetComponentInChildren<PlayerGrappleController>();
+            if (_playerWallRunController == null)
+                _playerWallRunController = GetComponentInChildren<PlayerWallRunController>();
+            
+            if (_movementController == null || _cameraController == null || _playerGrappleController == null|| _playerWallRunController == null)
+            {
+                LogUtil.LogError("PlayerInputRouter未正确获取到子模块");
+            }
             
             _movementController.SetRouter(this);
             _cameraController.SetRouter(this);
             _playerGrappleController.SetRouter(this);
+            _playerWallRunController.SetRouter(this);
             
         }
         protected void OnEnable()
@@ -59,10 +70,6 @@ namespace PlayerControllers
 
         public void Start()
         {
-            if (_movementController == null || _cameraController == null || _playerGrappleController == null)
-            {
-                LogUtil.LogError("PlayerInputRouter未正确获取到子模块");
-            }
             _statusStrategy = new WalkingStatusStrategy();
             _statusStrategy.OnEnter(this);
             
@@ -88,6 +95,7 @@ namespace PlayerControllers
         public void Update()
         {
             _statusStrategy.LogicUpdate();
+            _statusStrategyName= _statusStrategy.GetType().Name;
         }
         /// <summary>
         ///  更换玩家状态策略

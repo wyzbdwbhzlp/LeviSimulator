@@ -4,7 +4,9 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
 {
     public class JumpingStatusStrategy:IPlayerCharacterStatusStrategy
     {
-        PlayerInputRouter playerInputRouter;
+        private PlayerInputRouter playerInputRouter;
+        private PlayerMovementController movementController;
+        private PlayerWallRunController wallRunController;
         public void HandleInput(PlayerInput input)
         {
             
@@ -12,7 +14,14 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
 
         public void LogicUpdate()
         {
-            if (playerInputRouter.MovementController.CurrentPlayerRdVelocity.y < 0)
+            if (wallRunController.CanWallRun()
+                &&
+                wallRunController.WallRunThresholdSpeed<= movementController.CurrentPlayerRdHorizontalVelocityMagnitude)
+            {
+                playerInputRouter.ChangeStatus(new WallRunningStatusStrategy());
+                return;
+            }
+            if (movementController.CurrentPlayerRdVelocity.y <= -1)
             {
                 playerInputRouter.ChangeStatus(new FallingStatusStrategy());
             }
@@ -21,6 +30,8 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
         public void OnEnter(PlayerInputRouter input)
         {
             playerInputRouter = input;
+            movementController = playerInputRouter.MovementController;
+            wallRunController = playerInputRouter.PlayerWallRunController;
         }
 
         public void OnExit()
