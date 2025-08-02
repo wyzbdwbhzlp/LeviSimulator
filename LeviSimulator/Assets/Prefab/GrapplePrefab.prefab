@@ -155,7 +155,8 @@ MonoBehaviour:
   usePlayerViewAngleCheck: 1
   maxAllowedViewAngle: 120
   usePlayerViewParameters: 1
-  playerViewParameters: 0.5
+  playerViewParameters: 0.9
   usePlayerInputDirection: 1
   playerInputDirectionBuff: 1
-  playerInputDirectionParameters: 0.3
+  playerInputDirectionParameters: 0.1
+  _smoothedWorldInputDirection: {x: 0, y: 0, z: 0}

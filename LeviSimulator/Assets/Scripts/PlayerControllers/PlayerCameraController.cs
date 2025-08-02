@@ -21,7 +21,7 @@ namespace PlayerControllers
         
         [Title("依赖引用")]
         [SerializeField]private Transform playerBody;
-        private PlayerInputRouter _playerInputRouter;
+        [SerializeField]private PlayerInputRouter _playerInputRouter;
         
         // 平滑旋转目标值
         private float targetXRotation = 0f;

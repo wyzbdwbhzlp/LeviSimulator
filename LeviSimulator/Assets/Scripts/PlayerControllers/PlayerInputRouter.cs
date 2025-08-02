@@ -39,12 +39,14 @@ namespace PlayerControllers
             if (_movementController == null || _cameraController == null || _playerGrappleController == null|| _playerWallRunController == null)
             {
                 LogUtil.LogError("PlayerInputRouter未正确获取到子模块");
+                return;
             }
             
             _movementController.SetRouter(this);
             _cameraController.SetRouter(this);
             _playerGrappleController.SetRouter(this);
             _playerWallRunController.SetRouter(this);
+            LogUtil.Log("PlayerInputRouter初始化成功", false);
             
         }
         protected void OnEnable()
