@@ -26,7 +26,6 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
         {
             if (!wallRunController.CanWallRun())
             {
-                wallRunController.WallJump();
                 playerInputRouter.ChangeStatus(new FallingStatusStrategy());
             }
             wallRunController.wallRunTimer+= Time.deltaTime;
