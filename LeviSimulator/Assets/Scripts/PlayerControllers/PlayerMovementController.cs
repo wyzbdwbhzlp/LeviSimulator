@@ -12,17 +12,18 @@
     {
         public class PlayerMovementController:MonoBehaviour
         {
-            [Header("移动设定")]
+            [Header("移动设定-正常")]
             [SerializeField][LabelText("平地水平最大速度")]private float maxHorizontalSpeed = 7f; // 平地水平最大速度
             [SerializeField][LabelText("平地疾跑速度倍率")][MinValue(1f)]private float maxRunSpeedMultiplier = 1.5f; // 平地疾跑速度倍率
             [SerializeField][LabelText("平地加速度")]private float acceleration = 150f; // 加速度
             [SerializeField][LabelText("平地减速度")]private float deceleration = 100f; // 减速度（摩擦力）
             [SerializeField][LabelText("空中加速度")]private float airAcceleration = 15f; // 空中加速度
             [SerializeField][LabelText("空中最大速度")]private float maxAirSpeed = 5f; // 空中最大速度
+            [Header("移动设定-滑铲")]
+            [SerializeField][LabelText("滑铲时减速度")]private float slideDeceleration = 50f; // 滑铲时的减速度
+            [SerializeField][LabelText("维持滑铲的最小速度")]private float minSlideSpeed = 2f; // 维持滑铲的最小速度
             [Header("跳跃设定")]
             [SerializeField][LabelText("跳跃强度")]private float jumpForce = 5f;
-            
-
             [Header("地面检测")]
             [SerializeField]private float groundCheckDistance = 0.1f; // 地面检测距离
             [SerializeField]private float groundCheckRadius = 0.4f; // 球体半径
@@ -53,6 +54,8 @@
             public float MaxHorizontalSpeed => maxHorizontalSpeed;
            
             public float CurrentPlayerRdHorizontalVelocityMagnitude => currentPlayerRdHorizontalVelocityMagnitude;
+            public float SlideDeceleration=> slideDeceleration;
+            public float MinSlideSpeed => minSlideSpeed;
             
             
             protected void Awake()
@@ -115,14 +118,16 @@
                     {
                         return;
                     }
-        
+                    
                     targetVelocity = targetDirection * actualMaxSpeed;
+                    
                     duration = actualMaxSpeed / acceleration;
                 }
                 else if (isGrounded) // 如果在地面上且无输入，则减速
                 {
                     targetVelocity = Vector3.zero;
-                    duration = rd.linearVelocity.magnitude / deceleration;
+                    float currentDeceleration = _playerInputRouter.StatusStrategy.GetType()==typeof(SlidingStatusStrategy) ? slideDeceleration : deceleration;
+                    duration = rd.linearVelocity.magnitude / currentDeceleration;
                 }
                 else // 在空中且无输入，则不处理，保持惯性
                 {
@@ -226,7 +231,7 @@
                 {
                     LogUtil.Log("开始跳跃");
                     rd.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-                    _playerInputRouter.ChangeStatus(new JumpingStatusStrategy());
+                    _playerInputRouter.ChangeStatus<JumpingStatusStrategy>();
                     isGrounded = false;
                 }
                 else
@@ -234,6 +239,16 @@
                     LogUtil.Log("无法跳跃，当前不在地面上");
                 }
             }
+
+            public void StartCrouchOrSliding()
+            {
+                if (currentPlayerRdHorizontalVelocityMagnitude > minSlideSpeed)
+                {
+                    //TODO _playerInputRouter.ChangeStatus();
+                }
+
+            }
+
             private bool IsMovingAgainstWall(Vector3 moveDirection)
             {
                 // 检测移动方向是否有墙壁阻挡

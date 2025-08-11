@@ -5,37 +5,34 @@ using Utilities;
 
 namespace PlayerControllers.PlayerCharacterStatusStrategy
 {
-    public class WalkingStatusStrategy:IPlayerCharacterStatusStrategy
+    public class WalkingStatusStrategy:BaseStatusStrategy
     {
-        private PlayerInputRouter PlayerInputRouter;
     
    
-        public void HandleInput(PlayerInput input)
+        public override void HandleInput(PlayerInput input)
         {
            
         }
 
-        public void LogicUpdate()
+        public override void LogicUpdate()
         {
-            if (!PlayerInputRouter.MovementController.IsGrounded)
+            if (!_playerInputRouter.MovementController.IsGrounded)
             {
-                PlayerInputRouter.ChangeStatus(new FallingStatusStrategy());
+                _playerInputRouter.ChangeStatus<FallingStatusStrategy>();
             }
         }
 
-        public void OnEnter(PlayerInputRouter InputRouter)
+        public override void OnEnter(PlayerInputRouter inputRouter)
         {
-            PlayerInputRouter= InputRouter;
-            PlayerInputRouter.PlayerInput.onActionTriggered+= HandleonActionTriggered;
+            base.OnEnter(inputRouter);
             
         }
         
-        public void OnExit()
+        public override void OnExit()
         {
-            PlayerInputRouter.PlayerInput.onActionTriggered-= HandleonActionTriggered;
-            LogUtil.Log("退出Walking状态");
+            base.OnExit();
         }
-        public void HandleonActionTriggered(InputAction.CallbackContext obj)
+        public override void HandleonActionTriggered(InputAction.CallbackContext obj)
         {
             switch (obj.action.name)
             {
@@ -60,11 +57,14 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
         {
             switch (callbackContext.phase)
             {
-                case InputActionPhase.Performed:
-                    PlayerInputRouter.MovementController.TrySprint();
+                case InputActionPhase.Started:
+                    _playerInputRouter.MovementController.TrySprint();
                     break;
-                case InputActionPhase.Canceled:
-                    PlayerInputRouter.MovementController.StopSprint();
+                case InputActionPhase.Performed:
+                    _playerInputRouter.MovementController.TrySprint();
+                    break;
+                default:
+                    _playerInputRouter.MovementController.StopSprint();
                     break;
             }
         }
@@ -85,7 +85,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
             switch (callbackContext.phase)
             {
                 case InputActionPhase.Started:
-                    PlayerInputRouter.MovementController.StartJump();
+                    _playerInputRouter.MovementController.StartJump();
                     LogUtil.Log("开始跳跃");
                     break;
             }
@@ -96,11 +96,11 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
             switch (callbackContext.phase)
             {
                 case InputActionPhase.Started:
-                    PlayerInputRouter.PlayerGrappleController.StartGrapple();
+                    _playerInputRouter.PlayerGrappleController.StartGrapple();
                     LogUtil.Log("开始发射钩爪");
                     break;
                 case InputActionPhase.Canceled:
-                    PlayerInputRouter.PlayerGrappleController.StopGrapple();
+                    _playerInputRouter.PlayerGrappleController.StopGrapple();
                     break;
             }
            
