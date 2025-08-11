@@ -4,32 +4,31 @@ using Utilities;
 
 namespace PlayerControllers.PlayerCharacterStatusStrategy
 {
-    public class GrapplingStatusStrategy : IPlayerCharacterStatusStrategy
+    public class GrapplingStatusStrategy : BaseStatusStrategy
     {
-        private PlayerInputRouter playerInputRouter;
-        public void HandleInput(PlayerInput input)
+        public override void HandleInput(PlayerInput input)
         {
           
         }
 
-        public void LogicUpdate()
+        public override void LogicUpdate()
         {
          
         }
 
-        public void OnEnter(PlayerInputRouter input)
+        public override void OnEnter(PlayerInputRouter input)
         {
-            playerInputRouter = input;
-            playerInputRouter.MovementController.ResetPlayerMovementTendency();
-            playerInputRouter.PlayerInput.onActionTriggered+= HandleonActionTriggered;
+            base.OnEnter(input);
+            _playerInputRouter.MovementController.ResetPlayerMovementTendency();
+            
         }
 
-        public void OnExit()
+        public override void OnExit()
         {
-            playerInputRouter.PlayerInput.onActionTriggered-= HandleonActionTriggered;
+            base.OnExit();
         }
 
-        public void HandleonActionTriggered(InputAction.CallbackContext obj)
+        public override void HandleonActionTriggered(InputAction.CallbackContext obj)
         {
             switch (obj.action.name)
             {
@@ -43,7 +42,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
         {
             var moveInput= callbackContext.ReadValue<Vector2>();
             LogUtil.Log($"Grappling状态下的移动输入: {moveInput}");
-            playerInputRouter.MovementController.SetPlayerMovementTendency(new Vector3(moveInput.x, 0f, moveInput.y));
+            _playerInputRouter.MovementController.SetPlayerMovementTendency(new Vector3(moveInput.x, 0f, moveInput.y));
         }
     }
 }

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using PlayerControllers.Grapple;
 using PlayerControllers.PlayerCharacterStatusStrategy;
 using Sirenix.OdinInspector;
@@ -17,13 +20,14 @@ namespace PlayerControllers
         [SerializeField][LabelText("玩家滑墙组件")]private PlayerWallRunController _playerWallRunController;
         [SerializeField]private PlayerInput playerInput;
         [SerializeField][LabelText("玩家状态策略")][ReadOnly]private string _statusStrategyName;
-        private IPlayerCharacterStatusStrategy _statusStrategy;
+        private BaseStatusStrategy _statusStrategy;
+        private Dictionary<Type, BaseStatusStrategy> _typeCharacterStatusDic;// 类型到状态策略的映射字典
         public PlayerMovementController MovementController => _movementController;
         public PlayerCameraController CameraController => _cameraController;
         public PlayerGrappleController PlayerGrappleController => _playerGrappleController;
         public PlayerWallRunController PlayerWallRunController => _playerWallRunController;
         public PlayerInput PlayerInput => playerInput;
-        public IPlayerCharacterStatusStrategy StatusStrategy => _statusStrategy;
+        public BaseStatusStrategy StatusStrategy => _statusStrategy;
         protected override void Awake()
         {
             base.Awake();
@@ -46,9 +50,30 @@ namespace PlayerControllers
             _cameraController.SetRouter(this);
             _playerGrappleController.SetRouter(this);
             _playerWallRunController.SetRouter(this);
+
+            InitPlayerStatusFsm();
             LogUtil.Log("PlayerInputRouter初始化成功", false);
             
         }
+
+        private void InitPlayerStatusFsm()
+        {
+            _typeCharacterStatusDic= new Dictionary<Type, BaseStatusStrategy>();
+            var typesList= Assembly.GetAssembly(typeof(BaseStatusStrategy))  
+                .GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(BaseStatusStrategy)) && !t.IsAbstract)
+                .ToList();
+            foreach (var type in typesList)
+            {
+                var instance = Activator.CreateInstance(type) as BaseStatusStrategy;
+                if (instance != null)
+                {
+                    _typeCharacterStatusDic.Add(type, instance);
+                }
+            }
+
+        }
+
         protected void OnEnable()
         {
             EventBroadcaster.EnablePlayerRbGravity+= EnablePlayerRbGravity;
@@ -102,16 +127,17 @@ namespace PlayerControllers
         /// <summary>
         ///  更换玩家状态策略
         /// </summary>
-        public void ChangeStatus(IPlayerCharacterStatusStrategy newStatusStrategy)
+        public void ChangeStatus<T>()where T:IPlayerCharacterStatusStrategy
         {
-            if (newStatusStrategy == null)
+            var newStatusStrategyInstance = _typeCharacterStatusDic[typeof(T)];
+            if (newStatusStrategyInstance == null)
             {
                 LogUtil.LogError("新的状态策略不能为空", true);
                 return;
             }
                 
             _statusStrategy.OnExit();
-            _statusStrategy = newStatusStrategy;
+            _statusStrategy = newStatusStrategyInstance;
             _statusStrategy.OnEnter(this);
         }
 

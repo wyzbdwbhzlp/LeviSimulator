@@ -4543,6 +4543,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3476602723717616769, guid: 327ab24e900f6a3429662eca260940af, type: 3}
+      propertyPath: mouseSensitivity
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3476602723717616769, guid: 327ab24e900f6a3429662eca260940af, type: 3}
       propertyPath: _playerInputRouter
       value: 
       objectReference: {fileID: 613291781}

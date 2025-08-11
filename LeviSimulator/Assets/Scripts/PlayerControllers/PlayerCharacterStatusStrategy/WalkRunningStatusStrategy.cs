@@ -5,38 +5,36 @@ using Utilities;
 
 namespace PlayerControllers.PlayerCharacterStatusStrategy
 {
-    public class WallRunningStatusStrategy : IPlayerCharacterStatusStrategy
+    public class WallRunningStatusStrategy : BaseStatusStrategy
     {
-        private PlayerInputRouter playerInputRouter;
         private PlayerMovementController movementController;
         private PlayerWallRunController wallRunController;
 
-        public void OnEnter(PlayerInputRouter input)
+        public override void OnEnter(PlayerInputRouter input)
         {
-            playerInputRouter = input;
-            movementController = playerInputRouter.MovementController;
-            wallRunController= playerInputRouter.PlayerWallRunController;
+            base.OnEnter(input);
+            movementController = _playerInputRouter.MovementController;
+            wallRunController= _playerInputRouter.PlayerWallRunController;
             LogUtil.Log("进入滑墙状态");
             wallRunController.StartWallRun(); 
             wallRunController.wallRunTimer = 0f;
-            playerInputRouter.PlayerInput.onActionTriggered += HandleonActionTriggered;
         }
 
-        public void LogicUpdate()
+        public override void LogicUpdate()
         {
             if (!wallRunController.CanWallRun())
             {
-                playerInputRouter.ChangeStatus(new FallingStatusStrategy());
+                _playerInputRouter.ChangeStatus<FallingStatusStrategy>();
             }
             wallRunController.wallRunTimer+= Time.deltaTime;
         }
 
-        public void HandleonActionTriggered(InputAction.CallbackContext obj)
+        public override void HandleonActionTriggered(InputAction.CallbackContext obj)
         {
             if (obj.action.name == "Jump" && obj.phase == InputActionPhase.Started)
             {
                 wallRunController.WallJump();
-                playerInputRouter.ChangeStatus(new JumpingStatusStrategy()); // 跳跃后进入跳跃状态
+                _playerInputRouter.ChangeStatus<JumpingStatusStrategy>(); // 跳跃后进入跳跃状态
                 return;
             }
             switch (obj.action.name)
@@ -47,24 +45,24 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
             }
         }
 
-        public void OnExit()
+        public override void OnExit()
         {
+            base.OnExit();  
             wallRunController.StopWallRun(); // 通知控制器停止
             wallRunController.wallRunTimer = 0f;
-            playerInputRouter.PlayerInput.onActionTriggered -= HandleonActionTriggered;
         }
 
-        public void HandleInput(PlayerInput input) { }
+        public override void HandleInput(PlayerInput input) { }
         private void HandleLaunchGrapple(InputAction.CallbackContext callbackContext)
         {
             switch (callbackContext.phase)
             {
                 case InputActionPhase.Started:
-                    playerInputRouter.PlayerGrappleController.StartGrapple();
+                    _playerInputRouter.PlayerGrappleController.StartGrapple();
                     LogUtil.Log("开始发射钩爪");
                     break;
                 case InputActionPhase.Canceled:
-                    playerInputRouter.PlayerGrappleController.StopGrapple();
+                    _playerInputRouter.PlayerGrappleController.StopGrapple();
                     break;
             }
         }
