@@ -1,6 +1,5 @@
 ﻿using PlayerControllers.PlayerCharacterStatusStrategy;
 using Sirenix.OdinInspector;
-using Unity.VisualScripting;
 using UnityEngine;
 using Utilities;
 
@@ -19,8 +18,6 @@ namespace PlayerControllers.Grapple
         [ShowInInspector][ReadOnly] private IGrapple grappleHook;
         [SerializeField] private GrappleCableRenderer grappleCableRenderer;
         private PlayerInputRouter _playerInputRouter;
-        private bool _isGrappling;
-        public bool IsGrappling => _isGrappling;
         
 
         protected void Awake()
@@ -65,7 +62,6 @@ namespace PlayerControllers.Grapple
         public void StartGrapple()
         {
             grappleHook.StartGrapple();
-            _isGrappling = true;
         }
         public void StopGrapple()
         {
@@ -76,7 +72,6 @@ namespace PlayerControllers.Grapple
             }
 
             grappleHook.StopGrapple();
-            _isGrappling = false;
              
         }
 
@@ -85,11 +80,11 @@ namespace PlayerControllers.Grapple
             var rd= _playerInputRouter.MovementController.PlayerRigidbody;
             recoveryVelocity = rd.linearVelocity; // 记录当前速度
             _playerInputRouter.EnablePlayerRbGravity();
+            _playerInputRouter.ChangeStatus<FallingStatusStrategy>();
             _playerInputRouter.MovementController.PlayerRigidbody.linearVelocity = recoveryVelocity; // 恢复玩家速度(惯性)
 
         }
 
 
-        
     }
 }
