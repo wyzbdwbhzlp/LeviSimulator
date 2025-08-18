@@ -1,42 +1,79 @@
-﻿using UnityEngine.InputSystem;
+﻿using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
+using UnityEngine.InputSystem;
+using Utilities;
 
 namespace PlayerControllers.PlayerCharacterStatusStrategy
 {
-    public class SlidingStatusStrategy:BaseStatusStrategy
+    public class SlidingStatusStrategy : HierarchicalBaseState
     {
-        private PlayerMovementController MovementController => _playerInputRouter.MovementController;
-        public override void HandleInput(PlayerInput input)
+        private PlayerMovementController _movementController;
+
+        protected override void EnterState()
         {
-          
+            _movementController = Ctx.MovementController;
+            LogUtil.Log("进入滑铲状态");
         }
 
-        public override void LogicUpdate()
+        protected override void ExitState()
         {
-            if (MovementController.MinSlideSpeed>MovementController.CurrentPlayerRdHorizontalVelocityMagnitude&&MovementController.IsGrounded)
+        }
+
+        protected override void UpdateStates()
+        {
+            if (Ctx.IsHoldingCrouch)
             {
-                _playerInputRouter.ChangeStatus<CrouchStatusStrategy>();
+                if (_movementController.CurrentPlayerRdHorizontalVelocityMagnitude < _movementController.MinMaintainSlideSpeed)
+                {
+                    SwitchSubState<CrouchStatusStrategy>();
+                }
             }
-          
+            else
+            {
+                if (_movementController.TryStopCrouch())
+                {
+                    SwitchSubState<WalkingStatusStrategy>();
+                }
+                else
+                {
+                    SwitchSubState<CrouchStatusStrategy>();
+                }
+            }
         }
 
-        public override void OnEnter(PlayerInputRouter input)
+        protected override void HandleInput(InputAction.CallbackContext obj)
         {
-            base.OnEnter(input);
-            _playerInputRouter.MovementController.ResetPlayerMovementTendency();
-            
-           
         }
 
-        public override void OnExit()
+        protected override bool HandleSubStateInput(InputAction.CallbackContext obj)
         {
-            base.OnExit();
+            switch (obj.action.name)
+            {
+                case "Jump":
+                    if (obj.phase == InputActionPhase.Started)
+                    {
+                       
+                        if (_movementController.TryStopCrouch())
+                        {
+                            _movementController.StartJump();
+                        }
+                        return true;//已处理输入
+                    }
+                    break;
 
-            
-        }
-
-        public override void HandleonActionTriggered(InputAction.CallbackContext obj)
-        {
-          
+                case "Crouch":
+                    // 当蹲伏键抬起时，尝试站起
+                    if (obj.phase == InputActionPhase.Canceled)
+                    {
+                        if (_movementController.TryStopCrouch())
+                        {
+                            SwitchSubState<WalkingStatusStrategy>();
+                        }
+                        // 如果无法站起，UpdateStates会在下一帧处理后续逻辑
+                        return true;
+                    }
+                    break;
+            }
+            return false;
         }
     }
 }

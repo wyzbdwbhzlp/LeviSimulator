@@ -22,7 +22,7 @@ public class DebugSpeedShowController : Singleton<DebugSpeedShowController>
     public void FixedUpdate()
     {
         parentStateNameTMP.text = "Parent State: " + _inputRouter?.StatusStrategy.GetType().Name;
-        subStateNameTMP.text = "Sub State: " + _currentSubState?.CurrentSubState?.GetType().Name;
+        subStateNameTMP.text = "Sub State: " + _currentSubState?.GetType().Name;
     }
 
     public void SetRouter(PlayerInputRouter inputRouter)

@@ -1,7 +1,6 @@
 ﻿// Assets/Scripts/PlayerControllers/PlayerCharacterStatusStrategy/AirborneState.cs
 
 using PlayerControllers.PlayerCharacterStatusStrategy;
-using PlayerControllers.PlayerCharacterStatusStrategy.SubState;
 using UnityEngine.InputSystem;
 
 namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
@@ -10,14 +9,8 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
     {
         protected override void EnterState()
         {
-            if (!Ctx.PlayerWallRunController.CanWallRun())
-            {
-                SwitchSubState<FallingSubState>();
-            }
-            else
-            {
-                SwitchSubState<WallRunningSubState>();
-            }
+            // 默认进入 Falling 状态
+            SwitchSubState<FallingStatusStrategy>();
         }
 
         protected override void ExitState() { }
