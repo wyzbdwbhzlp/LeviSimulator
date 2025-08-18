@@ -41,7 +41,7 @@ namespace PlayerControllers
             _playerInputRouter.PlayerInput.onActionTriggered += HandleonActionTriggered;
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             ApplySmoothRotation();
         }

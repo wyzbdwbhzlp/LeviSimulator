@@ -265,7 +265,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 70
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -347,14 +347,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84650bebdfcee92489fce56ff23f08f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseSensitivity: 0.6
+  mouseSensitivity: 0.8
   smoothness: 50
   maxRollAngle: 15
   rollSpeed: 5
+  defaultAssistStrength: 0.103
+  defaultAssistDuration: 1
+  assistResponseSpeed: 2
   lookInput: {x: 0, y: 0}
   xRotation: 0
   currentRollAngle: 0
   playerBody: {fileID: 5437357283950161147}
+  _playerInputRouter: {fileID: 8744706318884848778}
 --- !u!114 &449667717705534944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -523,29 +527,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea2360a0250f42f6851b7ba7a15045c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHorizontalSpeed: 7
-  maxRunSpeedMultiplier: 1.5
-  acceleration: 150
-  deceleration: 100
-  airAcceleration: 15
-  maxAirSpeed: 7
-  jumpForce: 10
+  movementSetting: {fileID: 11400000, guid: 2ce461a7ee4c2ce4ea0dd9fa9a7b19c1, type: 2}
+  crouchSlideSetting: {fileID: 11400000, guid: 2ace10d1af00178408c2e16e869966c5, type: 2}
   groundCheckDistance: 1.2
   groundCheckRadius: 0.4
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 64
   isGrounded: 0
+  groundNormal: {x: 0, y: 0, z: 0}
+  groundDirection: {x: 0, y: 0, z: 0}
   currentPlayerMovementTendency: {x: 0, y: 0, z: 0}
   fixedPlayerMovementTendencyByPlayerLookAt: {x: 0, y: 0, z: 0}
-  rd: {fileID: 8151567734164455439}
   currentPlayerRdVelocity: {x: 0, y: 0, z: 0}
   currentPlayerRdVelocityMagnitude: 0
   currentPlayerRdHorizontalVelocityMagnitude: 0
+  isCrouching: 0
   isGrappling: 0
   isAllowedToMove: 1
   isSprinting: 0
   IsCanWallRun: 0
+  lastFrameYPosition: 0
+  heightDifferenceBetweenFrames: 0
+  rd: {fileID: 8151567734164455439}
+  playerCollider: {fileID: 1076808283295235548}
 --- !u!54 &8151567734164455439
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -585,18 +590,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 717c4a03df724a6c877dbd40752c51c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallMaxDistance: 1
+  wallMaxDistance: 1.2
   wallLayerMask:
     serializedVersion: 2
     m_Bits: 128
   wallSpeedMultiplier: 1.2
   minimumHeightForWallRun: 1.2
+  wallRunAngleThreshold: 80
   wallRunThresholdSpeed: 6
-  wallRunMinimumSpeed: 2
-  wallFriction: 3
+  wallRunMinimumSpeed: 0.5
+  wallFriction: 0
   wallJumpForce: 10
   wallJumpAngle: 45
-  wallJumpBounceForce: 10
+  wallJumpBounceForce: 15
   isWallRunning: 0
   wallNormal: {x: 0, y: 0, z: 0}
   wallForward: {x: 0, y: 0, z: 0}

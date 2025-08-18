@@ -1,54 +1,53 @@
-﻿using UnityEngine.InputSystem;
+﻿using PlayerControllers.Grapple;
+using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
+using UnityEngine.InputSystem;
 using Utilities;
 
 namespace PlayerControllers.PlayerCharacterStatusStrategy
 {
-    public class JumpingStatusStrategy:BaseStatusStrategy
+    public class JumpingStatusStrategy : HierarchicalBaseState
     {
-        private PlayerMovementController movementController;
-        private PlayerWallRunController wallRunController;
-        public override void HandleInput(PlayerInput input)
+        private PlayerMovementController _movementController;
+        private PlayerWallRunController _wallRunController;
+        private PlayerGrappleController _grappleController;
+
+        protected override void EnterState()
         {
-            
+            _movementController = Ctx.MovementController;
+            _wallRunController = Ctx.PlayerWallRunController;
+            _grappleController = Ctx.PlayerGrappleController;
+            LogUtil.Log("进入跳跃状态");
         }
 
-        public override void LogicUpdate()
+        protected override void ExitState()
         {
-            if (wallRunController.CanWallRun()
-                &&
-                wallRunController.WallRunThresholdSpeed<= movementController.CurrentPlayerRdHorizontalVelocityMagnitude)
+            // 此状态没有特定的退出逻辑
+        }
+
+        protected override void UpdateStates()
+        {
+            // 当上升速度消失时，切换到下落状态
+            if (_movementController.PlayerRigidbody.linearVelocity.y <= 0)
             {
-                _playerInputRouter.ChangeStatus<WallRunningStatusStrategy>();
+                SwitchSubState<FallingStatusStrategy>();
                 return;
             }
-            if (movementController.CurrentPlayerRdVelocity.y <= -1)
+
+            // 检查是否可以滑墙
+            if (_wallRunController.CanWallRun() && 
+                _movementController.CurrentPlayerRdHorizontalVelocityMagnitude >= _wallRunController.WallRunThresholdSpeed)
             {
-                _playerInputRouter.ChangeStatus<FallingStatusStrategy>();
+                SwitchSubState<WallRunningStatusStrategy>();
             }
         }
 
-        public override void OnEnter(PlayerInputRouter input)
+        protected override void HandleInput(InputAction.CallbackContext obj)
         {
-            base.OnEnter(input);
-            movementController = _playerInputRouter.MovementController;
-            wallRunController = _playerInputRouter.PlayerWallRunController;
-            
-        }
-
-        public override void OnExit()
-        {
-            base.OnExit();
-        }
-
-        public override void HandleonActionTriggered(InputAction.CallbackContext obj)
-        {
-            switch (obj.action.name)
+            // 处理跳跃时的输入，例如发射钩爪
+            if (obj.action.name == "LaunchGrapple")
             {
-                case "LaunchGrapple":
-                    HandleLaunchGrapple(obj);
-                    break;
+                HandleLaunchGrapple(obj);
             }
-
         }
 
         private void HandleLaunchGrapple(InputAction.CallbackContext callbackContext)
@@ -56,11 +55,11 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
             switch (callbackContext.phase)
             {
                 case InputActionPhase.Started:
-                    _playerInputRouter.PlayerGrappleController.StartGrapple();
-                    LogUtil.Log("开始发射钩爪");
+                    _grappleController.StartGrapple();
+                    // StartGrapple 成功后会通过事件或控制器逻辑切换到 GrapplingStatusStrategy
                     break;
                 case InputActionPhase.Canceled:
-                    _playerInputRouter.PlayerGrappleController.StopGrapple();
+                    _grappleController.StopGrapple();
                     break;
             }
         }

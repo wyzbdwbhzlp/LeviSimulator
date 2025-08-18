@@ -31,7 +31,6 @@ namespace CollectibleEcho
                 return;
             }
             
-
             titleText.text = echoData.EchoTitle;
             contentText.text = echoData.EchoText;
             SetAnchorTopStretch();
