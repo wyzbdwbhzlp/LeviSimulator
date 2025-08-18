@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using PlayerControllers.PlayerCharacterStatusStrategy;
-using UnityEngine;
 using Utilities;
 
 namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
@@ -11,9 +10,8 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
     public static class PlayerCharacterStatusStrategyFactory
     {
         private static readonly Dictionary<Type, HierarchicalBaseState> StateDictionary = new();
-        private static readonly Dictionary<Type,BaseSubState> SubStateDictionary = new();
         private static bool _isInitialized = false;
-
+        
         /// <summary>
         ///  初始化状态策略工厂
         /// </summary>
@@ -28,34 +26,17 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
                 var instance = (HierarchicalBaseState)Activator.CreateInstance(type);
                 StateDictionary[type] = instance;
             }
-
-            foreach (var hierarchicalBaseState in StateDictionary)
-            {
-                LogUtil.Log($"已注册状态策略: {hierarchicalBaseState.Key.Name}");
-            }
             
-            var subStrategyTypes = Assembly.GetExecutingAssembly()
-                .GetTypes()
-                .Where(t => t.IsClass && !t.IsAbstract && typeof(BaseSubState).IsAssignableFrom(t));
-
-            foreach (var type in subStrategyTypes)
-            {
-                var instance = (BaseSubState)Activator.CreateInstance(type);
-                SubStateDictionary[type] = instance;
-            }
-
             _isInitialized = true;
         }
 
 
-
-        public static T GetParentState<T>() where T : HierarchicalBaseState
+        public static T GetState<T>() where T : HierarchicalBaseState
         {
-            if (_isInitialized == false)
+            if(_isInitialized == false)
             {
                 LogUtil.LogError("PlayerCharacterStatusStrategyFactory未初始化，请先调用InitializeStates方法");
             }
-
             if (StateDictionary.TryGetValue(typeof(T), out var state))
             {
                 return (T)state;
@@ -63,19 +44,5 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
 
             throw new KeyNotFoundException($"未找到 {typeof(T).Name} ");
         }
-        public static T GetSubState<T>() where T : BaseSubState
-        {
-            if (_isInitialized == false)
-            {
-                LogUtil.LogError("PlayerCharacterStatusStrategyFactory未初始化，请先调用InitializeStates方法");
-            }
-            if (SubStateDictionary.TryGetValue(typeof(T), out var state))
-            {
-                return (T)state;
-            }
-            throw new KeyNotFoundException($"未找到 {typeof(T).Name} ");
-        }
-
-
     }
 }

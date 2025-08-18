@@ -6,10 +6,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
     public abstract class BaseStatusStrategy:IPlayerCharacterStatusStrategy
     {
         protected PlayerInputRouter _playerInputRouter;
-        public virtual void HandleInput(PlayerInput input)
-        {
-            
-        }
+    
 
         public virtual void LogicUpdate()
         {

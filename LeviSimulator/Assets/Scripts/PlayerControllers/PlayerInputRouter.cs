@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using PlayerControllers.Grapple;
 using PlayerControllers.PlayerCharacterStatusStrategy;
+using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -20,14 +21,19 @@ namespace PlayerControllers
         [SerializeField][LabelText("玩家滑墙组件")]private PlayerWallRunController _playerWallRunController;
         [SerializeField]private PlayerInput playerInput;
         [SerializeField][LabelText("玩家状态策略")][ReadOnly]private string _statusStrategyName;
-        private BaseStatusStrategy _statusStrategy;
-        private Dictionary<Type, BaseStatusStrategy> _typeCharacterStatusDic;// 类型到状态策略的映射字典
+        [SerializeField][LabelText("状态子类")][ReadOnly]private string _subStatusStrategyName;
+        [SerializeField][ReadOnly]private bool _isHoldingJump = false;
+        [SerializeField][ReadOnly]private bool _isHoldingCrouch = false;
+        
+        private HierarchicalBaseState _statusStrategy;
         public PlayerMovementController MovementController => _movementController;
         public PlayerCameraController CameraController => _cameraController;
         public PlayerGrappleController PlayerGrappleController => _playerGrappleController;
         public PlayerWallRunController PlayerWallRunController => _playerWallRunController;
         public PlayerInput PlayerInput => playerInput;
-        public BaseStatusStrategy StatusStrategy => _statusStrategy;
+        public HierarchicalBaseState StatusStrategy => _statusStrategy;
+        public bool IsHoldingJump=> _isHoldingJump;
+        public bool IsHoldingCrouch => _isHoldingCrouch;
         protected override void Awake()
         {
             base.Awake();
@@ -51,28 +57,12 @@ namespace PlayerControllers
             _playerGrappleController.SetRouter(this);
             _playerWallRunController.SetRouter(this);
 
-            InitPlayerStatusFsm();
+            PlayerCharacterStatusStrategyFactory.InitializeStates(); //todo 应该在游戏开始时预加载
+            
             LogUtil.Log("PlayerInputRouter初始化成功", false);
             
         }
-
-        private void InitPlayerStatusFsm()
-        {
-            _typeCharacterStatusDic= new Dictionary<Type, BaseStatusStrategy>();
-            var typesList= Assembly.GetAssembly(typeof(BaseStatusStrategy))  
-                .GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(BaseStatusStrategy)) && !t.IsAbstract)
-                .ToList();
-            foreach (var type in typesList)
-            {
-                var instance = Activator.CreateInstance(type) as BaseStatusStrategy;
-                if (instance != null)
-                {
-                    _typeCharacterStatusDic.Add(type, instance);
-                }
-            }
-
-        }
+        
 
         protected void OnEnable()
         {
@@ -97,7 +87,7 @@ namespace PlayerControllers
 
         public void Start()
         {
-            _statusStrategy = new WalkingStatusStrategy();
+            _statusStrategy = new GroundedState();
             _statusStrategy.OnEnter(this);
             
             Cursor.lockState = CursorLockMode.Locked;  
@@ -109,6 +99,41 @@ namespace PlayerControllers
             {
                 case "Move":
                     HandleMoveInput(obj);
+                    break;
+                case "Jump":
+                    HandleJumpInput(obj);
+                    break;
+                case "Crouch":
+                    HandleCrouchInput(obj);
+                    break;
+            }
+        }
+
+        private void HandleCrouchInput(InputAction.CallbackContext callbackContext)
+        {
+            switch (callbackContext.phase)
+            {
+                case InputActionPhase.Started:
+                    _isHoldingCrouch = true;
+                    break;
+                case InputActionPhase.Canceled:
+                    _isHoldingCrouch = false;
+                    break;
+            }
+        }
+
+        private void HandleJumpInput(InputAction.CallbackContext callbackContext)
+        {
+            switch (callbackContext.phase)
+            {
+                case InputActionPhase.Started:
+                    _isHoldingJump = true;
+                    break;
+                case InputActionPhase.Performed:
+                    _isHoldingJump =true;
+                    break;
+                default:
+                    _isHoldingJump = false;
                     break;
             }
         }
@@ -123,22 +148,25 @@ namespace PlayerControllers
         {
             _statusStrategy.LogicUpdate();
             _statusStrategyName= _statusStrategy.GetType().Name;
+            _subStatusStrategyName= _statusStrategy.CurrentSubState?.GetType().Name ?? "无子状态";
         }
         /// <summary>
         ///  更换玩家状态策略
         /// </summary>
-        public void ChangeStatus<T>()where T:IPlayerCharacterStatusStrategy
+        public void ChangeParentStatus<T>()where T:HierarchicalBaseState
         {
-            var newStatusStrategyInstance = _typeCharacterStatusDic[typeof(T)];
+            var newStatusStrategyInstance = PlayerCharacterStatusStrategyFactory.GetState<T>();
             if (newStatusStrategyInstance == null)
             {
                 LogUtil.LogError("新的状态策略不能为空", true);
                 return;
             }
-                
+            LogUtil.Log($"玩家状态策略从{_statusStrategyName}更换为{newStatusStrategyInstance.GetType().Name}");
             _statusStrategy.OnExit();
+            EventBroadcaster.CallPlayerChangeStatusEvent(_statusStrategy, newStatusStrategyInstance);
             _statusStrategy = newStatusStrategyInstance;
             _statusStrategy.OnEnter(this);
+            DebugSpeedShowController.Instance?.SetRouter(this); //todo debuging
         }
 
         public void DisablePlayerRbGravity()

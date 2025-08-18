@@ -1,71 +1,48 @@
-﻿using UnityEngine;
+﻿using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using Utilities;
 
 namespace PlayerControllers.PlayerCharacterStatusStrategy
 {
-    public class FallingStatusStrategy: BaseStatusStrategy
+    public class FallingStatusStrategy : HierarchicalBaseState
     {
-       
-        private PlayerWallRunController playerWallRunController;
-        private float extraFallForce = 3f;
-        private float maxFallSpeed = 8f;
-        public override void HandleInput(PlayerInput input)
+        private PlayerMovementController _movementController;
+        private PlayerWallRunController _wallRunController;
+
+        protected override void EnterState()
         {
-            
+            _movementController = Ctx.MovementController;
+            _wallRunController = Ctx.PlayerWallRunController;
+            LogUtil.Log("进入下落状态");
         }
 
-        public override void LogicUpdate()
+        protected override void ExitState()
         {
-            var movementController = _playerInputRouter.MovementController;
-            if (playerWallRunController.CanWallRun()&&playerWallRunController.WallRunThresholdSpeed<= movementController.CurrentPlayerRdHorizontalVelocityMagnitude)
+            // 此状态没有特定的退出逻辑
+        }
+
+        protected override void UpdateStates()
+        {
+            // 检查是否可以滑墙
+            if (_wallRunController.CanWallRun() && 
+                _movementController.CurrentPlayerRdHorizontalVelocityMagnitude >= _wallRunController.WallRunThresholdSpeed)
             {
-                _playerInputRouter.ChangeStatus<WallRunningStatusStrategy>();
+                SwitchSubState<WallRunningStatusStrategy>();
                 return;
             }
-            if (movementController.IsGrounded)
-            {
-                _playerInputRouter.ChangeStatus<WalkingStatusStrategy>();
-            }
             
-            else
-            {
-                float currentFallSpeed = -_playerInputRouter.MovementController.PlayerRigidbody.linearVelocity.y;
-                
-                if (currentFallSpeed < maxFallSpeed)
-                {
-                    float speedRatio = currentFallSpeed / maxFallSpeed;
-                    float forceModifier = 1f - speedRatio;
-                    Vector3 forceToApply = Vector3.down * extraFallForce * forceModifier;
-                    _playerInputRouter.MovementController.PlayerRigidbody.AddForce(forceToApply, ForceMode.Acceleration);
-                }
-            }
-           
         }
 
-        public override void OnEnter(PlayerInputRouter input)
+        protected override void HandleInput(InputAction.CallbackContext obj)
         {
-            base.OnEnter(input);
-            playerWallRunController = _playerInputRouter.PlayerWallRunController;
-            LogUtil.Log("进入Falling状态，开始给予玩家额外的向下重力");
-        }
-
-        public override void OnExit()
-        {
-            base.OnExit();
-            
-           
-        }
-
-        public override void HandleonActionTriggered(InputAction.CallbackContext obj)
-        {
+            // 处理下落时的输入，例如发射钩爪
             switch (obj.action.name)
             {
                 case "LaunchGrapple":
                     HandleLaunchGrapple(obj);
                     break;
             }
-
         }
 
         private void HandleLaunchGrapple(InputAction.CallbackContext callbackContext)
@@ -73,11 +50,11 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
             switch (callbackContext.phase)
             {
                 case InputActionPhase.Started:
-                    _playerInputRouter.PlayerGrappleController.StartGrapple();
+                    Ctx.PlayerGrappleController.StartGrapple();
                     LogUtil.Log("开始发射钩爪");
                     break;
                 case InputActionPhase.Canceled:
-                    _playerInputRouter.PlayerGrappleController.StopGrapple();
+                    Ctx.PlayerGrappleController.StopGrapple();
                     break;
             }
         }

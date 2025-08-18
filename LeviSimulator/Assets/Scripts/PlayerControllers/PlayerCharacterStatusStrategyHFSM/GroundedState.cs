@@ -1,7 +1,6 @@
 ﻿// Assets/Scripts/PlayerControllers/PlayerCharacterStatusStrategy/GroundedState.cs
 
 using PlayerControllers.PlayerCharacterStatusStrategy;
-using PlayerControllers.PlayerCharacterStatusStrategy.SubState;
 using UnityEngine.InputSystem;
 using Utilities;
 
@@ -14,7 +13,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
             var isHoldingCrouch = Ctx.IsHoldingCrouch;
             if (!isHoldingCrouch)
             {
-                SwitchSubState<WalkingSubState>();
+                SwitchSubState<WalkingStatusStrategy>();
             }
             else
             {

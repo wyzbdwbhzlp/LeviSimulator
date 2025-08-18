@@ -15,11 +15,6 @@ namespace PlayerControllers.CalculationPhysicsComponents
 
         public void HandleMovementPhysics()
         {
-            if (!_movementController.IsAllowToMove)
-            {
-                return;
-            }
-
             var isGrounded = _movementController.IsGrounded;
             var maxHorizontalSpeed = _movementController.MaxHorizontalSpeed;
             var crouchSpeedMultiplier= _movementController.CrouchSpeedMultiplier;
@@ -31,7 +26,6 @@ namespace PlayerControllers.CalculationPhysicsComponents
             var fixedPlayerMovementTendencyByPlayerLookAt = _movementController.FixedPlayerMovementTendencyByPlayerLookAt;
             var deceleration= _movementController.Deceleration;
             var rd = _movementController.PlayerRigidbody;
-            
             
             // 计算当前状态下的最大速度和加速度
             float currentMaxSpeed = isGrounded ? maxHorizontalSpeed :maxAirSpeed;
