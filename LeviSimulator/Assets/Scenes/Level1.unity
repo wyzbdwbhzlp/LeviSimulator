@@ -864,17 +864,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &613291781 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8744706318884848778, guid: 327ab24e900f6a3429662eca260940af, type: 3}
-  m_PrefabInstance: {fileID: 1661307033}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34bd7b7a87d94d19a8682539ffe214c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &728952226
 GameObject:
   m_ObjectHideFlags: 0
@@ -1361,7 +1350,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 852564549}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 5ba2736fef36cc04ab744935e674dcde, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3012,56 +3001,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2321238160361161813, guid: 327ab24e900f6a3429662eca260940af, type: 3}
-      propertyPath: maxAirSpeed
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 2321238160361161813, guid: 327ab24e900f6a3429662eca260940af, type: 3}
-      propertyPath: airAcceleration
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3476602723717616769, guid: 327ab24e900f6a3429662eca260940af, type: 3}
-      propertyPath: mouseSensitivity
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 3476602723717616769, guid: 327ab24e900f6a3429662eca260940af, type: 3}
-      propertyPath: _playerInputRouter
-      value: 
-      objectReference: {fileID: 613291781}
-    - target: {fileID: 3476602723717616769, guid: 327ab24e900f6a3429662eca260940af, type: 3}
-      propertyPath: defaultAssistDuration
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3476602723717616769, guid: 327ab24e900f6a3429662eca260940af, type: 3}
-      propertyPath: defaultAssistStrength
-      value: 0.103
-      objectReference: {fileID: 0}
-    - target: {fileID: 4631375718183898588, guid: 327ab24e900f6a3429662eca260940af, type: 3}
-      propertyPath: wallFriction
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4631375718183898588, guid: 327ab24e900f6a3429662eca260940af, type: 3}
-      propertyPath: wallMaxDistance
-      value: 0.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 4631375718183898588, guid: 327ab24e900f6a3429662eca260940af, type: 3}
-      propertyPath: wallJumpBounceForce
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 4631375718183898588, guid: 327ab24e900f6a3429662eca260940af, type: 3}
-      propertyPath: wallRunMinimumSpeed
-      value: 0.5
+      propertyPath: groundCheckDistance
+      value: 1.3
       objectReference: {fileID: 0}
     - target: {fileID: 5437357283950161147, guid: 327ab24e900f6a3429662eca260940af, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 94
+      value: 197.85
       objectReference: {fileID: 0}
     - target: {fileID: 5437357283950161147, guid: 327ab24e900f6a3429662eca260940af, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 22.5
+      value: 25.59
       objectReference: {fileID: 0}
     - target: {fileID: 5437357283950161147, guid: 327ab24e900f6a3429662eca260940af, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 400.2
+      value: 346.9
       objectReference: {fileID: 0}
     - target: {fileID: 5437357283950161147, guid: 327ab24e900f6a3429662eca260940af, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3094,10 +3047,6 @@ PrefabInstance:
     - target: {fileID: 5624877365304352259, guid: 327ab24e900f6a3429662eca260940af, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 8554186470403437554, guid: 327ab24e900f6a3429662eca260940af, type: 3}
-      propertyPath: field of view
-      value: 70
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

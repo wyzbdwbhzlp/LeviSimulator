@@ -2,6 +2,7 @@
 using HUD;
 using Manager;
 using Sirenix.OdinInspector;
+using UIManager;
 using UnityEngine;
 using Utilities;
 

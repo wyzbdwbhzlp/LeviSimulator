@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace PlayerControllers
@@ -53,7 +54,7 @@ namespace PlayerControllers
             var movementController = _playerInputRouter.MovementController;
             Vector3 inputDirection = movementController.FixedPlayerMovementTendencyByPlayerLookAt.normalized;
 
-            Vector3 projectedInput = Vector3.Project(inputDirection, wallForward);
+            Vector3 projectedInput = Vector3.Project(inputDirection, wallForward);// 将输入投影到墙面前进方向上
             float accumulatedResistance = wallFriction * wallRunTimer;
 
             // 计算目标速度
@@ -181,6 +182,7 @@ namespace PlayerControllers
             Vector3 bounceForce = wallNormal * wallJumpBounceForce;
 
             rd.AddForce(upwardForce + bounceForce, ForceMode.Impulse);
+            _playerInputRouter.ChangeParentStatus<AirborneState>();
         }
 
         public float GetWallSide()
@@ -194,17 +196,6 @@ namespace PlayerControllers
         public void SetRouter(PlayerInputRouter playerInputRouter)
         {
             _playerInputRouter = playerInputRouter;
-        }
-        public bool IsWallNearby()
-        {
-            foreach (var dir in wallCheckDirections)
-            {
-                if (Physics.Raycast(transform.position, transform.TransformDirection(dir), wallMaxDistance, wallLayerMask))
-                {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }

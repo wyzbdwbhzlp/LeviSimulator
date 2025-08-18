@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using CollectibleEcho;
 using HUD;
+using Manager;
 using Sirenix.OdinInspector;
-using UIManager;
 using UnityEngine;
 using Utilities;
 
-namespace Manager
+namespace UIManager
 {
     public class MainUIManager:Singleton<MainUIManager>
     {
@@ -23,6 +23,8 @@ namespace Manager
             DontDestroyOnLoad(gameObject);
             InitUiComponentsDic();
             InitHUDComponentsDic();
+           
+
         }
         public static T ShowUIComponent<T>() where T : class, IUIComponent
         {

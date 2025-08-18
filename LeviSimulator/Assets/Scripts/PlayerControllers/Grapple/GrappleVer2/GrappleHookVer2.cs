@@ -113,7 +113,7 @@ namespace PlayerControllers.Grapple.GrappleVer2
                 LogUtil.Log($"钩爪实例化成功，位置: {grapplePoint},{grapplePrefabInstance.gameObject.name}");
                 var grappleUnit= grapplePrefabInstance.GetComponent<GrappleUnit>();
                 grappleUnit.Initialize(playerInputRouter.MovementController.PlayerRigidbody);
-                playerInputRouter.ChangeStatus<GrapplingStatusStrategy>(); // 切换到钩爪状态
+                playerInputRouter.ChangeParentStatus<GrapplingStatusStrategy>(); // 切换到钩爪状态
                 grappleState= GrappleState.Grappling;
             }
             if(isInvalidGrapple)

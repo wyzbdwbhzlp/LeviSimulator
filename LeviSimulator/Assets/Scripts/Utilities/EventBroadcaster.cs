@@ -1,5 +1,6 @@
 ﻿using System;
 using Manager;
+using PlayerControllers.PlayerCharacterStatusStrategy;
 using UIManager;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -35,6 +36,15 @@ namespace Utilities
         {
             EchoViewUIClosed?.Invoke();
         }
-
+        public static event Action<BaseStatusStrategy,BaseStatusStrategy> PlayerCharacterStatusChanged;
+        /// <summary>
+        /// 调用玩家状态改变事件(from statusStrategy to newStatusStrategyInstance)
+        /// </summary>
+        /// <param name="statusStrategy"></param>
+        /// <param name="newStatusStrategyInstance"></param>
+        public static void CallPlayerChangeStatusEvent(BaseStatusStrategy statusStrategy, BaseStatusStrategy newStatusStrategyInstance)
+        {
+            PlayerCharacterStatusChanged?.Invoke(statusStrategy,newStatusStrategyInstance);
+        }
     }
 }

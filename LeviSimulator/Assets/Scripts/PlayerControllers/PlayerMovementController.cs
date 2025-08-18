@@ -1,7 +1,11 @@
 ﻿    using System;
+    using System.Collections.Generic;
     using System.Threading;
     using DG.Tweening;
+    using PlayerControllers.CalculationPhysicsComponents;
     using PlayerControllers.PlayerCharacterStatusStrategy;
+    using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
+    using PlayerControllers.PlayerMovemenSettings;
     using Sirenix.OdinInspector;
     using UnityEngine;
     using UnityEngine.InputSystem;
@@ -13,50 +17,81 @@
         public class PlayerMovementController:MonoBehaviour
         {
             [Header("移动设定-正常")]
-            [SerializeField][LabelText("平地水平最大速度")]private float maxHorizontalSpeed = 7f; // 平地水平最大速度
-            [SerializeField][LabelText("平地疾跑速度倍率")][MinValue(1f)]private float maxRunSpeedMultiplier = 1.5f; // 平地疾跑速度倍率
-            [SerializeField][LabelText("平地加速度")]private float acceleration = 150f; // 加速度
-            [SerializeField][LabelText("平地减速度")]private float deceleration = 100f; // 减速度（摩擦力）
-            [SerializeField][LabelText("空中加速度")]private float airAcceleration = 15f; // 空中加速度
-            [SerializeField][LabelText("空中最大速度")]private float maxAirSpeed = 5f; // 空中最大速度
-            [Header("移动设定-滑铲")]
-            [SerializeField][LabelText("滑铲时减速度")]private float slideDeceleration = 50f; // 滑铲时的减速度
-            [SerializeField][LabelText("维持滑铲的最小速度")]private float minSlideSpeed = 2f; // 维持滑铲的最小速度
-            [Header("跳跃设定")]
-            [SerializeField][LabelText("跳跃强度")]private float jumpForce = 5f;
+            [SerializeField][LabelText("移动设定SO")][InlineEditor]private PlayerWalkRunSetting movementSetting; // 移动设定SO
+            public float MaxHorizontalSpeed => movementSetting.MaxHorizontalSpeed; // 平地水平最大速度
+            public float MaxRunSpeedMultiplier => movementSetting.MaxRunSpeedMultiplier; // 平地疾跑速度倍率
+            public float Acceleration => movementSetting.Acceleration;// 加速度
+            public float Deceleration => movementSetting.Deceleration; // 减速度（摩擦力）
+            public float AirAcceleration => movementSetting.AirAcceleration; // 空中加速度
+            public float MaxAirSpeed => movementSetting.MaxAirSpeed; // 空中最大速度
+            public float JumpForce => movementSetting.JumpForce; // 跳跃力
+            public float CrouchSpeedMultiplier=> movementSetting.CrouchSpeedMultiplier; // 蹲伏时速度倍率
+            [Header("移动设定-滑铲&蹲伏")]
+            [SerializeField][LabelText("滑铲&蹲伏设定SO")][InlineEditor]private PlayerCrouchSideSetting crouchSlideSetting; // 滑铲&蹲伏设定SO
+            public float CrouchHeightDifference => crouchSlideSetting.CrouchHeightDifference; // 蹲伏时碰撞体高度变化
+            public float MinSlideSpeed => crouchSlideSetting.MinSlideSpeed; // 最小滑铲速度
+            public float SlideDeceleration => crouchSlideSetting.SlideDeceleration; // 滑铲减速度
+            public float SlideSpeedMultiplier => crouchSlideSetting.SlideSpeedMultiplier; 
+            public float MinSlopeAngle => crouchSlideSetting.MinSlopeAngle; // 最小坡度角度
+            public float SlopeSlideMinAngle=> crouchSlideSetting.SlopeSlideMinAngle; // 斜坡滑铲最小角度
+            public float DownhillAccelScale => crouchSlideSetting.DownhillAccelScale; // 下坡加速倍率
+            public float UphillExtraDecel => crouchSlideSetting.UphillExtraDecel; // 上坡额外减速度
+            public float StickToGroundForce => crouchSlideSetting.StickToGroundForce;//贴地力
+            public float MinMaintainSlideSpeed => crouchSlideSetting.MinMaintainSlideSpeed; // 最小维持滑铲速度
+            public float FallSpeedToSlideBoostMultiplier => crouchSlideSetting.FallSpeedToSlideBoostMultiplier; // 跌落到地面的速度
             [Header("地面检测")]
             [SerializeField]private float groundCheckDistance = 0.1f; // 地面检测距离
             [SerializeField]private float groundCheckRadius = 0.4f; // 球体半径
             [SerializeField]private LayerMask groundLayerMask; // 地面层
             [SerializeField][ReadOnly]private bool isGrounded = false; // 是否在地面上
+            private RaycastHit groundHit; // 用于存储地面检测结果
+            [SerializeField][ReadOnly][LabelText("地面法线")]private Vector3 groundNormal;
+            [SerializeField][ReadOnly][LabelText("沿地面向量")] private Vector3 groundDirection; // 沿地面的向量
             [Header("当前参数")]
             [SerializeField][ReadOnly]private Vector3 currentPlayerMovementTendency; 
             [SerializeField][ReadOnly]private Vector3 fixedPlayerMovementTendencyByPlayerLookAt; // 根据视角修正后的玩家移动趋势
-            [SerializeField]private Rigidbody rd; 
-            private PlayerInputRouter _playerInputRouter;
             [SerializeField][ReadOnly][LabelText("玩家移动方向")]private Vector3 currentPlayerRdVelocity;
             [SerializeField][ReadOnly][LabelText("玩家移动速率大小")]private float currentPlayerRdVelocityMagnitude;
             [SerializeField][ReadOnly][LabelText("玩家水平移动速率大小")]private float currentPlayerRdHorizontalVelocityMagnitude;
+            [SerializeField][ReadOnly]private bool isCrouching = false; // 是否正在蹲伏
             [SerializeField][ReadOnly]private bool isGrappling = false;
             [SerializeField][ReadOnly]private bool isAllowedToMove = true; // 是否允许移动
             [SerializeField][ReadOnly]private bool isSprinting = false; // 是否正在冲刺
             [SerializeField][ReadOnly]private bool IsCanWallRun = false; // 是否可以进行滑墙
-            
+            [Header("高度差计算参数")]
+            [SerializeField][ReadOnly]private float lastFrameYPosition;
+            [SerializeField][ReadOnly][LabelText("上一Fix帧和当前Fix帧的高度差")]private float heightDifferenceBetweenFrames;
+            [Header("依赖&组件")]
+            [SerializeField]private Rigidbody rd; 
+            [SerializeField]private Collider playerCollider; // 玩家碰撞体
+            private PlayerInputRouter _playerInputRouter;
+            private ICalculationPhysicsComponent _physicsCalculationComponent;// 物理计算组件
             private Tweener _normalVelocityTweener;
             private Tweener _wallRunTweener;
+            private CapsuleCollider _playerCapsuleCollider;
+            private float _originalColliderHeight;
+            private Vector3 _originalColliderCenter;
+            private Dictionary<string,ICalculationPhysicsComponent> _statusToPhysicsCalculationComponentDic;
+            private ICalculationPhysicsComponent _defaultPhysicsCalculationComponent;
+
             public Rigidbody PlayerRigidbody=> rd;
             public bool IsGrounded => isGrounded;
+            public RaycastHit GroundHit => groundHit;
             public Vector3 CurrentPlayerMovementTendency => currentPlayerMovementTendency;
             public Vector3 CurrentPlayerRdVelocity => currentPlayerRdVelocity;
             public Vector3 FixedPlayerMovementTendencyByPlayerLookAt=> fixedPlayerMovementTendencyByPlayerLookAt;
             public bool IsSpringing => isSprinting;
             public LayerMask GroundLayerMask => groundLayerMask;
-            public float MaxHorizontalSpeed => maxHorizontalSpeed;
-           
-            public float CurrentPlayerRdHorizontalVelocityMagnitude => currentPlayerRdHorizontalVelocityMagnitude;
-            public float SlideDeceleration=> slideDeceleration;
-            public float MinSlideSpeed => minSlideSpeed;
             
+            public float CurrentPlayerRdHorizontalVelocityMagnitude => currentPlayerRdHorizontalVelocityMagnitude;
+            
+            public Vector3 GroundNormal => groundNormal;
+            public Vector3 GroundDirection => groundDirection;
+            public float HeightDifferenceBetweenFrames => heightDifferenceBetweenFrames;
+            public bool IsCrouching => isCrouching;
+       
+            
+       
             
             protected void Awake()
             {
@@ -64,7 +99,49 @@
                 {
                     LogUtil.LogError("Rigidbody未设置，请检查配置。", true);
                 }
-              
+                _playerCapsuleCollider = playerCollider as CapsuleCollider;
+                if (_playerCapsuleCollider == null)
+                {
+                    LogUtil.LogError("PlayerMovementController需要一个CapsuleCollider，请检查配置。", true);
+                    return;
+                }
+                _originalColliderHeight = _playerCapsuleCollider.height;
+                _originalColliderCenter = _playerCapsuleCollider.center;
+
+
+                var newAirbornePhysicsCalculationComponent = new AirbornePhysicsCalculationComponent();
+                var walkPhysicsCalculationComponent = new WalkPhysicsCalculationComponent();
+                _statusToPhysicsCalculationComponentDic= new Dictionary<string, ICalculationPhysicsComponent>
+                {
+                    {"SlidingStatusStrategy", new SlidingPhysicsCalculationComponent()},
+                    {"CrouchStatusStrategy",walkPhysicsCalculationComponent},
+                    {"WallRunningStatusStrategy", walkPhysicsCalculationComponent},
+                    {"JumpingStatusStrategy",newAirbornePhysicsCalculationComponent},
+                    {"FallingStatusStrategy",newAirbornePhysicsCalculationComponent},
+                };
+                
+                
+                _physicsCalculationComponent = _statusToPhysicsCalculationComponentDic["WallRunningStatusStrategy"];
+                _physicsCalculationComponent.OnInit(this);
+
+            }
+
+            protected void OnEnable()
+            {
+                EventBroadcaster.PlayerCharacterStatusChanged+= OnPlayerCharacterStatusChanged;
+            }
+            
+
+            protected void OnDisable()
+            {
+                EventBroadcaster.PlayerCharacterStatusChanged-= OnPlayerCharacterStatusChanged;
+                _normalVelocityTweener?.Kill();
+                _wallRunTweener?.Kill();
+            }
+
+            private void Start()
+            {
+                lastFrameYPosition = transform.position.y;
             }
 
             private void Update()
@@ -76,15 +153,17 @@
             {
                 currentPlayerRdVelocity= rd.linearVelocity;// 获取当前刚体的线速度
                 currentPlayerRdVelocityMagnitude= currentPlayerRdVelocity.magnitude;// 获取当前刚体速率的大小
+#if UNITY_EDITOR
+                DebugSpeedShowController.Instance?.UpdateSpeedTMP(currentPlayerRdVelocityMagnitude);
+#endif
                 currentPlayerRdHorizontalVelocityMagnitude = Mathf.Sqrt(
                     Mathf.Pow(currentPlayerRdVelocity.x, 2) + Mathf.Pow(currentPlayerRdVelocity.z, 2));
                 CheckGrounded();
-                
-                
-            
-                if (isAllowedToMove&&!_playerInputRouter.PlayerWallRunController.IsWallRunning)
+                CalculateSlopeSliding();
+                CalculateHeightDifference();
+                if (!_playerInputRouter.PlayerWallRunController.IsWallRunning)
                 {
-                    HandleMovementPhysics();
+                    _physicsCalculationComponent.HandleMovementPhysics(); // 处理移动物理
                 }
 
             }
@@ -100,8 +179,8 @@
             private void HandleMovementPhysics()
             {
                 // 计算当前状态下的最大速度和加速度
-                float currentMaxSpeed = isGrounded ? maxHorizontalSpeed : maxAirSpeed;
-                float sprintMultiplier = isSprinting && isGrounded ? maxRunSpeedMultiplier : 1f;
+                float currentMaxSpeed = isGrounded ? MaxHorizontalSpeed :MaxAirSpeed;
+                float sprintMultiplier = isSprinting && isGrounded ? MaxRunSpeedMultiplier : 1f;
                 float actualMaxSpeed = currentMaxSpeed * sprintMultiplier;
 
                 Vector3 targetVelocity;
@@ -121,12 +200,12 @@
                     
                     targetVelocity = targetDirection * actualMaxSpeed;
                     
-                    duration = actualMaxSpeed / acceleration;
+                    duration = actualMaxSpeed / Acceleration;
                 }
                 else if (isGrounded) // 如果在地面上且无输入，则减速
                 {
                     targetVelocity = Vector3.zero;
-                    float currentDeceleration = _playerInputRouter.StatusStrategy.GetType()==typeof(SlidingStatusStrategy) ? slideDeceleration : deceleration;
+                    float currentDeceleration = _playerInputRouter.StatusStrategy.GetType()==typeof(SlidingStatusStrategy) ? SlideDeceleration : Deceleration;
                     duration = rd.linearVelocity.magnitude / currentDeceleration;
                 }
                 else // 在空中且无输入，则不处理，保持惯性
@@ -186,8 +265,34 @@
             private void CheckGrounded() //地面检测
             {
                 Vector3 spherePosition = transform.position + Vector3.up * groundCheckRadius;
-                isGrounded = Physics.SphereCast(spherePosition, groundCheckRadius, Vector3.down, out _, groundCheckDistance, groundLayerMask);
+                isGrounded = Physics.SphereCast(spherePosition, groundCheckRadius, Vector3.down, out RaycastHit hit, groundCheckDistance, groundLayerMask);
+                if (isGrounded)
+                {
+                    groundNormal = hit.normal; // 获取地面的法线
+                    groundDirection= hit.point - transform.position; // 获取地面方向向量
+                    groundHit = hit;
+                }
+                else
+                {
+                    groundNormal = Vector3.up; // 如果不在地面上，默认法线为向上
+//                    LogUtil.Log("未检测到地面");
+                }
+            }
 
+            /// <summary>
+            ///  计算斜坡滑铲的加速度
+            /// </summary>
+            /// <returns></returns>
+            private float CalculateSlopeSliding()
+            {
+                if (!isGrounded)
+                {
+                    return 0;
+                }
+                // 计算玩家移动与地面法线的夹角
+                float angle = Vector3.Angle(currentPlayerMovementTendency, groundNormal);
+                //LogUtil.Log ($"当前玩家移动趋势: {currentPlayerMovementTendency}, 地面法线: {groundNormal}, 夹角: {angle}");
+                return 0;
             }
 
             public void SetRouter(PlayerInputRouter playerInputRouter)
@@ -230,8 +335,8 @@
                 if (isGrounded)
                 {
                     LogUtil.Log("开始跳跃");
-                    rd.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-                    _playerInputRouter.ChangeStatus<JumpingStatusStrategy>();
+                    rd.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
+                    _playerInputRouter.ChangeParentStatus<AirborneState>();
                     isGrounded = false;
                 }
                 else
@@ -239,20 +344,73 @@
                     LogUtil.Log("无法跳跃，当前不在地面上");
                 }
             }
-
-            public void StartCrouchOrSliding()
+            
+            public void SetCrouchState(bool isCrouching)
             {
-                if (currentPlayerRdHorizontalVelocityMagnitude > minSlideSpeed)
+                this.isCrouching = isCrouching;
+                if (isCrouching)
                 {
-                    //TODO _playerInputRouter.ChangeStatus();
+                    _playerCapsuleCollider.height = _originalColliderHeight - CrouchHeightDifference;
+                    _playerCapsuleCollider.center = _originalColliderCenter - new Vector3(0, CrouchHeightDifference / 2, 0);
+                }
+                else
+                {
+                    _playerCapsuleCollider.height = _originalColliderHeight;
+                    _playerCapsuleCollider.center = _originalColliderCenter;
+                }
+            }
+            /// <summary>
+            /// 尝试停止蹲伏并站起
+            /// </summary>
+            /// <returns>如果成功站起则返回true，否则返回false</returns>
+            public bool TryStopCrouch()
+            {
+                // 在站起前，检测头顶是否有障碍物
+                float checkDistance = _originalColliderHeight - _playerCapsuleCollider.height;
+                Vector3 p1 = transform.position + _playerCapsuleCollider.center - new Vector3(0, _playerCapsuleCollider.height / 2, 0);
+                Vector3 p2 = p1 + Vector3.up * _playerCapsuleCollider.height;
+            
+                // 忽略玩家自身
+                if (Physics.CapsuleCast(p1, p2, _playerCapsuleCollider.radius, Vector3.up, checkDistance, ~LayerMask.GetMask("Player")))
+                {
+                    LogUtil.Log("头顶有障碍物，无法站起！");
+                    return false;
                 }
 
+                // 恢复碰撞体
+                isCrouching = false;
+                _playerCapsuleCollider.height = _originalColliderHeight;
+                return true;
+            }
+            private void CalculateHeightDifference()
+            {
+                heightDifferenceBetweenFrames = transform.position.y - lastFrameYPosition;
+                lastFrameYPosition = transform.position.y; // 更新上一帧的Y位置
+                
             }
 
-            private bool IsMovingAgainstWall(Vector3 moveDirection)
+            public bool IsMovingAgainstWall(Vector3 moveDirection)
             {
                 // 检测移动方向是否有墙壁阻挡
                 return Physics.Raycast(transform.position, moveDirection, 0.7f, _playerInputRouter.PlayerWallRunController.WallLayerMask);
+            }
+            private void OnPlayerCharacterStatusChanged(BaseStatusStrategy from, BaseStatusStrategy to)
+            {
+                if (to == null)
+                {
+                    return;
+                }
+                string toName=to.GetType().Name;
+                if (_statusToPhysicsCalculationComponentDic.TryGetValue(toName,
+                        out ICalculationPhysicsComponent calculationPhysicsComponent))
+                {
+                    _physicsCalculationComponent=calculationPhysicsComponent;
+                }
+                else
+                {
+                    _physicsCalculationComponent = _statusToPhysicsCalculationComponentDic["WallRunningStatusStrategy"];
+                }
+                _physicsCalculationComponent.OnInit(this);
             }
         }
     }

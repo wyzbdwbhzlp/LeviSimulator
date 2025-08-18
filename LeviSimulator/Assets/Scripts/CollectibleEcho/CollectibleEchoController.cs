@@ -1,5 +1,6 @@
 ﻿using Manager;
 using Sirenix.OdinInspector;
+using UIManager;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Utilities;
