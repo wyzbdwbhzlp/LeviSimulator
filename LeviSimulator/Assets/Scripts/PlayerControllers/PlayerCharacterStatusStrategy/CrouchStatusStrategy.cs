@@ -11,6 +11,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
         protected override void EnterState()
         {
             _movementController = Ctx.MovementController;
+            EventBroadcaster.CallSetPlayerAllowedToMove(true);
             LogUtil.Log("进入蹲伏状态");
         }
 

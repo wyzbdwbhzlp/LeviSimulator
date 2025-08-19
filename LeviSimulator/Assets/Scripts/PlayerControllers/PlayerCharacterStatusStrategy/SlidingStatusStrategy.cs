@@ -11,11 +11,13 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
         protected override void EnterState()
         {
             _movementController = Ctx.MovementController;
+            EventBroadcaster.CallSetPlayerAllowedToMove(false);//禁用玩家移动输入
             LogUtil.Log("进入滑铲状态");
         }
 
         protected override void ExitState()
         {
+            EventBroadcaster.CallSetPlayerAllowedToMove(true);//启用玩家移动输入
         }
 
         protected override void UpdateStates()
