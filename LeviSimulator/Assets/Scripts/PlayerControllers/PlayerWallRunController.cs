@@ -24,6 +24,7 @@ namespace PlayerControllers
         [SerializeField] [ReadOnly] private Vector3 wallForward; // 沿墙壁移动的方向
         [ReadOnly] public float wallRunTimer = 0f;
         [SerializeField] [ReadOnly] private bool isCanWallRun;
+        private GameObject _theWallIsBlackListed; // 当前检测到的黑名单墙体（不可滑墙）
         public Vector3 WallNormal=> wallNormal;
         public Vector3 WallForward => wallForward;
         
@@ -108,6 +109,7 @@ namespace PlayerControllers
 
                 foreach (var wallCollider in nearbyWalls)
                 {
+                    if(_theWallIsBlackListed == wallCollider.gameObject) continue; // 跳过黑名单墙体
                     // 从玩家位置到墙体碰撞体最近点的方向，作为射线方向
                     Vector3 closestPoint = wallCollider.ClosestPoint(transform.position);
                     Vector3 directionToWall = (closestPoint - transform.position).normalized;
@@ -148,7 +150,7 @@ namespace PlayerControllers
                     {
                         wallForward = -wallForward;
                     }
-
+                    _theWallIsBlackListed= bestWallHit.collider.gameObject; // 记录当前检测到的墙体
                     return true;
                 }
             }

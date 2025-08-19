@@ -1,11 +1,11 @@
 ﻿using PlayerControllers.Grapple;
-using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
+using PlayerControllers.PlayerCharacterStatusStrategy;
 using UnityEngine.InputSystem;
 using Utilities;
 
-namespace PlayerControllers.PlayerCharacterStatusStrategy
+namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
 {
-    public class GrapplingStatusStrategy : HierarchicalBaseState
+    public class GrapplingStatusStrategy : HierarchicalBaseState 
     {
         private PlayerGrappleController _grappleController;
         private PlayerMovementController _movementController;
@@ -14,6 +14,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
         {
             _grappleController = Ctx.PlayerGrappleController;
             _movementController = Ctx.MovementController;
+            EventBroadcaster.PlayerEndGrappleEvent+= OnEndGrapple;
 
             // 钩爪在切换到此状态之前已经由其他状态启动。
             // 这里我们确保物理状态适合钩爪摆动。
@@ -21,37 +22,33 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
             LogUtil.Log("进入钩爪状态");
         }
 
+        private void OnEndGrapple()
+        {
+            LogUtil.Log("钩爪结束事件触发，切换状态");
+            if (_movementController.IsGrounded)
+            {
+                Ctx.ChangeParentStatus<GroundedState>();
+            }
+            else
+            {
+                Ctx.ChangeParentStatus<AirborneState>();
+            }
+        }
+
         protected override void ExitState()
         {
-            // 确保钩爪已停止并且物理状态已重置。
-            if (_grappleController.IsGrappling)
-            {
-                _grappleController.StopGrapple();
-            }
+            EventBroadcaster.PlayerEndGrappleEvent -= OnEndGrapple;
             _movementController.EnablePlayerRbGravity();
             LogUtil.Log("退出钩爪状态");
         }
 
         protected override void UpdateStates()
         {
-            // 如果钩爪因任何原因（例如到达目的地）停止，则转换状态。
-            if (!_grappleController.IsGrappling)
-            {
-                if (_movementController.IsGrounded)
-                {
-                    SwitchSubState<WalkingStatusStrategy>();
-                }
-                else
-                {
-                    SwitchSubState<FallingStatusStrategy>();
-                }
-            }
+  
         }
 
         protected override void HandleInput(InputAction.CallbackContext obj)
         {
-            // GrapplingStatusStrategy 不直接处理顶层输入，
-            // 输入逻辑在子状态或 HandleSubStateInput 中处理
         }
 
         protected override bool HandleSubStateInput(InputAction.CallbackContext obj)

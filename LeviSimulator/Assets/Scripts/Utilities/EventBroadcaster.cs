@@ -1,6 +1,7 @@
 ﻿using System;
 using Manager;
 using PlayerControllers.PlayerCharacterStatusStrategy;
+using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
 using UIManager;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace Utilities
     public static class EventBroadcaster
     {
         public static event Action RequestStopGrappleEvent;
+
         public static void CallRequestStopGrappleEvent()
         {
             RequestStopGrappleEvent?.Invoke();
@@ -36,15 +38,27 @@ namespace Utilities
         {
             EchoViewUIClosed?.Invoke();
         }
-        public static event Action<BaseStatusStrategy,BaseStatusStrategy> PlayerCharacterStatusChanged;
+        public static event Action<HierarchicalBaseState,HierarchicalBaseState> PlayerCharacterStatusChanged;
         /// <summary>
         /// 调用玩家状态改变事件(from statusStrategy to newStatusStrategyInstance)
         /// </summary>
         /// <param name="statusStrategy"></param>
         /// <param name="newStatusStrategyInstance"></param>
-        public static void CallPlayerChangeStatusEvent(BaseStatusStrategy statusStrategy, BaseStatusStrategy newStatusStrategyInstance)
+        public static void CallPlayerChangeStatusEvent(HierarchicalBaseState statusStrategy, HierarchicalBaseState newStatusStrategyInstance)
         {
             PlayerCharacterStatusChanged?.Invoke(statusStrategy,newStatusStrategyInstance);
+        }
+        
+        public static event Action PlayerEndGrappleEvent;
+        public static void CallPlayerEndGrappleEvent()
+        {
+            PlayerEndGrappleEvent?.Invoke();
+        }
+
+        public static event Action<bool> SetPlayerAllowedToMove;
+        public static void CallSetPlayerAllowedToMove(bool allowed)
+        {
+            SetPlayerAllowedToMove?.Invoke(allowed);
         }
     }
 }

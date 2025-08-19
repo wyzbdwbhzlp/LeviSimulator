@@ -1,28 +1,33 @@
 ﻿// Assets/Scripts/PlayerControllers/PlayerCharacterStatusStrategy/HierarchicalBaseState.cs
 
+using System.Collections;
+using System.Collections.Generic;
 using PlayerControllers.PlayerCharacterStatusStrategy;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Utilities;
 
 namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
 {
-    public abstract class HierarchicalBaseState : BaseStatusStrategy
+    public abstract class HierarchicalBaseState:IPlayerCharacterStatusStrategy
     {
+        protected PlayerInputRouter _playerInputRouter;
         private HierarchicalBaseState _currentSubState;
         protected PlayerInputRouter Ctx;
         public HierarchicalBaseState CurrentSubState => _currentSubState;
 
-        public sealed override void OnEnter(PlayerInputRouter input)
+        public void OnEnter(PlayerInputRouter input)
         {
-            base.OnEnter(input);
+            _playerInputRouter = input;
+            _playerInputRouter.PlayerInput.onActionTriggered += HandleonActionTriggered;
             this.Ctx = input;
             EnterState();
         }
 
-        public sealed override void OnExit()
+        public void OnExit()
         {
-            base.OnExit();
+            _playerInputRouter.PlayerInput.onActionTriggered -= HandleonActionTriggered;
             if (_currentSubState != null)
             {
                 _currentSubState.ExitState();
@@ -31,13 +36,13 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
             ExitState();
         }
 
-        public sealed override void LogicUpdate()
+        public void LogicUpdate()
         {
             _currentSubState?.UpdateStates();
             UpdateStates();
         }
         
-        public sealed override void HandleonActionTriggered(InputAction.CallbackContext obj)
+        public void HandleonActionTriggered(InputAction.CallbackContext obj)
         {
             // 优先让子状态处理输入
             if (_currentSubState != null && _currentSubState.HandleSubStateInput(obj))
@@ -111,5 +116,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
             }
             Ctx.MovementController.SetCrouchState(true);
         }
+
+        
     }
 }

@@ -3002,7 +3002,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2321238160361161813, guid: 327ab24e900f6a3429662eca260940af, type: 3}
       propertyPath: groundCheckDistance
-      value: 1.3
+      value: 1.85
       objectReference: {fileID: 0}
     - target: {fileID: 5437357283950161147, guid: 327ab24e900f6a3429662eca260940af, type: 3}
       propertyPath: m_LocalPosition.x
