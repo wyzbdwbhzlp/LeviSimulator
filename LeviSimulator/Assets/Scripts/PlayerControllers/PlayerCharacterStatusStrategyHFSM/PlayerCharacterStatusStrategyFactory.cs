@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using PlayerControllers.PlayerCharacterStatusStrategy;
+using UnityEngine;
 using Utilities;
 
 namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
@@ -25,6 +26,11 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
             {
                 var instance = (HierarchicalBaseState)Activator.CreateInstance(type);
                 StateDictionary[type] = instance;
+            }
+
+            foreach (var hierarchicalBaseState in StateDictionary)
+            {
+                LogUtil.Log($"已注册状态策略: {hierarchicalBaseState.Key.Name}");
             }
             
             _isInitialized = true;

@@ -89,6 +89,7 @@
             public Vector3 GroundDirection => groundDirection;
             public float HeightDifferenceBetweenFrames => heightDifferenceBetweenFrames;
             public bool IsCrouching => isCrouching;
+            public bool IsAllowToMove => isAllowedToMove;
        
             
        
@@ -129,12 +130,14 @@
             protected void OnEnable()
             {
                 EventBroadcaster.PlayerCharacterStatusChanged+= OnPlayerCharacterStatusChanged;
+                EventBroadcaster.SetPlayerAllowedToMove+= SetAllowedToMove;
             }
             
 
             protected void OnDisable()
             {
                 EventBroadcaster.PlayerCharacterStatusChanged-= OnPlayerCharacterStatusChanged;
+                EventBroadcaster.SetPlayerAllowedToMove-= SetAllowedToMove;
                 _normalVelocityTweener?.Kill();
                 _wallRunTweener?.Kill();
             }
@@ -175,55 +178,6 @@
                 Vector3 move = new Vector3(moveDirection.x, 0, moveDirection.y); // 将输入转换为3D向量
                 SetPlayerMovementTendency(move.normalized);
             }
-
-            private void HandleMovementPhysics()
-            {
-                // 计算当前状态下的最大速度和加速度
-                float currentMaxSpeed = isGrounded ? MaxHorizontalSpeed :MaxAirSpeed;
-                float sprintMultiplier = isSprinting && isGrounded ? MaxRunSpeedMultiplier : 1f;
-                float actualMaxSpeed = currentMaxSpeed * sprintMultiplier;
-
-                Vector3 targetVelocity;
-                float duration;
-
-                if (currentPlayerMovementTendency.magnitude > 0.1f) // 如果玩家有输入
-                {
-                    Vector3 targetDirection = fixedPlayerMovementTendencyByPlayerLookAt.normalized;
-        
-                    //检测是否撞墙
-                    bool isAgainstWall = IsMovingAgainstWall(targetDirection);
-        
-                    if (isAgainstWall && !isGrounded)
-                    {
-                        return;
-                    }
-                    
-                    targetVelocity = targetDirection * actualMaxSpeed;
-                    
-                    duration = actualMaxSpeed / Acceleration;
-                }
-                else if (isGrounded) // 如果在地面上且无输入，则减速
-                {
-                    targetVelocity = Vector3.zero;
-                    float currentDeceleration = _playerInputRouter.StatusStrategy.GetType()==typeof(SlidingStatusStrategy) ? SlideDeceleration : Deceleration;
-                    duration = rd.linearVelocity.magnitude / currentDeceleration;
-                }
-                else // 在空中且无输入，则不处理，保持惯性
-                {
-                    return;
-                }
-                
-                // 使用 DOTWEEN 平滑地改变水平速度
-                _normalVelocityTweener?.Kill(); 
-                _normalVelocityTweener = DOTween.To(
-                    () => new Vector3(rd.linearVelocity.x, 0, rd.linearVelocity.z), // 获取当前水平速度
-                    (v) => rd.linearVelocity = new Vector3(v.x, rd.linearVelocity.y, v.z), // 设置新的水平速度，保持Y轴速度不变
-                    targetVelocity, // 目标速度
-                    duration // 动画时长
-                ).SetEase(Ease.Linear); 
-            }
-            
-
 
             public void TrySprint()
             {
@@ -308,10 +262,6 @@
             {
                 rd.useGravity = true;
             }
-            public void ResetPlayerMovementTendency()
-            {
-                currentPlayerMovementTendency = Vector3.zero;
-            }
 
             public void SetPlayerMovementTendency(Vector3 movementTendency)
             {
@@ -394,7 +344,7 @@
                 // 检测移动方向是否有墙壁阻挡
                 return Physics.Raycast(transform.position, moveDirection, 0.7f, _playerInputRouter.PlayerWallRunController.WallLayerMask);
             }
-            private void OnPlayerCharacterStatusChanged(BaseStatusStrategy from, BaseStatusStrategy to)
+            private void OnPlayerCharacterStatusChanged(HierarchicalBaseState from, HierarchicalBaseState to)
             {
                 if (to == null)
                 {
@@ -411,6 +361,10 @@
                     _physicsCalculationComponent = _statusToPhysicsCalculationComponentDic["WallRunningStatusStrategy"];
                 }
                 _physicsCalculationComponent.OnInit(this);
+            }
+            private void SetAllowedToMove(bool isAllowed)
+            {
+                isAllowedToMove = isAllowed;
             }
         }
     }

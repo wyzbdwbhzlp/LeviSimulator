@@ -1,6 +1,6 @@
 ﻿namespace PlayerControllers.CalculationPhysicsComponents
 {
-    public class BlankPhysicsCalculationComponent:ICalculationPhysicsComponent
+    public class GrapplingHookPhysicsCalculationComponent:ICalculationPhysicsComponent
     {
         public void OnInit(PlayerMovementController movementController)
         {
