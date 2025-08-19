@@ -1,4 +1,5 @@
 using PlayerControllers.PlayerCharacterStatusStrategy;
+using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -95,6 +96,7 @@ namespace PlayerControllers.Grapple.GrappleVer2
                 Destroy(grapplePrefabInstance);
                 grapplePrefabInstance = null;
             }
+            EventBroadcaster.CallPlayerEndGrappleEvent();
             isInvalidGrapple = false; 
             grappleState = GrappleState.Idle; 
         }

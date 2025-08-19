@@ -1,5 +1,6 @@
 ﻿using PlayerControllers.PlayerCharacterStatusStrategy;
 using Sirenix.OdinInspector;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utilities;
 
@@ -84,11 +85,11 @@ namespace PlayerControllers.Grapple
             var rd= _playerInputRouter.MovementController.PlayerRigidbody;
             recoveryVelocity = rd.linearVelocity; // 记录当前速度
             _playerInputRouter.EnablePlayerRbGravity();
-            _playerInputRouter.ChangeParentStatus<FallingStatusStrategy>();
             _playerInputRouter.MovementController.PlayerRigidbody.linearVelocity = recoveryVelocity; // 恢复玩家速度(惯性)
 
         }
 
 
+        
     }
 }

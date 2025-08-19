@@ -3,13 +3,11 @@ using UnityEngine.InputSystem;
 
 namespace PlayerControllers.PlayerCharacterStatusStrategy
 {
-    // 继承自新的基类
     public class WalkingStatusStrategy : HierarchicalBaseState
     {
         protected override void EnterState() { }
         protected override void ExitState() 
         {
-            Ctx.MovementController.StopSprint();
         }
 
         protected override void UpdateStates()

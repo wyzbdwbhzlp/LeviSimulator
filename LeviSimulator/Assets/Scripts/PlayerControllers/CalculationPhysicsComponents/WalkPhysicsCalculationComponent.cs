@@ -15,6 +15,11 @@ namespace PlayerControllers.CalculationPhysicsComponents
 
         public void HandleMovementPhysics()
         {
+            if (!_movementController.IsAllowToMove)
+            {
+                return;
+            }
+
             var isGrounded = _movementController.IsGrounded;
             var maxHorizontalSpeed = _movementController.MaxHorizontalSpeed;
             var crouchSpeedMultiplier= _movementController.CrouchSpeedMultiplier;
