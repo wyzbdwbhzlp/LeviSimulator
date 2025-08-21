@@ -95,6 +95,7 @@ namespace PlayerControllers
         }
         private void HandleonActionTriggered(InputAction.CallbackContext obj)
         {
+            _statusStrategy.HandleonActionTriggered(obj);
             switch (obj.action.name)
             {
                 case "Move":

@@ -9,8 +9,14 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
     {
         protected override void EnterState()
         {
-            // 默认进入 Falling 状态
-            SwitchSubState<FallingStatusStrategy>();
+            if (!Ctx.PlayerWallRunController.CanWallRun())
+            {
+                SwitchSubState<FallingStatusStrategy>();
+            }
+            else
+            {
+                SwitchSubState<WallRunningStatusStrategy>();
+            }
         }
 
         protected override void ExitState() { }

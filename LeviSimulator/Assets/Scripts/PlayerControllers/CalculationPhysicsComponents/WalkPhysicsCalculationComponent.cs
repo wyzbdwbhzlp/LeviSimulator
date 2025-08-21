@@ -32,6 +32,7 @@ namespace PlayerControllers.CalculationPhysicsComponents
             var deceleration= _movementController.Deceleration;
             var rd = _movementController.PlayerRigidbody;
             
+            
             // 计算当前状态下的最大速度和加速度
             float currentMaxSpeed = isGrounded ? maxHorizontalSpeed :maxAirSpeed;
             float sprintMultiplier = isSprinting && isGrounded ? maxRunSpeedMultiplier : 1f;
