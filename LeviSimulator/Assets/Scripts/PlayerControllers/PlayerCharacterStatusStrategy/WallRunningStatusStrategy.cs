@@ -22,15 +22,14 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
 
         protected override void ExitState()
         {
-            _wallRunController.StopWallRun(); // 通知控制器停止
             _wallRunController.wallRunTimer = 0f;
         }
 
         protected override void UpdateStates()
         {
-            if (!_wallRunController.CanWallRun())
+            if (_wallRunController.IsWallRunning&&!_wallRunController.IsCanWallRun)
             {
-                SwitchSubState<FallingStatusStrategy>();
+                _wallRunController.WallJump();
             }
             _wallRunController.wallRunTimer+= Time.deltaTime;
         }

@@ -20,14 +20,12 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
         public void OnEnter(PlayerInputRouter input)
         {
             _playerInputRouter = input;
-            _playerInputRouter.PlayerInput.onActionTriggered += HandleonActionTriggered;
             this.Ctx = input;
             EnterState();
         }
 
         public void OnExit()
         {
-            _playerInputRouter.PlayerInput.onActionTriggered -= HandleonActionTriggered;
             if (_currentSubState != null)
             {
                 _currentSubState.ExitState();
