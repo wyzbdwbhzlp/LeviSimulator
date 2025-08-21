@@ -3004,6 +3004,10 @@ PrefabInstance:
       propertyPath: groundCheckDistance
       value: 1.85
       objectReference: {fileID: 0}
+    - target: {fileID: 4631375718183898588, guid: 327ab24e900f6a3429662eca260940af, type: 3}
+      propertyPath: wallMaxDistance
+      value: 2.13
+      objectReference: {fileID: 0}
     - target: {fileID: 5437357283950161147, guid: 327ab24e900f6a3429662eca260940af, type: 3}
       propertyPath: m_LocalPosition.x
       value: 197.85

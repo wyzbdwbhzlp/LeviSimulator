@@ -71,7 +71,7 @@
             private CapsuleCollider _playerCapsuleCollider;
             private float _originalColliderHeight;
             private Vector3 _originalColliderCenter;
-            private Dictionary<string,ICalculationPhysicsComponent> _statusToPhysicsCalculationComponentDic;
+            private Dictionary<Type,ICalculationPhysicsComponent> _statusToPhysicsCalculationComponentDic;
             private ICalculationPhysicsComponent _defaultPhysicsCalculationComponent;
 
             public Rigidbody PlayerRigidbody=> rd;
@@ -112,17 +112,19 @@
 
                 var newAirbornePhysicsCalculationComponent = new AirbornePhysicsCalculationComponent();
                 var walkPhysicsCalculationComponent = new WalkPhysicsCalculationComponent();
-                _statusToPhysicsCalculationComponentDic= new Dictionary<string, ICalculationPhysicsComponent>
+                var blankPhysicsCalculationComponent = new BlankPhysicsCalculationComponent();
+                _statusToPhysicsCalculationComponentDic= new Dictionary<Type, ICalculationPhysicsComponent>
                 {
-                    {"SlidingStatusStrategy", new SlidingPhysicsCalculationComponent()},
-                    {"CrouchStatusStrategy",walkPhysicsCalculationComponent},
-                    {"WallRunningStatusStrategy", walkPhysicsCalculationComponent},
-                    {"JumpingStatusStrategy",newAirbornePhysicsCalculationComponent},
-                    {"FallingStatusStrategy",newAirbornePhysicsCalculationComponent},
+                    {typeof(SlidingStatusStrategy), new SlidingPhysicsCalculationComponent()},
+                    {typeof(CrouchStatusStrategy),walkPhysicsCalculationComponent},
+                    {typeof(WallRunningStatusStrategy), blankPhysicsCalculationComponent},
+                    {typeof(JumpingStatusStrategy),newAirbornePhysicsCalculationComponent},
+                    {typeof(FallingStatusStrategy),newAirbornePhysicsCalculationComponent},
+                    {typeof(WalkingStatusStrategy),walkPhysicsCalculationComponent},
                 };
                 
                 
-                _physicsCalculationComponent = _statusToPhysicsCalculationComponentDic["WallRunningStatusStrategy"];
+                _physicsCalculationComponent = _statusToPhysicsCalculationComponentDic[typeof(WalkingStatusStrategy)];
                 _physicsCalculationComponent.OnInit(this);
 
             }
@@ -350,15 +352,15 @@
                 {
                     return;
                 }
-                string toName=to.GetType().Name;
-                if (_statusToPhysicsCalculationComponentDic.TryGetValue(toName,
+                var type=to.GetType();
+                if (_statusToPhysicsCalculationComponentDic.TryGetValue(type,
                         out ICalculationPhysicsComponent calculationPhysicsComponent))
                 {
                     _physicsCalculationComponent=calculationPhysicsComponent;
                 }
                 else
                 {
-                    _physicsCalculationComponent = _statusToPhysicsCalculationComponentDic["WallRunningStatusStrategy"];
+                    _physicsCalculationComponent = _statusToPhysicsCalculationComponentDic[typeof(WalkingStatusStrategy)];//默认
                 }
                 _physicsCalculationComponent.OnInit(this);
             }
