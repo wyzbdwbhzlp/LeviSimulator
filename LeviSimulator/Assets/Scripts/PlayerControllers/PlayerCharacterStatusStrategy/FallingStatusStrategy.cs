@@ -25,7 +25,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
         protected override void UpdateStates()
         {
             // 检查是否可以滑墙
-            if (_wallRunController.CanWallRun() && 
+            if (!_wallRunController.IsWallRunning &&_wallRunController.IsCanWallRun &&
                 _movementController.CurrentPlayerRdHorizontalVelocityMagnitude >= _wallRunController.WallRunThresholdSpeed)
             {
                 SwitchSubState<WallRunningStatusStrategy>();

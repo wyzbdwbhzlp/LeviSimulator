@@ -12,7 +12,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
     {
         private static readonly Dictionary<Type, HierarchicalBaseState> StateDictionary = new();
         private static bool _isInitialized = false;
-        
+
         /// <summary>
         ///  初始化状态策略工厂
         /// </summary>
@@ -32,17 +32,19 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
             {
                 LogUtil.Log($"已注册状态策略: {hierarchicalBaseState.Key.Name}");
             }
-            
+
             _isInitialized = true;
         }
 
 
+
         public static T GetState<T>() where T : HierarchicalBaseState
         {
-            if(_isInitialized == false)
+            if (_isInitialized == false)
             {
                 LogUtil.LogError("PlayerCharacterStatusStrategyFactory未初始化，请先调用InitializeStates方法");
             }
+
             if (StateDictionary.TryGetValue(typeof(T), out var state))
             {
                 return (T)state;
@@ -50,5 +52,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
 
             throw new KeyNotFoundException($"未找到 {typeof(T).Name} ");
         }
+
+
     }
 }
