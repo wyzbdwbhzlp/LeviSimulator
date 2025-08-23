@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class WallDissolveController : MonoBehaviour
@@ -5,93 +6,65 @@ public class WallDissolveController : MonoBehaviour
     [Header("周期设置")]
     public float visibleDuration = 3f;   // 墙出现持续时间
     public float hiddenDuration = 2f;    // 墙消失持续时间
+    public float smokeHiddenDuration = 2f;
+    public float smokeVisibleDuration = 1f;
     public float dissolveSpeed = 1f;     // Dissolve 速度
 
-    [Header("材质设置")]
-    public Material baseMaterial;        // 内层 Lit 材质
-    public Material overlayMaterial;     // 外层 Dissolve Shader 材质
+    [Header("Object设置")]
+    public GameObject flashWall;  
+    public GameObject smoke;      
 
     [Header("Collider设置")]
     public Collider wallCollider;        // 墙体碰撞体，可为空
 
-    private float dissolveAmount = 1f;   // 当前消融值，0=完全出现, 1=完全消失
+    private Coroutine cycleCoroutine;
     private bool isAppearing = true;
     private float timer = 0f;
 
     void Start()
     {
-        if (!baseMaterial || !overlayMaterial)
+        flashWall.SetActive(true);
+        smoke.SetActive(false);
+        if (!flashWall || !smoke)
         {
-            Debug.LogError("请在 Inspector 设置 baseMaterial 和 overlayMaterial");
+            Debug.LogError("请在 Inspector 设置 Wall和 Somke");
             enabled = false;
             return;
         }
-
-        dissolveAmount = 1f; // 初始消失
-        overlayMaterial.SetFloat("_DissolveAmount", dissolveAmount);
-        SetMaterialAlpha(baseMaterial, 0f);
-
-        if (wallCollider) wallCollider.enabled = false;
+        
+        cycleCoroutine = StartCoroutine(VisibilityCycle());
     }
 
     void Update()
     {
-        timer += Time.deltaTime;
-
-        // 更新 dissolveAmount
-        if (isAppearing)
-        {
-            dissolveAmount -= Time.deltaTime * dissolveSpeed;
-            if (dissolveAmount <= 0f)
-            {
-                dissolveAmount = 0f;
-                if (timer >= visibleDuration)
-                {
-                    isAppearing = false;
-                    timer = 0f;
-                }
-            }
-        }
-        else
-        {
-            dissolveAmount += Time.deltaTime * dissolveSpeed;
-            if (dissolveAmount >= 1f)
-            {
-                dissolveAmount = 1f;
-                if (timer >= hiddenDuration)
-                {
-                    isAppearing = true;
-                    timer = 0f;
-                }
-            }
-        }
-
-        // 更新材质
-        overlayMaterial.SetFloat("_DissolveAmount", dissolveAmount);
-        SetMaterialAlpha(baseMaterial, 1f - dissolveAmount);
-
-        // 控制碰撞体
-        if (wallCollider)
-        {
-            wallCollider.enabled = dissolveAmount < 0.99f;
-        }
+        
+    
     }
-
-    void SetMaterialAlpha(Material mat, float alpha)
+    IEnumerator VisibilityCycle()
     {
-        if (mat.HasProperty("_Color"))
+        while (true)
         {
-            Color c = mat.color;
-            c.a = alpha;
-            mat.color = c;
-
-            // URP Lit 透明设置
-            mat.SetFloat("_Surface", 1); // 1 = Transparent
-            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            mat.SetInt("_ZWrite", 0);
-            mat.renderQueue = 3000;
-            mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            if (isAppearing)
+            {
+                Debug.Log("显示阶段");
+                flashWall.SetActive(true);
+                smoke.SetActive(false);
+                yield return new WaitForSeconds(visibleDuration);
+                smoke.SetActive(true);
+                yield return new WaitForSeconds(smokeVisibleDuration);
+                isAppearing = false;
+            }
+            else 
+            {
+                Debug.Log("隐藏阶段");
+                flashWall.SetActive(false);
+                smoke.SetActive(false);
+                yield return new WaitForSeconds(hiddenDuration);
+                smoke.SetActive(true);
+                yield return new WaitForSeconds(smokeHiddenDuration);
+                isAppearing = true;
+            }
         }
     }
+    
 }
