@@ -2,43 +2,29 @@
 using UnityEngine.InputSystem;
 using Utilities;
 
-namespace PlayerControllers.PlayerCharacterStatusStrategy
+namespace PlayerControllers.PlayerCharacterStatusStrategy.SubState
 {
-    public class CrouchStatusStrategy : HierarchicalBaseState
+    public class CrouchSubState:BaseSubState
     {
         private PlayerMovementController _movementController;
-
-        protected override void EnterState()
+        public override void EnterState(HierarchicalBaseState superState, PlayerInputRouter ctx)
         {
+           base.EnterState(superState, ctx);
             _movementController = Ctx.MovementController;
             EventBroadcaster.CallSetPlayerAllowedToMove(true);
-            LogUtil.Log("进入蹲伏状态");
         }
 
-        protected override void ExitState()
+        public override void ExitState()
         {
-            // 退出蹲伏状态时不再强制尝试站起。
-            // 站起的逻辑由具体的输入（如跳跃、松开蹲伏键）或状态转换（如滑铲结束）来处理。
-            LogUtil.Log("退出蹲伏状态");
+           
         }
 
-        protected override void UpdateStates()
+        public override void UpdateStates()
         {
-            // 如果在蹲伏时速度增加到超过最小滑铲速度，则切换到滑铲状态
-            if (_movementController.CurrentPlayerRdHorizontalVelocityMagnitude > _movementController.MinSlideSpeed)
-            {
-                SwitchSubState<SlidingStatusStrategy>();
-                return;
-            }
-            
+          
         }
 
-        protected override void HandleInput(InputAction.CallbackContext obj)
-        {
-            // CrouchStatusStrategy 不直接处理顶层输入
-        }
-
-        protected override bool HandleSubStateInput(InputAction.CallbackContext obj)
+        public override bool HandleInput(InputAction.CallbackContext obj)
         {
             switch (obj.action.name)
             {
@@ -61,7 +47,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
                         // 尝试站起，如果成功则切换到行走状态
                         if (_movementController.TryStopCrouch())
                         {
-                            SwitchSubState<WalkingStatusStrategy>();
+                            _currentSuperState.SwitchSubState<WalkingSubState>();
                         }
                         // 如果无法站起，则保持蹲伏状态，等待下一次机会
                         return true; // 输入已处理

@@ -3,6 +3,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using PlayerControllers.PlayerCharacterStatusStrategy;
+using PlayerControllers.PlayerCharacterStatusStrategy.SubState;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,12 +11,12 @@ using Utilities;
 
 namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
 {
-    public abstract class HierarchicalBaseState:IPlayerCharacterStatusStrategy
+    public abstract class HierarchicalBaseState
     {
         protected PlayerInputRouter _playerInputRouter;
-        private HierarchicalBaseState _currentSubState;
+        private BaseSubState _currentSubState;
         protected PlayerInputRouter Ctx;
-        public HierarchicalBaseState CurrentSubState => _currentSubState;
+        public BaseSubState CurrentSubState => _currentSubState;
 
         public void OnEnter(PlayerInputRouter input)
         {
@@ -36,14 +37,14 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
 
         public void LogicUpdate()
         {
-            _currentSubState?.UpdateStates();
-            UpdateStates();
+            _currentSubState?.UpdateStates();  // 先执行子状态
+            UpdateStates();  // 再执行当前状态
         }
         
         public void HandleonActionTriggered(InputAction.CallbackContext obj)
         {
             // 优先让子状态处理输入
-            if (_currentSubState != null && _currentSubState.HandleSubStateInput(obj))
+            if (_currentSubState != null && _currentSubState.HandleInput(obj))
             {
                 return;
             }
@@ -65,13 +66,15 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
             return false; // 默认不处理，交由父状态
         }
 
-        protected void SwitchSubState<T>()where T :HierarchicalBaseState
+        public void SwitchSubState<T>()where T :BaseSubState
         {
-            var newState = PlayerCharacterStatusStrategyFactory.GetState<T>();
-            _currentSubState?.OnExit();
+            var newState = PlayerCharacterStatusStrategyFactory.GetSubState<T>();
+            _currentSubState?.ExitState();
+            LogUtil.Log($"子状态从{_currentSubState?.GetType().Name ?? "无子状态"}切换到{newState?.GetType().Name ?? "无子状态"}");
+            _currentSubState = null;
             _currentSubState = newState;
-            _currentSubState?.OnEnter(this.Ctx);
-            DebugSpeedShowController.Instance?.SetParentState(newState);
+            _currentSubState?.EnterState(this,Ctx);
+            DebugSpeedShowController.Instance?.SetParentState(this);
         }
         
         public void StartCrouchOrSliding() 
@@ -94,8 +97,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
                     
             if (currentPlayerRdHorizontalVelocityMagnitude > minSlideSpeed || slopeAngle >= slopeSlideMinAngle)
             {
-                LogUtil.Log("速度足够，进入滑铲状态");
-                SwitchSubState<SlidingStatusStrategy>();
+                LogUtil.Log("速度足够，进入滑铲状态,父状态名称为"+Ctx.StatusStrategy.GetType().Name);
                 var verticalSpeedBonus = Mathf.Max(0, -currentPlayerRdVelocity.y);
                 // 如果有来自下落的速度增益，则应用它
                 if (verticalSpeedBonus > 0)
@@ -106,11 +108,12 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
                     rd.AddForce(bonusVelocity, ForceMode.VelocityChange); // 使用 VelocityChange 瞬间增加速度
                     LogUtil.Log($"应用了 {bonusVelocity.magnitude} 的落地滑铲速度增益");
                 }
+                SwitchSubState<SlidingSubState>();
             }
             else
             {
                 LogUtil.Log("速度不足，进入蹲伏状态");
-                SwitchSubState<CrouchStatusStrategy>();
+                SwitchSubState<CrouchSubState>();
             }
             Ctx.MovementController.SetCrouchState(true);
         }
