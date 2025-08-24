@@ -156,7 +156,7 @@ namespace PlayerControllers
         /// </summary>
         public void ChangeParentStatus<T>()where T:HierarchicalBaseState
         {
-            var newStatusStrategyInstance = PlayerCharacterStatusStrategyFactory.GetState<T>();
+            var newStatusStrategyInstance = PlayerCharacterStatusStrategyFactory.GetParentState<T>();
             if (newStatusStrategyInstance == null)
             {
                 LogUtil.LogError("新的状态策略不能为空", true);

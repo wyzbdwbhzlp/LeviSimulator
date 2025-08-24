@@ -1,50 +1,45 @@
 ﻿using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
-using UnityEngine;
 using UnityEngine.InputSystem;
 using Utilities;
 
-namespace PlayerControllers.PlayerCharacterStatusStrategy
+namespace PlayerControllers.PlayerCharacterStatusStrategy.SubState
 {
-    public class FallingStatusStrategy : HierarchicalBaseState
+    public class FallingSubState:BaseSubState
     {
         private PlayerMovementController _movementController;
         private PlayerWallRunController _wallRunController;
-
-        protected override void EnterState()
+        public override void EnterState(HierarchicalBaseState superState, PlayerInputRouter ctx)
         {
+            base.EnterState(superState, ctx);
             _movementController = Ctx.MovementController;
             _wallRunController = Ctx.PlayerWallRunController;
-            LogUtil.Log("进入下落状态");
         }
 
-        protected override void ExitState()
+        public override void ExitState()
         {
-            // 此状态没有特定的退出逻辑
+           
         }
 
-        protected override void UpdateStates()
+        public override void UpdateStates()
         {
-            // 检查是否可以滑墙
             if (!_wallRunController.IsWallRunning &&_wallRunController.IsCanWallRun &&
                 _movementController.CurrentPlayerRdHorizontalVelocityMagnitude >= _wallRunController.WallRunThresholdSpeed)
             {
-                SwitchSubState<WallRunningStatusStrategy>();
+                _currentSuperState.SwitchSubState<WallRunningSubState>();
                 return;
             }
-            
         }
 
-        protected override void HandleInput(InputAction.CallbackContext obj)
+        public override bool HandleInput(InputAction.CallbackContext obj)
         {
-            // 处理下落时的输入，例如发射钩爪
             switch (obj.action.name)
             {
                 case "LaunchGrapple":
                     HandleLaunchGrapple(obj);
-                    break;
+                    return true;
             }
+            return false;
         }
-
         private void HandleLaunchGrapple(InputAction.CallbackContext callbackContext)
         {
             switch (callbackContext.phase)

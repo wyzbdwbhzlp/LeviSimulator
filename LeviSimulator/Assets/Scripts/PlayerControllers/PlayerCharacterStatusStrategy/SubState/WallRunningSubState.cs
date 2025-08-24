@@ -1,31 +1,28 @@
-﻿// Assets/Scripts/PlayerControllers/PlayerCharacterStatusStrategy/WallRunningStatusStrategy.cs
-
-using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
+﻿using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Utilities;
 
-namespace PlayerControllers.PlayerCharacterStatusStrategy
+namespace PlayerControllers.PlayerCharacterStatusStrategy.SubState
 {
-    public class WallRunningStatusStrategy : HierarchicalBaseState
+    public class WallRunningSubState:BaseSubState
     {
         private PlayerWallRunController _wallRunController;
-        
-
-        protected override void EnterState()
+        public override void EnterState(HierarchicalBaseState superState, PlayerInputRouter ctx)
         {
+            base.EnterState(superState, ctx);
             _wallRunController= Ctx.PlayerWallRunController;
             LogUtil.Log("进入滑墙状态");
             _wallRunController.StartWallRun(); 
             _wallRunController.wallRunTimer = 0f;
         }
 
-        protected override void ExitState()
+        public override void ExitState()
         {
             _wallRunController.wallRunTimer = 0f;
         }
 
-        protected override void UpdateStates()
+        public override void UpdateStates()
         {
             if (_wallRunController.IsWallRunning&&!_wallRunController.IsCanWallRun)
             {
@@ -34,12 +31,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
             _wallRunController.wallRunTimer+= Time.deltaTime;
         }
 
-        protected override void HandleInput(InputAction.CallbackContext obj)
-        {
-            
-        }
-
-        protected override bool HandleSubStateInput(InputAction.CallbackContext obj)
+        public override bool HandleInput(InputAction.CallbackContext obj)
         {
             if (obj.action.name == "Jump" && obj.phase == InputActionPhase.Started)
             {

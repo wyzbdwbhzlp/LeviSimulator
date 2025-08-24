@@ -1,28 +1,32 @@
-﻿using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
+﻿
+using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
 using UnityEngine.InputSystem;
 
-namespace PlayerControllers.PlayerCharacterStatusStrategy
+namespace PlayerControllers.PlayerCharacterStatusStrategy.SubState
 {
-    public class WalkingStatusStrategy : HierarchicalBaseState
+    public class WalkingSubState: BaseSubState
     {
-        protected override void EnterState() { }
-        protected override void ExitState() 
+        public override void EnterState(HierarchicalBaseState superState,PlayerInputRouter ctx)
+        { 
+            base.EnterState(superState, ctx);
+        }
+
+        public override void ExitState()
         {
         }
 
-        protected override void UpdateStates()
+        public override void UpdateStates()
         {
         }
 
-       
-        protected override bool HandleSubStateInput(InputAction.CallbackContext obj)
+        public override bool HandleInput(InputAction.CallbackContext obj)
         {
             switch (obj.action.name)
             {
                 case "Crouch":
                     if(obj.phase == InputActionPhase.Started)
                     {
-                        StartCrouchOrSliding();
+                        _currentSuperState.StartCrouchOrSliding();
                         return true; // 已处理
                     }
                     break;
@@ -40,7 +44,5 @@ namespace PlayerControllers.PlayerCharacterStatusStrategy
             }
             return false; 
         }
-        
-        protected override void HandleInput(InputAction.CallbackContext obj) { }
     }
 }
