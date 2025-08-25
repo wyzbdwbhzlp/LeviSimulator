@@ -62,21 +62,31 @@ Shader "Custom/SmokeSphere"
             }
 
             fixed4 frag(v2f i) : SV_Target
-            {
-                // ---------- Fresnel ---------- 
-                float3 viewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
-                float fresnel = 1 - saturate(dot(viewDir, i.worldNormal));
-                fresnel = pow(fresnel, _FresnelPower);
+                {
+                    // ---------- Fresnel ---------- 
+                    float3 viewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
+                    float fresnel = 1 - saturate(dot(viewDir, i.worldNormal));
+                    fresnel = pow(fresnel, _FresnelPower);
 
-                // ---------- 噪声贴图 ----------
-                float2 noiseUV = i.uv * _NoiseScale + float2(_Time.y * _NoiseSpeed, 0);
-                float noise = tex2D(_NoiseTex, noiseUV).r;
+                    // ---------- 噪声贴图 ----------
+                    float2 noiseUV = i.uv * _NoiseScale + float2(_Time.y * _NoiseSpeed, 0);
+                    float noise = tex2D(_NoiseTex, noiseUV).r;
 
-                // ---------- 最终颜色 ----------
-                fixed4 col = _SmokeColor;
-                col.a = noise * fresnel * _Alpha; // 透明度由噪声和 Fresnel 控制
-                return col;
-            }
+                    // ---------- 黑色描边 ----------
+                    // 用 smoothstep 把噪声高频区间挤压出黑边
+                    float edge = smoothstep(0.4, 0.5, noise) - smoothstep(0.5, 0.6, noise);
+                    // edge 值在边缘接近 1，其他地方接近 0
+
+                    // ---------- 最终颜色 ----------
+                    fixed4 col = _SmokeColor;
+                    col.a = noise * fresnel * _Alpha;
+
+                    // 叠加黑色边界（仅影响颜色，不影响透明度）
+                    col.rgb = lerp(col.rgb, 0, edge);
+
+                    return col;
+                }
+
             ENDCG
         }
     }
