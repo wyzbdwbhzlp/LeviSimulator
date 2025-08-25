@@ -1058,13 +1058,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e50b73730a98dc4e94ac5af42399d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibleDuration: 6
-  hiddenDuration: 3
+  visibleDuration: 3
+  hiddenDuration: 2
   smokeHiddenDuration: 2
   smokeVisibleDuration: 1
   flashWall: {fileID: 1253950645}
   smoke: {fileID: 152425908}
-  startDelay: 0
+  startDelay: 3
 --- !u!1 &138458152
 GameObject:
   m_ObjectHideFlags: 0
@@ -2563,7 +2563,6 @@ GameObject:
   - component: {fileID: 349926333}
   - component: {fileID: 349926332}
   - component: {fileID: 349926331}
-  - component: {fileID: 349926334}
   m_Layer: 0
   m_Name: shinepoint (10)
   m_TagString: Untagged
@@ -2660,20 +2659,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 349926329}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &349926334
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 349926329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7633fdc30c44984498f5ebe16545f73f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  center: {fileID: 1966414794}
-  rotationSpeed: 100
 --- !u!1 &350398767
 GameObject:
   m_ObjectHideFlags: 0
@@ -2720,13 +2705,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e50b73730a98dc4e94ac5af42399d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibleDuration: 6
-  hiddenDuration: 3
+  visibleDuration: 3
+  hiddenDuration: 2
   smokeHiddenDuration: 2
   smokeVisibleDuration: 1
   flashWall: {fileID: 1841389763}
   smoke: {fileID: 1938040326}
-  startDelay: 0
+  startDelay: 3
 --- !u!1 &354770559
 GameObject:
   m_ObjectHideFlags: 0
@@ -3116,7 +3101,6 @@ GameObject:
   - component: {fileID: 432034417}
   - component: {fileID: 432034416}
   - component: {fileID: 432034415}
-  - component: {fileID: 432034418}
   m_Layer: 0
   m_Name: point
   m_TagString: Untagged
@@ -3213,20 +3197,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 432034413}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &432034418
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 432034413}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7633fdc30c44984498f5ebe16545f73f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  center: {fileID: 1966414794}
-  rotationSpeed: 100
 --- !u!1 &433606852
 GameObject:
   m_ObjectHideFlags: 0
@@ -4046,7 +4016,6 @@ GameObject:
   - component: {fileID: 495172309}
   - component: {fileID: 495172308}
   - component: {fileID: 495172307}
-  - component: {fileID: 495172310}
   m_Layer: 0
   m_Name: shinepoint (5)
   m_TagString: Untagged
@@ -4143,20 +4112,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 495172305}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &495172310
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 495172305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7633fdc30c44984498f5ebe16545f73f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  center: {fileID: 1966414794}
-  rotationSpeed: 100
 --- !u!1 &498721131
 GameObject:
   m_ObjectHideFlags: 0
@@ -4277,7 +4232,6 @@ GameObject:
   - component: {fileID: 511338034}
   - component: {fileID: 511338033}
   - component: {fileID: 511338032}
-  - component: {fileID: 511338035}
   m_Layer: 0
   m_Name: shinepoint (9)
   m_TagString: Untagged
@@ -4374,20 +4328,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 511338030}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &511338035
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 511338030}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7633fdc30c44984498f5ebe16545f73f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  center: {fileID: 1966414794}
-  rotationSpeed: 100
 --- !u!1 &520880922
 GameObject:
   m_ObjectHideFlags: 0
@@ -4400,7 +4340,6 @@ GameObject:
   - component: {fileID: 520880926}
   - component: {fileID: 520880925}
   - component: {fileID: 520880924}
-  - component: {fileID: 520880927}
   m_Layer: 0
   m_Name: shinepoint (7)
   m_TagString: Untagged
@@ -4497,20 +4436,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 520880922}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &520880927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 520880922}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7633fdc30c44984498f5ebe16545f73f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  center: {fileID: 1966414794}
-  rotationSpeed: 100
 --- !u!1 &544361180
 GameObject:
   m_ObjectHideFlags: 0
@@ -6225,7 +6150,6 @@ GameObject:
   - component: {fileID: 842612299}
   - component: {fileID: 842612298}
   - component: {fileID: 842612297}
-  - component: {fileID: 842612300}
   m_Layer: 0
   m_Name: shinewall (3)
   m_TagString: Untagged
@@ -6322,20 +6246,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 842612295}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &842612300
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 842612295}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7633fdc30c44984498f5ebe16545f73f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  center: {fileID: 1966414794}
-  rotationSpeed: 100
 --- !u!1 &843825567
 GameObject:
   m_ObjectHideFlags: 0
@@ -6854,13 +6764,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e50b73730a98dc4e94ac5af42399d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibleDuration: 6
-  hiddenDuration: 3
+  visibleDuration: 3
+  hiddenDuration: 2
   smokeHiddenDuration: 2
   smokeVisibleDuration: 1
   flashWall: {fileID: 1916060499}
   smoke: {fileID: 1113131356}
-  startDelay: 0
+  startDelay: 3
 --- !u!1 &940316652
 GameObject:
   m_ObjectHideFlags: 0
@@ -6873,7 +6783,6 @@ GameObject:
   - component: {fileID: 940316656}
   - component: {fileID: 940316655}
   - component: {fileID: 940316654}
-  - component: {fileID: 940316657}
   m_Layer: 0
   m_Name: shinepoint (1)
   m_TagString: Untagged
@@ -6970,20 +6879,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 940316652}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &940316657
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 940316652}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7633fdc30c44984498f5ebe16545f73f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  center: {fileID: 1966414794}
-  rotationSpeed: 100
 --- !u!1 &942137596
 GameObject:
   m_ObjectHideFlags: 0
@@ -6996,7 +6891,6 @@ GameObject:
   - component: {fileID: 942137600}
   - component: {fileID: 942137599}
   - component: {fileID: 942137598}
-  - component: {fileID: 942137601}
   m_Layer: 0
   m_Name: shinepoint (4)
   m_TagString: Untagged
@@ -7093,20 +6987,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 942137596}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &942137601
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 942137596}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7633fdc30c44984498f5ebe16545f73f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  center: {fileID: 1966414794}
-  rotationSpeed: 100
 --- !u!1 &953775892
 GameObject:
   m_ObjectHideFlags: 0
@@ -7119,7 +6999,6 @@ GameObject:
   - component: {fileID: 953775896}
   - component: {fileID: 953775895}
   - component: {fileID: 953775894}
-  - component: {fileID: 953775897}
   m_Layer: 0
   m_Name: shinepoint (2)
   m_TagString: Untagged
@@ -7216,20 +7095,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 953775892}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &953775897
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 953775892}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7633fdc30c44984498f5ebe16545f73f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  center: {fileID: 1966414794}
-  rotationSpeed: 100
 --- !u!1 &996294995
 GameObject:
   m_ObjectHideFlags: 0
@@ -7814,7 +7679,6 @@ GameObject:
   - component: {fileID: 1048797273}
   - component: {fileID: 1048797272}
   - component: {fileID: 1048797271}
-  - component: {fileID: 1048797274}
   m_Layer: 0
   m_Name: shinepoint (8)
   m_TagString: Untagged
@@ -7911,20 +7775,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1048797269}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1048797274
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1048797269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7633fdc30c44984498f5ebe16545f73f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  center: {fileID: 1966414794}
-  rotationSpeed: 100
 --- !u!1 &1061341988
 GameObject:
   m_ObjectHideFlags: 0
@@ -8785,7 +8635,6 @@ GameObject:
   - component: {fileID: 1119642201}
   - component: {fileID: 1119642200}
   - component: {fileID: 1119642199}
-  - component: {fileID: 1119642202}
   m_Layer: 0
   m_Name: ShineDieWall
   m_TagString: Untagged
@@ -8882,20 +8731,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1119642197}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1119642202
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1119642197}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7633fdc30c44984498f5ebe16545f73f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  center: {fileID: 1966414794}
-  rotationSpeed: 100
 --- !u!1 &1161223695
 GameObject:
   m_ObjectHideFlags: 0
@@ -9232,7 +9067,6 @@ GameObject:
   - component: {fileID: 1196175413}
   - component: {fileID: 1196175412}
   - component: {fileID: 1196175411}
-  - component: {fileID: 1196175414}
   m_Layer: 0
   m_Name: shinepoint (3)
   m_TagString: Untagged
@@ -9329,20 +9163,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1196175409}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1196175414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1196175409}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7633fdc30c44984498f5ebe16545f73f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  center: {fileID: 1966414794}
-  rotationSpeed: 100
 --- !u!1 &1197852253
 GameObject:
   m_ObjectHideFlags: 0
@@ -10380,7 +10200,6 @@ GameObject:
   - component: {fileID: 1350958589}
   - component: {fileID: 1350958588}
   - component: {fileID: 1350958587}
-  - component: {fileID: 1350958590}
   m_Layer: 0
   m_Name: shinepoint (6)
   m_TagString: Untagged
@@ -10477,20 +10296,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1350958585}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1350958590
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1350958585}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7633fdc30c44984498f5ebe16545f73f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  center: {fileID: 1966414794}
-  rotationSpeed: 100
 --- !u!1 &1380741443
 GameObject:
   m_ObjectHideFlags: 0
@@ -10608,6 +10413,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1413385465}
+  - component: {fileID: 1413385466}
   m_Layer: 0
   m_Name: RotateLand1
   m_TagString: Untagged
@@ -10635,6 +10441,20 @@ Transform:
   - {fileID: 1966414794}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1413385466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413385464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7633fdc30c44984498f5ebe16545f73f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  center: {fileID: 1413385465}
+  rotationSpeed: 100
 --- !u!1 &1413508007
 GameObject:
   m_ObjectHideFlags: 0
@@ -10971,7 +10791,6 @@ GameObject:
   - component: {fileID: 1425288125}
   - component: {fileID: 1425288124}
   - component: {fileID: 1425288123}
-  - component: {fileID: 1425288126}
   m_Layer: 0
   m_Name: shinewall (2)
   m_TagString: Untagged
@@ -11068,20 +10887,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1425288121}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1425288126
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1425288121}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7633fdc30c44984498f5ebe16545f73f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  center: {fileID: 1966414794}
-  rotationSpeed: 100
 --- !u!1 &1443380555
 GameObject:
   m_ObjectHideFlags: 0
@@ -16036,7 +15841,7 @@ Transform:
   m_GameObject: {fileID: 1966414793}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 30.634266, y: -30.805206, z: 0.24481201}
+  m_LocalPosition: {x: 30.9, y: -30.805206, z: 2.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
