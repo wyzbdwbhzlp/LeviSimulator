@@ -26,7 +26,11 @@ MonoBehaviour:
     probeVolumeBlendStatesCS: {fileID: 7200000, guid: b9a23f869c4fd45f19c5ada54dd82176, type: 3}
   m_RendererFeatures:
   - {fileID: 7833122117494664109}
+<<<<<<< Updated upstream
   - {fileID: 1449685221399185369}
+=======
+  - {fileID: 6476346335240197427}
+>>>>>>> Stashed changes
   m_RendererFeatureMap: ad6b866f10d7b46c
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
@@ -53,7 +57,11 @@ MonoBehaviour:
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 0
+<<<<<<< Updated upstream
 --- !u!114 &1449685221399185369
+=======
+--- !u!114 &6476346335240197427
+>>>>>>> Stashed changes
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -96,8 +104,12 @@ MonoBehaviour:
       restoreCamera: 1
       offset: {x: 0, y: 0, z: 0, w: 0}
       cameraFieldOfView: 60
+<<<<<<< Updated upstream
   materials:
   - {fileID: 2100000, guid: 80f95140c622f1646bbf1c3ceba30dea, type: 2}
+=======
+  materials: []
+>>>>>>> Stashed changes
   autoReferenceMaterials: 1
 --- !u!114 &7833122117494664109
 MonoBehaviour:
