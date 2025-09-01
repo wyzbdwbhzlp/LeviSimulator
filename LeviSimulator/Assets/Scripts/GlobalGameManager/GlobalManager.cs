@@ -56,9 +56,7 @@ namespace GlobalGameManager
 
             if (gameStateManager == null)
                 gameStateManager = gameObject.AddComponent<GameStateManager>();
-
-            // 初始化管理器
-            sceneLoadManager.Initialize();
+            
             playerSpawnManager.Initialize();
             gameStateManager.Initialize();
         }

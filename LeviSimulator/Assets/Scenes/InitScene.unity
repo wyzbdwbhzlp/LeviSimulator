@@ -129,6 +129,10 @@ GameObject:
   m_Component:
   - component: {fileID: 925723585}
   - component: {fileID: 925723584}
+  - component: {fileID: 925723589}
+  - component: {fileID: 925723588}
+  - component: {fileID: 925723587}
+  - component: {fileID: 925723586}
   m_Layer: 0
   m_Name: MainGameManager
   m_TagString: Untagged
@@ -163,6 +167,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &925723586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925723583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c79eaf8b02e7a4a8b4338c27868edd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenuSceneName: MainMenu
+  gameSceneName: GameScene
+  loadingSceneName: LoadingScene
+--- !u!114 &925723587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925723583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 590fb573c3e0aeb40b881ae5d677f4f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentState: 0
+  previousState: 0
+--- !u!114 &925723588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925723583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62680996a122b5340a758d9d00d4323b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 5624877365304352259, guid: 327ab24e900f6a3429662eca260940af, type: 3}
+  spawnPoints: []
+  defaultSpawnPosition: {x: 0, y: 0, z: 0}
+  autoSpawnOnSceneLoad: 1
+  spawnDelay: 1
+--- !u!114 &925723589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925723583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fb681439143c2e4ba2e447742889639, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneLoadManager: {fileID: 925723586}
+  playerSpawnManager: {fileID: 925723588}
+  gameStateManager: {fileID: 925723587}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

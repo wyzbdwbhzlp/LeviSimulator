@@ -1,5 +1,6 @@
 ﻿using PlayerControllers.Grapple;
 using PlayerControllers.PlayerCharacterStatusStrategy;
+using PlayerControllers.PlayerCharacterStatusStrategy.SubState;
 using UnityEngine.InputSystem;
 using Utilities;
 
@@ -59,7 +60,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
                     if (obj.phase == InputActionPhase.Started)
                     {
                         Ctx.MovementController.StartJump();
-                        SwitchSubState<JumpingStatusStrategy>();
+                        SwitchSubState<JumpingSubState>();
                         return true; // 输入已处理
                     }
                     break;

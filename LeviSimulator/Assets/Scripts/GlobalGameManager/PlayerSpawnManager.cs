@@ -33,10 +33,9 @@ namespace GlobalGameManager
 
         private void OnSceneLoaded(string sceneName)
         {
-            if (sceneName != GlobalManager.Instance.sceneLoadManager.mainMenuSceneName)
-            {
-                Invoke(nameof(SpawnPlayer), spawnDelay);
-            }
+            
+            Invoke(nameof(SpawnPlayer), spawnDelay);
+            
         }
 
         public GameObject SpawnPlayer()
@@ -105,9 +104,15 @@ namespace GlobalGameManager
         {
             if (spawnPoints != null && spawnPoints.Length > 0)
             {
-                Transform randomSpawnPoint = spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length)];
-                return randomSpawnPoint.position;
+                GameObject[] spawnPointsArr = GameObject.FindGameObjectsWithTag("PlayerSpawnPoint");
+                if (spawnPoints.Length > 1)
+                {
+                    Debug.LogWarning("场景中存在多个标记为 'PlayerSpawnPoint' 的生成点，建议只保留一个以避免冲突。");
+                }
+
+                return spawnPointsArr[0].transform.position;
             }
+            Debug.LogWarning("未找到生成点，使用默认位置。");
             return defaultSpawnPosition;
         }
 
