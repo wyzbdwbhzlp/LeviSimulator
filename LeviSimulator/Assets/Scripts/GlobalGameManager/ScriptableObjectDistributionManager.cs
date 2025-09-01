@@ -2,7 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace GlobalManager
+namespace GlobalGameManager
 {
     public class ScriptableObjectDistributionManager:Singleton<ScriptableObjectDistributionManager>
     {
