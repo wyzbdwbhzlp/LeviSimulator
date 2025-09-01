@@ -11,6 +11,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
     public static class PlayerCharacterStatusStrategyFactory
     {
         private static readonly Dictionary<Type, HierarchicalBaseState> StateDictionary = new();
+        private static readonly Dictionary<Type,BaseSubState> SubStateDictionary = new();
         private static bool _isInitialized = false;
 
         /// <summary>
@@ -27,6 +28,16 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
                 var instance = (HierarchicalBaseState)Activator.CreateInstance(type);
                 StateDictionary[type] = instance;
             }
+            
+            
+            var subStateTypes = Assembly.GetExecutingAssembly()
+                .GetTypes()
+                .Where(t => t.IsClass && !t.IsAbstract && typeof(BaseSubState).IsAssignableFrom(t));
+            foreach (var type in subStateTypes)
+            {
+                var instance = (BaseSubState)Activator.CreateInstance(type);
+                SubStateDictionary[type] = instance;
+            }
 
             foreach (var hierarchicalBaseState in StateDictionary)
             {
@@ -38,7 +49,7 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
 
 
 
-        public static T GetState<T>() where T : HierarchicalBaseState
+        public static T GetParentState<T>() where T : HierarchicalBaseState
         {
             if (_isInitialized == false)
             {
@@ -46,6 +57,20 @@ namespace PlayerControllers.PlayerCharacterStatusStrategyHFSM
             }
 
             if (StateDictionary.TryGetValue(typeof(T), out var state))
+            {
+                return (T)state;
+            }
+
+            throw new KeyNotFoundException($"未找到 {typeof(T).Name} ");
+        }
+        public static T GetSubState<T>() where T : BaseSubState
+        {
+            if (_isInitialized == false)
+            {
+                LogUtil.LogError("PlayerCharacterStatusStrategyFactory未初始化，请先调用InitializeStates方法");
+            }
+
+            if (SubStateDictionary.TryGetValue(typeof(T), out var state))
             {
                 return (T)state;
             }

@@ -4,6 +4,7 @@
     using DG.Tweening;
     using PlayerControllers.CalculationPhysicsComponents;
     using PlayerControllers.PlayerCharacterStatusStrategy;
+    using PlayerControllers.PlayerCharacterStatusStrategy.SubState;
     using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
     using PlayerControllers.PlayerMovemenSettings;
     using Sirenix.OdinInspector;
@@ -115,16 +116,16 @@
                 var blankPhysicsCalculationComponent = new BlankPhysicsCalculationComponent();
                 _statusToPhysicsCalculationComponentDic= new Dictionary<Type, ICalculationPhysicsComponent>
                 {
-                    {typeof(SlidingStatusStrategy), new SlidingPhysicsCalculationComponent()},
-                    {typeof(CrouchStatusStrategy),walkPhysicsCalculationComponent},
-                    {typeof(WallRunningStatusStrategy), blankPhysicsCalculationComponent},
-                    {typeof(JumpingStatusStrategy),newAirbornePhysicsCalculationComponent},
-                    {typeof(FallingStatusStrategy),newAirbornePhysicsCalculationComponent},
-                    {typeof(WalkingStatusStrategy),walkPhysicsCalculationComponent},
+                    {typeof(SlidingSubState), new SlidingPhysicsCalculationComponent()},
+                    {typeof(CrouchSubState),walkPhysicsCalculationComponent},
+                    {typeof(WallRunningSubState), blankPhysicsCalculationComponent},
+                    {typeof(JumpingSubState),newAirbornePhysicsCalculationComponent},
+                    {typeof(FallingSubState),newAirbornePhysicsCalculationComponent},
+                    {typeof(WalkingSubState),walkPhysicsCalculationComponent},
                 };
                 
                 
-                _physicsCalculationComponent = _statusToPhysicsCalculationComponentDic[typeof(WalkingStatusStrategy)];
+                _physicsCalculationComponent = _statusToPhysicsCalculationComponentDic[typeof(WalkingSubState)];
                 _physicsCalculationComponent.OnInit(this);
 
             }
@@ -360,7 +361,7 @@
                 }
                 else
                 {
-                    _physicsCalculationComponent = _statusToPhysicsCalculationComponentDic[typeof(WalkingStatusStrategy)];//默认
+                    _physicsCalculationComponent = _statusToPhysicsCalculationComponentDic[typeof(WalkingSubState)];//默认
                 }
                 _physicsCalculationComponent.OnInit(this);
             }
