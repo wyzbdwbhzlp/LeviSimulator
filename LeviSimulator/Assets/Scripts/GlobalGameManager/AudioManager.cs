@@ -9,7 +9,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioSource SfxAudio;
 
     public AudioClip BgmClip;
-    
+   
 
     private bool isPlaying = false; // 控制音频是否正在播放
 
