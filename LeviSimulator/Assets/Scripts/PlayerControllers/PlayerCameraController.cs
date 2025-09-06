@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 namespace PlayerControllers
 {
+    [Obsolete]
     public class PlayerCameraController : MonoBehaviour
     {
         [Title("鼠标控制设定")]

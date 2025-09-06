@@ -13,6 +13,7 @@ using Utilities;
 
 namespace PlayerControllers
 {
+    [Obsolete]
     public class PlayerInputRouter:Singleton<PlayerInputRouter>
     {
         [SerializeField][LabelText("玩家移动组件")]private PlayerMovementController _movementController;
