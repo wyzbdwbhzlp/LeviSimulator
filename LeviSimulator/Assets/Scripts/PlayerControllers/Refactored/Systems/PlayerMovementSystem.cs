@@ -192,8 +192,7 @@ namespace PlayerControllers.Refactored.Systems
         public void SetColliderHeight(float height)
         {
             playerCollider.height = height;
-            float heightDifference = _originalColliderHeight - height;
-            playerCollider.center = _originalColliderCenter - new Vector3(0, heightDifference * 0.5f, 0);
+            playerCollider.center = _originalColliderCenter + new Vector3(0, playerCollider.height * 0.5f, 0);
         }
 
         /// <summary>

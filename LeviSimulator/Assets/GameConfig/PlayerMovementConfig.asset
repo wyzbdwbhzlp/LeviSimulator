@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mouseSensitivity: 60
   smoothness: 1
-  adsSensitivityMultiplier: 0.5
+  cameraTiltSpeed: 5
+  maxCameraTiltAngle: 15
   walkSpeed: 5
   runSpeed: 8
   crouchSpeed: 2
@@ -28,21 +29,22 @@ MonoBehaviour:
   slideDeceleration: 5
   minSlideSpeed: 3
   slideDuration: 1
-  wallMaxDistance: 3
+  wallMaxDistance: 2
   wallLayerMask:
     serializedVersion: 2
     m_Bits: 128
   wallSpeedMultiplier: 1.2
   minimumHeightForWallRun: 1.2
-  wallRunThresholdSpeed: 5
-  wallRunMinimumSpeed: 2
+  wallRunThresholdSpeed: 3
+  wallRunMinimumSpeed: 1
   wallFriction: 0.5
-  wallJumpForce: 4
-  wallJumpBounceForce: 2
-  groundCheckDistance: 3
-  groundCheckRadius: 0.6
+  wallJumpForce: 2
+  wallJumpBounceForce: 6
+  groundCheckDistance: 0.9
+  groundCheckRadius: 0.3
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 64
-  standingHeight: 2
   crouchingHeight: 1
+  playerInAirMaterial: {fileID: 13400000, guid: e7f4ad5e73d3b7444a9b63f6db3f30e5, type: 2}
+  playerOnGroundMaterial: {fileID: 13400000, guid: e3257418ac446df4bb15c7d80b249286, type: 2}

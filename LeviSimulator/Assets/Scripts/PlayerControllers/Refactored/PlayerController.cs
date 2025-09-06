@@ -16,6 +16,8 @@ namespace PlayerControllers.Refactored
     {
         [Title("配置")]
         [SerializeField][InlineEditor] private PlayerMovementConfig movementConfig;
+        [Title("组件引用")]
+        [SerializeField] private Animator playerAnimator;
         
         [Title("调试信息")]
         [SerializeField, ReadOnly] private string currentState;
@@ -24,6 +26,7 @@ namespace PlayerControllers.Refactored
         [SerializeField, ReadOnly] private Vector3 velocity;
         [SerializeField, ReadOnly] private Vector2 moveInput;
         [SerializeField,ReadOnly] private string currentPhysicsMaterial;
+    
         
         // 系统组件
         private List<IPlayerSystem> _systems = new List<IPlayerSystem>();
@@ -46,15 +49,33 @@ namespace PlayerControllers.Refactored
         public PlayerCameraSystem CameraSystem => _cameraSystem;
         public PlayerInputSystem InputSystem => _inputSystem;
         public PlayerWallRunSystem WallRunSystem => _wallRunSystem;
-        
+        public Animator PlayerAnimator => playerAnimator;
+
         private void Awake()
         {
+            InitializeSceneObjects();
             InitializeCore();
             InitializeSystems();
             InitializeStates();
             SubscribeToEvents();
         }
-        
+
+        /// <summary>
+        ///  初始化场景对象引用（如需要）
+        /// </summary>
+        private void InitializeSceneObjects()
+        {
+            
+            if (playerAnimator == null)
+            {
+                playerAnimator=GetComponentInChildren<Animator>();
+                if (playerAnimator == null)
+                {
+                    LogUtil.LogWarning("PlayerAnimator未分配且在子对象中未找到Animator组件");
+                }
+            }
+        }
+
         private void Start()
         {
             // 启动状态机
@@ -100,7 +121,7 @@ namespace PlayerControllers.Refactored
             _runtimeData = new PlayerRuntimeData();
             
             // 初始化状态机
-            _stateMachine = new PlayerStateMachine();
+            _stateMachine = new PlayerStateMachine(this);
         }
         
         private void InitializeSystems()
@@ -145,6 +166,7 @@ namespace PlayerControllers.Refactored
         
         private void InitializeStates()
         {
+            
             // 创建所有状态实例
             _states[PlayerState.Idle] = new IdleState(this);
             _states[PlayerState.Walking] = new WalkingState(this);

@@ -1,10 +1,12 @@
-﻿using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
+﻿using System;
+using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
 namespace PlayerControllers
 {
+    [Obsolete]
     public class PlayerWallRunController : MonoBehaviour
     {
         [Header("滑墙设定")] 

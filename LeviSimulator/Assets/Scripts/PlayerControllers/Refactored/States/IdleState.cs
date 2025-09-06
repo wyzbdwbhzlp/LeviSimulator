@@ -29,6 +29,12 @@ namespace PlayerControllers.Refactored.States
                 return;
             }
             
+            if (runtimeData.IsCrouching)
+            {
+                ChangeState(PlayerState.Crouching);
+                return;
+            }
+            
             // 检查是否跳跃
             if (!runtimeData.IsGrounded)
             {

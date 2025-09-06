@@ -51,11 +51,9 @@ namespace PlayerControllers.Refactored.States
             float slideTime = Time.time - _slideStartTime;
             
             // 检查滑铲是否结束
-            bool slideEnded = false;
+            bool slideEnded = slideTime > config.SlideDuration;
             
             // 时间限制
-            if (slideTime > config.SlideDuration)
-                slideEnded = true;
                 
             // 速度过低
             if (runtimeData.HorizontalSpeed < config.MinSlideSpeed)
@@ -67,6 +65,11 @@ namespace PlayerControllers.Refactored.States
             
             if (slideEnded)
             {
+                if (runtimeData.IsCrouching)
+                {
+                    ChangeState(PlayerState.Crouching);
+                    return;
+                }
                 // 检查头顶是否有障碍物
                 if (!movementSystem.CheckCeiling())
                 {
@@ -74,14 +77,21 @@ namespace PlayerControllers.Refactored.States
                     
                     if (runtimeData.MoveInput.magnitude > 0.1f)
                     {
-                        if (runtimeData.IsSprinting)
+                        if (runtimeData.IsSprinting&&!runtimeData.IsCrouching)
+                        {
                             ChangeState(PlayerState.Running);
-                        else
+                            movementSystem.ResetCollider();
+                        }
+                        else if(!runtimeData.IsSprinting&&!runtimeData.IsCrouching)
+                        {
                             ChangeState(PlayerState.Walking);
+                            movementSystem.ResetCollider();
+                        }
                     }
                     else
                     {
                         ChangeState(PlayerState.Idle);
+                        //idle状态机Enter内已经执行了 movementSystem.ResetCollider();
                     }
                 }
                 else

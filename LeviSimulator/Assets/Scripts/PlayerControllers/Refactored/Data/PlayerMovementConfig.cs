@@ -1,5 +1,6 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
+using UnityEngine.Serialization;
 
 namespace PlayerControllers.Refactored.Data
 {
@@ -14,9 +15,6 @@ namespace PlayerControllers.Refactored.Data
         [SerializeField] private float mouseSensitivity = 100f; // 提高默认灵敏度适合FPS
         [LabelText("平滑系数")]
         [SerializeField] private float smoothness = 10f;
-        [LabelText("ADS瞄准灵敏度倍率")]
-        [Range(0.1f, 1f)]
-        [SerializeField] private float adsSensitivityMultiplier = 0.5f;
         [LabelText("镜头翻滚速度")]
         [SerializeField] private float cameraTiltSpeed = 5f;
         [LabelText("最大镜头翻滚角度")]
@@ -82,9 +80,7 @@ namespace PlayerControllers.Refactored.Data
         [SerializeField] private LayerMask groundLayerMask;
         
         [BoxGroup("碰撞体")]
-        [LabelText("站立高度")]
-        [SerializeField] private float standingHeight = 2f;
-        [LabelText("蹲伏高度")]
+        [LabelText("蹲伏高度")] 
         [SerializeField] private float crouchingHeight = 1f;
         [BoxGroup("物理材质")]
         [SerializeField] private PhysicsMaterial playerInAirMaterial;
@@ -93,7 +89,6 @@ namespace PlayerControllers.Refactored.Data
         // 公共访问器
         public float MouseSensitivity => mouseSensitivity;
         public float Smoothness => smoothness;
-        public float ADSSensitivityMultiplier => adsSensitivityMultiplier;
         public float WalkSpeed => walkSpeed;
         public float RunSpeed => runSpeed;
         public float CrouchSpeed => crouchSpeed;
@@ -119,7 +114,6 @@ namespace PlayerControllers.Refactored.Data
         public float GroundCheckDistance => groundCheckDistance;
         public float GroundCheckRadius => groundCheckRadius;
         public LayerMask GroundLayerMask => groundLayerMask;
-        public float StandingHeight => standingHeight;
         public float CrouchingHeight => crouchingHeight;
         public PhysicsMaterial PlayerInAirMaterial => playerInAirMaterial;
         public PhysicsMaterial PlayerOnGroundMaterial => playerOnGroundMaterial;
