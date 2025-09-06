@@ -17,6 +17,10 @@ namespace PlayerControllers.Refactored.Data
         [LabelText("ADS瞄准灵敏度倍率")]
         [Range(0.1f, 1f)]
         [SerializeField] private float adsSensitivityMultiplier = 0.5f;
+        [LabelText("镜头翻滚速度")]
+        [SerializeField] private float cameraTiltSpeed = 5f;
+        [LabelText("最大镜头翻滚角度")]
+        [SerializeField] private float maxCameraTiltAngle = 15f;
         [BoxGroup("地面移动")]
         [LabelText("行走速度")]
         [SerializeField] private float walkSpeed = 5f;
@@ -82,6 +86,9 @@ namespace PlayerControllers.Refactored.Data
         [SerializeField] private float standingHeight = 2f;
         [LabelText("蹲伏高度")]
         [SerializeField] private float crouchingHeight = 1f;
+        [BoxGroup("物理材质")]
+        [SerializeField] private PhysicsMaterial playerInAirMaterial;
+        [SerializeField] private PhysicsMaterial playerOnGroundMaterial;
         
         // 公共访问器
         public float MouseSensitivity => mouseSensitivity;
@@ -114,5 +121,10 @@ namespace PlayerControllers.Refactored.Data
         public LayerMask GroundLayerMask => groundLayerMask;
         public float StandingHeight => standingHeight;
         public float CrouchingHeight => crouchingHeight;
+        public PhysicsMaterial PlayerInAirMaterial => playerInAirMaterial;
+        public PhysicsMaterial PlayerOnGroundMaterial => playerOnGroundMaterial;
+        public float CameraTiltSpeed => cameraTiltSpeed;
+        
+        public float MaxCameraTiltAngle => maxCameraTiltAngle;
     }
 }

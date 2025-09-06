@@ -14,6 +14,7 @@ namespace PlayerControllers.Refactored.Systems
         
         public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
         
+        
         public void RegisterState(PlayerState state, IState stateInstance)
         {
             if (!_states.ContainsKey(state))
@@ -22,11 +23,15 @@ namespace PlayerControllers.Refactored.Systems
             }
         }
         
+        /// <summary>
+        ///  切换状态
+        /// </summary>
+        /// <param name="newState"></param>
         public void ChangeState(PlayerState newState)
         {
             if (!_states.ContainsKey(newState))
             {
-                Debug.LogError($"State {newState} is not registered!");
+                Debug.LogError($"State {newState} 未注册");
                 return;
             }
             

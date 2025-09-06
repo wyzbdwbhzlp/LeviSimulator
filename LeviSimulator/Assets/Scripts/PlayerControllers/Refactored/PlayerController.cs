@@ -5,6 +5,7 @@ using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
 using PlayerControllers.Refactored.Systems;
 using PlayerControllers.Refactored.States;
+using Utilities;
 
 namespace PlayerControllers.Refactored
 {
@@ -14,7 +15,7 @@ namespace PlayerControllers.Refactored
     public class PlayerController : MonoBehaviour
     {
         [Title("配置")]
-        [SerializeField] private PlayerMovementConfig movementConfig;
+        [SerializeField][InlineEditor] private PlayerMovementConfig movementConfig;
         
         [Title("调试信息")]
         [SerializeField, ReadOnly] private string currentState;
@@ -22,6 +23,7 @@ namespace PlayerControllers.Refactored
         [SerializeField, ReadOnly] private bool isGrounded;
         [SerializeField, ReadOnly] private Vector3 velocity;
         [SerializeField, ReadOnly] private Vector2 moveInput;
+        [SerializeField,ReadOnly] private string currentPhysicsMaterial;
         
         // 系统组件
         private List<IPlayerSystem> _systems = new List<IPlayerSystem>();
@@ -86,6 +88,10 @@ namespace PlayerControllers.Refactored
             
             // 固定更新状态机
             _stateMachine.FixedUpdate();
+            
+            // 根据地面状态更改物理材质
+            ChangePhysicsMaterial(_runtimeData.IsGrounded ? 
+                Enums.PlayerPhysicsMaterialType.OnGround : Enums.PlayerPhysicsMaterialType.InAir);
         }
         
         private void InitializeCore()
@@ -274,6 +280,37 @@ namespace PlayerControllers.Refactored
             {
                 Debug.LogWarning("PlayerMovementConfig is not assigned!");
             }
+        }
+        /// <summary>
+        ///  更改物理材质
+        /// </summary>
+        /// <param name="materialType"></param>
+        private void ChangePhysicsMaterial(Enums.PlayerPhysicsMaterialType materialType)
+        {
+            var playerCollider = _movementSystem.PlayerCollider;
+            if (playerCollider == null)
+            {
+                LogUtil.LogError("PlayerCollider不存在,试图更改物理材质失败");
+                return;
+            }
+            var material = materialType switch
+            {
+                Enums.PlayerPhysicsMaterialType.InAir => movementConfig.PlayerInAirMaterial,
+                Enums.PlayerPhysicsMaterialType.OnGround => movementConfig.PlayerOnGroundMaterial,
+                _ => null
+            };
+            if (material == null)
+            {
+                LogUtil.LogError($"未为{materialType}分配物理材质或者是玩家config文件未分配");
+                return;
+            }
+            if(currentPhysicsMaterial == material.name)
+            {
+                
+                return;
+            }
+            playerCollider.material = material;
+            currentPhysicsMaterial = material.name;
         }
     }
 }

@@ -369,5 +369,6 @@
             {
                 isAllowedToMove = isAllowed;
             }
+
         }
     }

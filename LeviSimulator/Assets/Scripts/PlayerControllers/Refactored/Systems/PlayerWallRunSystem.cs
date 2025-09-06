@@ -1,6 +1,7 @@
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
+using Utilities;
 
 namespace PlayerControllers.Refactored.Systems
 {
@@ -32,13 +33,13 @@ namespace PlayerControllers.Refactored.Systems
         public float WallRunMinimumSpeed => _config?.WallRunMinimumSpeed ?? 2f;
         public LayerMask WallLayerMask => _config?.WallLayerMask ?? 1;
         
-        public void Initialize(PlayerController playerController, PlayerMovementConfig config)
+        public void Initialize(PlayerController playerController, PlayerMovementConfig playerConfig)
         {
             _playerController = playerController;
             _runtimeData = playerController.RuntimeData;
             _movementSystem = playerController.MovementSystem;
             _cameraSystem = playerController.CameraSystem;
-            _config = config;
+            _config = playerConfig;
             
             // 订阅输入事件
             PlayerInputEvents.OnJumpPressed += HandleWallJump;
@@ -75,56 +76,48 @@ namespace PlayerControllers.Refactored.Systems
             if (_runtimeData.IsGrounded) return false;
             if (_runtimeData.HorizontalSpeed < _config.WallRunThresholdSpeed) return false;
             
-            // 检查是否离地足够高
-            Vector3 rayStart = transform.position;
-            if (Physics.Raycast(rayStart, Vector3.down, _config.MinimumHeightForWallRun, _movementSystem.Config.GroundLayerMask))
-                return false;
-            
             // 检查附近的墙壁
             return FindBestWall();
         }
         
         private bool FindBestWall()
         {
-            Collider[] nearbyWalls = Physics.OverlapSphere(transform.position, _config.WallMaxDistance, _config.WallLayerMask);
-            
-            if (nearbyWalls.Length == 0) return false;
-            
             float bestScore = -1f;
             RaycastHit bestWallHit = new RaycastHit();
-            
-            foreach (var wallCollider in nearbyWalls)
+            bool wallFound = false;
+
+            Vector3[] checkDirections = { transform.right, -transform.right }; // 检测左右两侧
+
+            foreach (var dir in checkDirections)
             {
-                Vector3 closestPoint = wallCollider.ClosestPoint(transform.position);
-                Vector3 directionToWall = (closestPoint - transform.position).normalized;
-                
-                if (Physics.Raycast(transform.position, directionToWall, out RaycastHit hit, _config.WallMaxDistance, _config.WallLayerMask))
+                Vector3 rayStart = transform.position + Vector3.up * 0.5f; // 从玩家中心稍微偏上一点开始检测
+                if (Physics.Raycast(rayStart, dir, out RaycastHit hit, _config.WallMaxDistance, _config.WallLayerMask))
                 {
                     // 检查墙壁是否足够垂直
-                    if (Mathf.Abs(Vector3.Dot(hit.normal, Vector3.up)) < 0.1f)
+                    if (Mathf.Abs(Vector3.Dot(hit.normal, Vector3.up)) > 0.1f)
                     {
-                        Vector3 playerMovement = _runtimeData.MoveDirection;
-                        if (playerMovement.sqrMagnitude < 0.01f)
-                        {
-                            playerMovement = transform.forward;
-                        }
-                        
-                        // 评分：找到与玩家移动方向最垂直的墙面
-                        float score = 1 - Mathf.Abs(Vector3.Dot(hit.normal, playerMovement.normalized));
-                        
-                        if (score > bestScore)
-                        {
-                            bestScore = score;
-                            bestWallHit = hit;
-                        }
+                        continue;
+                    }
+
+                    Vector3 playerMovement = _runtimeData.MoveDirection.sqrMagnitude > 0.01f ? _runtimeData.MoveDirection.normalized : transform.forward;
+                    
+                    // 评分：我们希望找到与玩家意图最垂直的墙面法线
+                    float score = 1 - Mathf.Abs(Vector3.Dot(hit.normal, playerMovement));
+
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        bestWallHit = hit;
+                        wallFound = true;
                     }
                 }
             }
             
-            if (bestScore > -1f)
+            if (wallFound)
             {
                 wallNormal = bestWallHit.normal;
                 wallForward = Vector3.Cross(wallNormal, Vector3.up);
+                _runtimeData.SetWallNormal(wallNormal);
                 
                 // 确保滑墙方向与玩家朝向大致一致
                 if (Vector3.Dot(wallForward, transform.forward) < 0)
@@ -139,6 +132,7 @@ namespace PlayerControllers.Refactored.Systems
         
         private void HandleWallRunPhysics()
         {
+            
             Vector3 inputDirection = _runtimeData.MoveDirection;
             Vector3 projectedInput = Vector3.Project(inputDirection, wallForward);
             
@@ -148,19 +142,8 @@ namespace PlayerControllers.Refactored.Systems
             // 应用滑墙移动
             _movementSystem.ApplyMovement(targetVelocity, _movementSystem.Config.Acceleration);
             
-            // 处理摄像机倾斜
-            HandleCameraTilt();
         }
         
-        private void HandleCameraTilt()
-        {
-            if (_cameraSystem == null) return;
-            
-            // 根据墙面位置设置摄像机倾斜
-            float wallSide = GetWallSide();
-            // 这里可以调用摄像机系统的倾斜方法
-            // _cameraSystem.SetWallRunTilt(wallSide);
-        }
         
         public void StartWallRun()
         {

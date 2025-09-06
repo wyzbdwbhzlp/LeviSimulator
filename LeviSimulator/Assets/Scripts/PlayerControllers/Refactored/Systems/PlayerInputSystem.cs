@@ -22,7 +22,7 @@ namespace PlayerControllers.Refactored.Systems
         
         public bool IsEnabled { get; set; } = true;
         
-        public void Initialize(PlayerController playerController,PlayerMovementConfig config)
+        public void Initialize(PlayerController playerController,PlayerMovementConfig playerConfig)
         {
             if (playerInput == null)
                 playerInput = GetComponent<PlayerInput>();

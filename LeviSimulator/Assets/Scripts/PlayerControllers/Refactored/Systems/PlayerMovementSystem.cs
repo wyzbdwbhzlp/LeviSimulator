@@ -25,10 +25,10 @@ namespace PlayerControllers.Refactored.Systems
 
         public bool IsEnabled { get; set; } = true;
         public Rigidbody Rigidbody => playerRigidbody;
-        public CapsuleCollider Collider => playerCollider;
+        public CapsuleCollider PlayerCollider => playerCollider;
         public PlayerMovementConfig Config => config;
 
-        public void Initialize(PlayerController playerController, PlayerMovementConfig config)
+        public void Initialize(PlayerController playerController, PlayerMovementConfig playerConfig)
         {
             _playerController = playerController;
             _runtimeData = playerController.RuntimeData;
@@ -51,7 +51,7 @@ namespace PlayerControllers.Refactored.Systems
             PlayerInputEvents.OnSprintReleased += HandleSprintReleased;
 
             // 应用配置
-            this.config = config;
+            this.config = playerConfig;
 
         }
 

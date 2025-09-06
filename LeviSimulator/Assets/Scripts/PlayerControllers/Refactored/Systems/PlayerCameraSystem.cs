@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
 using Sirenix.OdinInspector;
 using Utilities;
+using Random = UnityEngine.Random;
 
 namespace PlayerControllers.Refactored.Systems
 {
@@ -47,10 +49,10 @@ namespace PlayerControllers.Refactored.Systems
         public Transform CameraTransform => playerCamera.transform;
         public Camera Camera => playerCamera;
         
-        public void Initialize(PlayerController playerController,PlayerMovementConfig config)
+        public void Initialize(PlayerController playerController,PlayerMovementConfig playerConfig)
         {
             _playerController = playerController;
-            movementConfig = config;
+            movementConfig = playerConfig;
             _runtimeData = playerController.RuntimeData;
             
             // 获取组件引用
@@ -72,16 +74,20 @@ namespace PlayerControllers.Refactored.Systems
             if (!IsEnabled) return;
             
             HandleMouseLook();
+        }
+
+        private void LateUpdate()
+        {
             HandleCameraTilt();
         }
-        
+
         public void FixedUpdate() { }
         
         private void HandleLookInput(Vector2 input)
         {
             // 直接使用输入，无需存储目标值
             _currentLookInput = input;
-            LogUtil.Log($"Look Input: {input}", false);
+//            LogUtil.Log($"Look Input: {input}", false);
         }
         
         private void HandleMouseLook()
@@ -134,29 +140,33 @@ namespace PlayerControllers.Refactored.Systems
                 _currentLookInput = Vector2.zero;
             }
         }
-        
-        private void HandleCameraTilt()
+
+        /// <summary>
+        ///  处理摄像机倾斜效果
+        /// </summary>
+        public void HandleCameraTilt()
         {
-            // 根据移动方向计算倾斜
-            Vector2 moveInput = _runtimeData.MoveInput;
-            
+            float targetRollAngle = 0f;
             if (_runtimeData.IsWallRunning)
             {
-                // 滑墙时的倾斜效果
-                _targetTilt = moveInput.x > 0 ? maxTiltAngle : -maxTiltAngle;
+                Vector3 wallNormal = _runtimeData.WallNormal;
+                Vector3 playerLookDirection = transform.forward;
+                
+                float dot = Mathf.Abs(Vector3.Dot(playerLookDirection, wallNormal));
+                
+                float rollMultiplier = 1 - dot;
+
+                // 根据墙壁在左边还是右边决定基础翻滚方向和角度
+                float baseRollAngle = -_runtimeData.GetWallSide(transform) * movementConfig.MaxCameraTiltAngle;
+
+                // 应用系数
+                targetRollAngle = baseRollAngle * rollMultiplier;
             }
-            // else if (moveInput.magnitude > 0.1f)
-            // {
-            //     // 移动时的轻微倾斜
-            //     _targetTilt = -moveInput.x * (maxTiltAngle * 0.3f);
-            // }
-            // else
-            // {
-            //     _targetTilt = 0f;
-            // }
-            
-            // 平滑过渡倾斜角度
-            _currentTilt = Mathf.Lerp(_currentTilt, _targetTilt, tiltSpeed * Time.deltaTime);
+
+            _currentTilt = Mathf.Lerp(_currentTilt, targetRollAngle, movementConfig.CameraTiltSpeed * Time.deltaTime);
+
+            // 应用旋转
+            transform.localRotation = Quaternion.Euler(_xRotation, 0f, _currentTilt);
         }
         
         /// <summary>

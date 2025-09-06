@@ -8,7 +8,7 @@ namespace PlayerControllers.Refactored.Core
     /// </summary>
     public interface IPlayerSystem
     {
-        void Initialize(PlayerController playerController,PlayerMovementConfig config);
+        void Initialize(PlayerController playerController,PlayerMovementConfig playerConfig);
         void Update();
         void FixedUpdate();
         void Cleanup();

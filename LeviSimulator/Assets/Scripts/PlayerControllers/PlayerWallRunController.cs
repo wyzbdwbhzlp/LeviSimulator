@@ -1,6 +1,7 @@
 ﻿using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Utilities;
 
 namespace PlayerControllers
 {
@@ -142,6 +143,7 @@ namespace PlayerControllers
                 {
                     wallNormal = bestWallHit.normal;
                     wallForward = Vector3.Cross(wallNormal, Vector3.up);
+                    
 
                     // 确保滑墙方向与玩家朝向大致一致
                     if (Vector3.Dot(wallForward, transform.forward) < 0)
@@ -193,6 +195,7 @@ namespace PlayerControllers
         {
             if (!isWallRunning) return 0;
             Vector3 localNormal = transform.InverseTransformDirection(wallNormal);
+            LogUtil.Log("墙面法线本地坐标：" + localNormal);
             // 如果法线的x分量为负，则墙在右边，反之在左边
             return Mathf.Sign(localNormal.x);
         }

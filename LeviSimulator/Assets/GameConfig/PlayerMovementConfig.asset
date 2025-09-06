@@ -28,6 +28,17 @@ MonoBehaviour:
   slideDeceleration: 5
   minSlideSpeed: 3
   slideDuration: 1
+  wallMaxDistance: 3
+  wallLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  wallSpeedMultiplier: 1.2
+  minimumHeightForWallRun: 1.2
+  wallRunThresholdSpeed: 5
+  wallRunMinimumSpeed: 2
+  wallFriction: 0.5
+  wallJumpForce: 4
+  wallJumpBounceForce: 2
   groundCheckDistance: 3
   groundCheckRadius: 0.6
   groundLayerMask:

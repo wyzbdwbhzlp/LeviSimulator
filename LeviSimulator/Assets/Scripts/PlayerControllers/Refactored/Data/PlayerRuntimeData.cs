@@ -1,5 +1,6 @@
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
+using Utilities;
 
 namespace PlayerControllers.Refactored.Data
 {
@@ -18,6 +19,8 @@ namespace PlayerControllers.Refactored.Data
         public Vector3 VerticalVelocity => new Vector3(0, Velocity.y, 0);
         public float Speed => Velocity.magnitude;
         public float HorizontalSpeed => HorizontalVelocity.magnitude;
+        // 滑墙相关数据
+        public Vector3 WallNormal { get; private set; }
         
         // 输入数据
         public Vector2 MoveInput { get; private set; }
@@ -86,5 +89,22 @@ namespace PlayerControllers.Refactored.Data
         public void SetJumpTime() => TimeSinceJump = 0f;
         
         public float GetTimeInCurrentState() => Time.time - StateEnterTime;
+        public void SetWallNormal(Vector3 normal)
+        {
+            WallNormal = normal;
+        }
+
+        public float GetWallSide(Transform transform)
+        {
+            if (!IsWallRunning)
+            {
+                return 0f;
+            }
+            Vector3 localNormal = transform.InverseTransformDirection(WallNormal);
+            LogUtil.Log($"墙面法线本地坐标: {localNormal}", false);
+            
+            // 如果法线的x分量为负，则墙在右边，反之在左边
+            return Mathf.Sign(localNormal.x);
+        }
     }
 }
