@@ -15,7 +15,6 @@
 
     namespace PlayerControllers
     {
-        [Obsolete]
         public class PlayerMovementController:MonoBehaviour
         {
             [Header("移动设定-正常")]
@@ -370,6 +369,5 @@
             {
                 isAllowedToMove = isAllowed;
             }
-
         }
     }
