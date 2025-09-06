@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bec3dfa5a7ae44698e5cbdcf29473971, type: 3}
+  m_Name: PlayerGrapplingConfig
+  m_EditorClassIdentifier: 
+  grappleSpeed: 20
+  maxGrappleDistance: 20
+  grappleLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  springStrength: 60
+  damping: 20
+  stableZone: 3
+  usePlayerViewAngleCheck: 1
+  maxAllowedViewAngle: 120
+  usePlayerViewParameters: 1
+  playerViewParameters: 0.9
+  usePlayerInputDirection: 1
+  playerInputDirectionBuff: 1
+  playerInputDirectionParameters: 0.1

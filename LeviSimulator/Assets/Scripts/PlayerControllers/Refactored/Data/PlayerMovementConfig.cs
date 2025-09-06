@@ -10,6 +10,8 @@ namespace PlayerControllers.Refactored.Data
     [CreateAssetMenu(fileName = "PlayerMovementConfig", menuName = "Player/Movement Config")]
     public class PlayerMovementConfig : ScriptableObject
     {
+
+
         [BoxGroup("镜头控制")]
         [LabelText("鼠标灵敏度")]
         [SerializeField] private float mouseSensitivity = 100f; // 提高默认灵敏度适合FPS
@@ -30,7 +32,7 @@ namespace PlayerControllers.Refactored.Data
         [SerializeField] private float acceleration = 10f;
         [LabelText("减速度")]
         [SerializeField] private float deceleration = 8f;
-        
+
         [BoxGroup("空中移动")]
         [LabelText("空中加速度")]
         [SerializeField] private float airAcceleration = 5f;
@@ -118,7 +120,6 @@ namespace PlayerControllers.Refactored.Data
         public PhysicsMaterial PlayerInAirMaterial => playerInAirMaterial;
         public PhysicsMaterial PlayerOnGroundMaterial => playerOnGroundMaterial;
         public float CameraTiltSpeed => cameraTiltSpeed;
-        
         public float MaxCameraTiltAngle => maxCameraTiltAngle;
     }
 }

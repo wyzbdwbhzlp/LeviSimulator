@@ -17,6 +17,8 @@ namespace PlayerControllers.Refactored.Systems
         [SerializeField] private float wallRunTimer = 0f;
         [SerializeField] private bool canWallRun = false;
         
+        private float _playerHeightWhenStartWallRun=0;
+        
         private PlayerController _playerController;
         private PlayerRuntimeData _runtimeData;
         private PlayerMovementSystem _movementSystem;
@@ -132,13 +134,17 @@ namespace PlayerControllers.Refactored.Systems
         
         private void HandleWallRunPhysics()
         {
+
             
             Vector3 inputDirection = _runtimeData.MoveDirection;
             Vector3 projectedInput = Vector3.Project(inputDirection, wallForward);
             
             float accumulatedResistance = _config.WallFriction * wallRunTimer;
             Vector3 targetVelocity = projectedInput * (_movementSystem.Config.RunSpeed * _config.WallSpeedMultiplier - accumulatedResistance);
-            
+
+
+            ClearPlayerVerticalVelocity();//todo  这里直接清除垂直速度，可能会导致一些问题
+            targetVelocity.y = 0;
             // 应用滑墙移动
             _movementSystem.ApplyMovement(targetVelocity, _movementSystem.Config.Acceleration);
             
@@ -149,19 +155,23 @@ namespace PlayerControllers.Refactored.Systems
         {
             if (isWallRunning) return;
             
+            _playerHeightWhenStartWallRun= transform.position.y;// 记录开始滑墙时的高度
             isWallRunning = true;
             wallRunTimer = 0f;
             _runtimeData.SetWallRunning(true);
-            
-            // 清除垂直速度
-            Vector3 velocity = _movementSystem.Rigidbody.linearVelocity;
-            velocity.y = 0f;
-            _movementSystem.Rigidbody.linearVelocity = velocity;
+
+            ClearPlayerVerticalVelocity();
             
             // 关闭重力
             _movementSystem.Rigidbody.useGravity = false;
             
             Debug.Log("开始滑墙");
+        }
+        private void ClearPlayerVerticalVelocity()
+        {
+            Vector3 velocity = _movementSystem.Rigidbody.linearVelocity;
+            velocity.y = 0;
+            _movementSystem.Rigidbody.linearVelocity = velocity;
         }
         
         public void StopWallRun()

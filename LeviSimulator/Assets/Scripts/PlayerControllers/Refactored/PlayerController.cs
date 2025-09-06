@@ -16,8 +16,10 @@ namespace PlayerControllers.Refactored
     {
         [Title("配置")]
         [SerializeField][InlineEditor] private PlayerMovementConfig movementConfig;
+        [SerializeField][InlineEditor]private PlayerGrapplingConfig grapplingConfig;
         [Title("组件引用")]
         [SerializeField] private Animator playerAnimator;
+        [SerializeField] private Transform grapplingMuzzle;
         
         [Title("调试信息")]
         [SerializeField, ReadOnly] private string currentState;
@@ -34,6 +36,7 @@ namespace PlayerControllers.Refactored
         private PlayerMovementSystem _movementSystem;
         private PlayerCameraSystem _cameraSystem;
         private PlayerWallRunSystem _wallRunSystem;
+        private PlayerGrapplingSystem _grapplingSystem;
         
         // 核心组件
         private PlayerStateMachine _stateMachine;
@@ -46,10 +49,12 @@ namespace PlayerControllers.Refactored
         public PlayerRuntimeData RuntimeData => _runtimeData;
         public PlayerStateMachine StateMachine => _stateMachine;
         public PlayerMovementSystem MovementSystem => _movementSystem;
+        public PlayerGrapplingConfig GrapplingConfig => grapplingConfig;
         public PlayerCameraSystem CameraSystem => _cameraSystem;
         public PlayerInputSystem InputSystem => _inputSystem;
         public PlayerWallRunSystem WallRunSystem => _wallRunSystem;
         public Animator PlayerAnimator => playerAnimator;
+        public Transform GrapplingMuzzle => grapplingMuzzle;
 
         private void Awake()
         {
@@ -150,10 +155,16 @@ namespace PlayerControllers.Refactored
             if (_wallRunSystem == null)
                 _wallRunSystem = gameObject.AddComponent<PlayerWallRunSystem>();
             
+            _grapplingSystem = GetComponent<PlayerGrapplingSystem>();
+            if (_grapplingSystem == null)
+                _grapplingSystem = gameObject.AddComponent<PlayerGrapplingSystem>();
+            _grapplingSystem.SetGrappleSetting(grapplingConfig,grapplingMuzzle);
+            
             // 添加系统到列表
             _systems.Add(_inputSystem);
             _systems.Add(_movementSystem);
             _systems.Add(_wallRunSystem);
+            _systems.Add(_grapplingSystem);
             if (_cameraSystem != null)
                 _systems.Add(_cameraSystem);
             
