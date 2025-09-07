@@ -17,7 +17,7 @@ MonoBehaviour:
   grappleLayer:
     serializedVersion: 2
     m_Bits: 128
-  springStrength: 60
+  springStrength: 10
   damping: 20
   stableZone: 3
   usePlayerViewAngleCheck: 1

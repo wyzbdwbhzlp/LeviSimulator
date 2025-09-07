@@ -84,6 +84,7 @@ namespace PlayerControllers.Refactored.Systems
                 if (isWallRunning)
                 {
                     bool isWallRunningLeft = _playerController.RuntimeData.GetWallSide(_playerController.transform) > 0;
+                    _playerAnimator.SetTrigger("WallRun");
                     if (isWallRunningLeft)
                     {
                         _playerAnimator.SetBool("IsWallRunningLeft", isWallRunning);
@@ -120,12 +121,14 @@ namespace PlayerControllers.Refactored.Systems
                     _playerAnimator.SetBool("IsWalking", true);
                     _playerAnimator.SetBool("IsRunning", false);
                     _playerAnimator.SetBool("IsCrouching", false);
+                    SetWallRunningAnimation(false);
                     break;
                     
                 case PlayerState.Running:
                     _playerAnimator.SetBool("IsWalking", false);
                     _playerAnimator.SetBool("IsRunning", true);
                     _playerAnimator.SetBool("IsCrouching", false);
+                    SetWallRunningAnimation(false);
                     break;
                     
                 case PlayerState.Jumping:
