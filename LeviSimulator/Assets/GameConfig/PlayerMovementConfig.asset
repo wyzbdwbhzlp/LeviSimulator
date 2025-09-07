@@ -17,12 +17,12 @@ MonoBehaviour:
   cameraTiltSpeed: 5
   maxCameraTiltAngle: 15
   walkSpeed: 5
-  runSpeed: 8
+  runSpeed: 15
   crouchSpeed: 2
   acceleration: 10
-  deceleration: 8
-  airAcceleration: 5
-  maxAirSpeed: 6
+  deceleration: 10
+  airAcceleration: 5.63
+  maxAirSpeed: 10.83
   jumpForce: 8
   gravity: 20
   slideSpeed: 12
@@ -32,7 +32,7 @@ MonoBehaviour:
   wallMaxDistance: 2
   wallLayerMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 64
   wallSpeedMultiplier: 1.2
   minimumHeightForWallRun: 1.2
   wallRunThresholdSpeed: 3

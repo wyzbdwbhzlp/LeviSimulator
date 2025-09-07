@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlayerGrapplingConfig
   m_EditorClassIdentifier: 
   grappleSpeed: 20
-  maxGrappleDistance: 20
+  maxGrappleDistance: 50
   grappleLayer:
     serializedVersion: 2
     m_Bits: 128

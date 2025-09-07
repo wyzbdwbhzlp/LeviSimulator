@@ -5,9 +5,11 @@ public class BrokenWall : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] Animator anim;
     [SerializeField] Rigidbody rig;
+    
     void Start()
     {
         anim=GetComponent<Animator>();
+        
         rig = GetComponentInChildren<Rigidbody>();
         rig.useGravity = false;
     }
