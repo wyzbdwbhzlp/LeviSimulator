@@ -15,6 +15,8 @@ namespace PlayerControllers.Refactored.Data
         [SerializeField]private float springStrength = 60f; //越高牵引越快
         [LabelText("阻尼系数")]
         [SerializeField]private float damping = 20f;//越高越快减速
+        [LabelText("玩家在钩爪上的最大速度,玩家将会被限制在这个速度以下")]
+        [SerializeField]private float maxPlayerVelocityOnGrapple = 25f;
         [LabelText("进入此距离后，钩爪会自动断开")]
         [SerializeField]private float stableZone = 3f;
         [Title("钩爪自销毁检测")]
@@ -62,5 +64,6 @@ namespace PlayerControllers.Refactored.Data
         public float PlayerInputDirectionBuff => playerInputDirectionBuff;
 
         public float PlayerInputDirectionParameters => playerInputDirectionParameters;
+        public float MaxPlayerVelocityOnGrapple => maxPlayerVelocityOnGrapple;
     }
 }

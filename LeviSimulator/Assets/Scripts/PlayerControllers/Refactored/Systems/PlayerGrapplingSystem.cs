@@ -227,7 +227,7 @@ namespace PlayerControllers.Refactored.Systems
             
             // 应用力到玩家刚体
             var playerRigidbody = _playerController.MovementSystem.Rigidbody;
-            if (playerRigidbody != null)
+            if (playerRigidbody != null&&!IsPlayerSpeeding())
             {
                 playerRigidbody.AddForce(grappleForce, ForceMode.Acceleration);
             }
@@ -286,6 +286,13 @@ namespace PlayerControllers.Refactored.Systems
             Vector3 dampingForce = -_playerController.RuntimeData.MoveDirection * _grappleConfig.Damping;
             return springForce + dampingForce;
         }
+
+        private bool IsPlayerSpeeding()
+        {
+            var playerSpeed = _playerController.MovementSystem.Rigidbody.linearVelocity.magnitude;
+            return playerSpeed > _grappleConfig.MaxPlayerVelocityOnGrapple;
+        }
+
         private bool CheckDestroyCondition(Vector3 delta)
         {
             if (delta.magnitude <= _grappleConfig.StableZone)
