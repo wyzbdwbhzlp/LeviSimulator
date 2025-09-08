@@ -18,7 +18,7 @@ namespace PlayerControllers
         [SerializeField] [LabelText("镜头翻滚速度")] private float rollSpeed = 5f;
         [Title("视角辅助瞄准设定")]
         [SerializeField] [LabelText("辅助瞄准强度")] [Range(0f, 1f)]
-        private float defaultAssistStrength = 0.3f;
+        private float defaultAssistStrength = 0.103f;
         [SerializeField] [LabelText("辅助瞄准持续时间(-1为持续)")] [MinValue(-1f)]
         private float defaultAssistDuration = -1f;
         [SerializeField] [LabelText("辅助瞄准响应速度")] [MinValue(0.1f)]

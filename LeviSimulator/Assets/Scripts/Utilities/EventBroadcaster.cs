@@ -60,5 +60,12 @@ namespace Utilities
         {
             SetPlayerAllowedToMove?.Invoke(allowed);
         }
+
+
+        public static event Action<Vector3,Quaternion> OnPlayerReadySpawn;
+        public static void CallPlayerReadySpawn(Vector3 spawnPosition,Quaternion spawnRotation)
+        {
+            OnPlayerReadySpawn?.Invoke(spawnPosition,spawnRotation);
+        }
     }
 }

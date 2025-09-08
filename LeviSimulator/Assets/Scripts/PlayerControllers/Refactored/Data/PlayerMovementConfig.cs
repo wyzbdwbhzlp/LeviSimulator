@@ -21,6 +21,17 @@ namespace PlayerControllers.Refactored.Data
         [SerializeField] private float cameraTiltSpeed = 5f;
         [LabelText("最大镜头翻滚角度")]
         [SerializeField] private float maxCameraTiltAngle = 15f;
+        [LabelText("滑墙启用视角修正阈值")]
+        [SerializeField] private float wallRunAngleThreshold = 80f;
+        [Title("视角辅助瞄准设定")]
+        [SerializeField] [LabelText("辅助瞄准强度")] [Range(0f, 1f)]
+        private float defaultAssistStrength = 0.103f;
+        [SerializeField] [LabelText("辅助瞄准持续时间(-1为持续)")] [MinValue(-1f)]
+        private float defaultAssistDuration = -1f;
+        [SerializeField] [LabelText("辅助瞄准响应速度")] [MinValue(0.1f)]
+        private float assistResponseSpeed = 2f;
+        
+        
         [BoxGroup("地面移动")]
         [LabelText("行走速度")]
         [SerializeField] private float walkSpeed = 5f;
@@ -121,5 +132,9 @@ namespace PlayerControllers.Refactored.Data
         public PhysicsMaterial PlayerOnGroundMaterial => playerOnGroundMaterial;
         public float CameraTiltSpeed => cameraTiltSpeed;
         public float MaxCameraTiltAngle => maxCameraTiltAngle;
+        public float WallRunAngleThreshold => wallRunAngleThreshold;
+        public float DefaultAssistStrength => defaultAssistStrength;
+        public float DefaultAssistDuration => defaultAssistDuration;
+        public float AssistResponseSpeed => assistResponseSpeed;
     }
 }

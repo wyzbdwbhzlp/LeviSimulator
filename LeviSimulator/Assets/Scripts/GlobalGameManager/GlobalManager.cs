@@ -6,6 +6,10 @@ namespace GlobalGameManager
 {
     public class GlobalManager : MonoBehaviour
     {
+        [SerializeField]private SceneEnum initialScene;
+        
+        
+        
         private static GlobalManager _instance;
 
         public static GlobalManager Instance
@@ -27,7 +31,8 @@ namespace GlobalGameManager
             }
         }
 
-        [Header("管理器引用")] public SceneLoadManager sceneLoadManager;
+        [Header("管理器引用")]
+        public SceneLoadManager sceneLoadManager;
         public PlayerSpawnManager playerSpawnManager;
         public GameStateManager gameStateManager;
 
@@ -59,6 +64,8 @@ namespace GlobalGameManager
             
             playerSpawnManager.Initialize();
             gameStateManager.Initialize();
+            
+            sceneLoadManager.LoadScene(initialScene);
         }
     }
 }
