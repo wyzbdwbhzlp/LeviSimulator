@@ -229,7 +229,17 @@ namespace PlayerControllers.Refactored.Systems
             var playerRigidbody = _playerController.MovementSystem.Rigidbody;
             if (playerRigidbody != null&&!IsPlayerSpeeding())
             {
-                playerRigidbody.AddForce(grappleForce, ForceMode.Acceleration);
+                var forceMagnitude = grappleForce.magnitude;
+                bool isOverMaxForce = forceMagnitude > _grappleConfig.MaxGrappleForce;
+                if (!isOverMaxForce)
+                {
+                    playerRigidbody.AddForce(grappleForce, ForceMode.Acceleration);
+                }
+                else
+                {
+                    Vector3 limitedForce = grappleForce.normalized * _grappleConfig.MaxGrappleForce;
+                    playerRigidbody.AddForce(limitedForce, ForceMode.Acceleration);
+                }
             }
         }
 
