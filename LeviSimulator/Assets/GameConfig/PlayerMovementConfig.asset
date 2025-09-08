@@ -12,23 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f23170573208b854aa4f202ab779edae, type: 3}
   m_Name: PlayerMovementConfig
   m_EditorClassIdentifier: 
-  mouseSensitivity: 60
+  mouseSensitivity: 50
   smoothness: 1
   cameraTiltSpeed: 5
   maxCameraTiltAngle: 15
-  walkSpeed: 5
-  runSpeed: 15
-  crouchSpeed: 2
+  walkSpeed: 8
+  runSpeed: 12
+  crouchSpeed: 3
   acceleration: 10
-  deceleration: 10
-  airAcceleration: 5.63
-  maxAirSpeed: 10.83
-  jumpForce: 8
+  deceleration: 20
+  airAcceleration: 10
+  maxAirSpeed: 20
+  jumpForce: 6.5
   gravity: 20
   slideSpeed: 12
-  slideDeceleration: 5
-  minSlideSpeed: 3
-  slideDuration: 1
+  slideDeceleration: 2
+  minSlideSpeed: 8
+  slideDuration: 5
   wallMaxDistance: 2
   wallLayerMask:
     serializedVersion: 2
@@ -38,8 +38,8 @@ MonoBehaviour:
   wallRunThresholdSpeed: 3
   wallRunMinimumSpeed: 1
   wallFriction: 0.5
-  wallJumpForce: 2
-  wallJumpBounceForce: 6
+  wallJumpForce: 5
+  wallJumpBounceForce: 10
   groundCheckDistance: 0.9
   groundCheckRadius: 0.3
   groundLayerMask:
