@@ -131,15 +131,6 @@ namespace PlayerControllers.Refactored.States
             movementSystem.Rigidbody.linearVelocity = velocity;
         }
         
-        public override bool CanTransitionTo(PlayerState targetState)
-        {
-            switch (targetState)
-            {
-                case PlayerState.Jumping:
-                    return false; // 滑铲时不能跳跃
-                default:
-                    return true;
-            }
-        }
+       
     }
 }

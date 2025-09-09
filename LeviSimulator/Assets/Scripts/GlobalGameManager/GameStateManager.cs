@@ -14,7 +14,7 @@ public enum GameState
 public class GameStateManager : MonoBehaviour
 {
     [Header("游戏状态")]
-    public GameState currentState = GameState.MainMenu;
+    public GameState currentState = GameState.MainMenu; 
     public GameState previousState = GameState.MainMenu;
 
     public event Action<GameState, GameState> OnStateChanged;

@@ -226,6 +226,16 @@ namespace PlayerControllers.Refactored.Systems
             Cleanup();
         }
 
+        public void EnablePlayerGravity()
+        {
+            playerRigidbody.useGravity = true;
+        }
+
+        public void DisablePlayerGravity()
+        {
+            playerRigidbody.useGravity = false;
+        }
+
         // 调试绘制
         private void OnDrawGizmosSelected()
         {

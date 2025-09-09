@@ -88,7 +88,8 @@ namespace PlayerControllers.Refactored.Systems
             RaycastHit bestWallHit = new RaycastHit();
             bool wallFound = false;
 
-            Vector3[] checkDirections = { transform.right, -transform.right }; // 检测左右两侧
+            Vector3[] checkDirections = { transform.right, -transform.right
+                ,transform.forward,-transform.forward }; 
 
             foreach (var dir in checkDirections)
             {
@@ -140,13 +141,28 @@ namespace PlayerControllers.Refactored.Systems
             Vector3 projectedInput = Vector3.Project(inputDirection, wallForward);
             
             float accumulatedResistance = _config.WallFriction * wallRunTimer;
-            Vector3 targetVelocity = projectedInput * (_movementSystem.Config.RunSpeed * _config.WallSpeedMultiplier - accumulatedResistance);
+            Vector3 targetVelocity = projectedInput * (_movementSystem.Config.RunSpeed *
+                _config.WallSpeedMultiplier - accumulatedResistance);
 
 
             ClearPlayerVerticalVelocity();//todo  这里直接清除垂直速度，可能会导致一些问题
             targetVelocity.y = 0;
             // 应用滑墙移动
             _movementSystem.ApplyMovement(targetVelocity, _movementSystem.Config.Acceleration);
+            
+            Vector3 directionToWall = -wallNormal;
+            float angleToWall = Vector3.Angle(_cameraSystem.transform.forward, directionToWall);
+            var wallRunAngleThreshold = _config.WallRunAngleThreshold;
+            // 只有当玩家视角朝向墙面时（夹角小于90度）才启用视角辅助
+            if (-wallRunAngleThreshold<angleToWall&& angleToWall< wallRunAngleThreshold)
+            {
+                _cameraSystem.SmoothLookAtDirection(wallForward);
+            }
+            else
+            {
+                // 如果视角没有朝向墙面，停止视角辅助
+                _cameraSystem.StopLookAssist();
+            }
             
         }
         
@@ -163,7 +179,7 @@ namespace PlayerControllers.Refactored.Systems
             ClearPlayerVerticalVelocity();
             
             // 关闭重力
-            _movementSystem.Rigidbody.useGravity = false;
+            _movementSystem.DisablePlayerGravity();
             
             Debug.Log("开始滑墙");
         }
@@ -183,7 +199,7 @@ namespace PlayerControllers.Refactored.Systems
             _runtimeData.SetWallRunning(false);
             
             // 恢复重力
-            _movementSystem.Rigidbody.useGravity = true;
+            _movementSystem.EnablePlayerGravity();
             
             Debug.Log("停止滑墙");
         }

@@ -36,6 +36,10 @@ namespace PlayerControllers.Refactored.Systems
         private PlayerController _playerController;
         private PlayerRuntimeData _runtimeData;
         
+        private Coroutine _lookAssistCoroutine; // 视角辅助协程引用
+        private float _targetXRotation = 0f; // 目标X旋转角度（用于视角辅助）
+        private float _targetYRotation = 0f; // 目标Y旋转角度（用于视角辅助）
+        
         // 旋转参数
         private float _xRotation = 0f;
         private float _yRotation = 0f;
@@ -167,6 +171,77 @@ namespace PlayerControllers.Refactored.Systems
 
             // 应用旋转
             transform.localRotation = Quaternion.Euler(_xRotation, 0f, _currentTilt);
+        }
+        /// <summary>
+        /// 平滑地将摄像机朝向指定方向（类似手柄辅助瞄准，不阻止玩家输入）
+        /// </summary>
+        /// <param name="targetDirection">目标方向（世界坐标）</param>
+        /// <param name="assistStrength">辅助强度（可选，默认使用Inspector设置）</param>
+        /// <param name="duration">辅助持续时间（可选，默认使用Inspector设置）</param>
+        public void SmoothLookAtDirection(Vector3 targetDirection, float? assistStrength = null, float? duration = null)
+        {
+            if (targetDirection.sqrMagnitude < 0.01f)
+            {
+                Debug.LogWarning("目标方向不能为零向量");
+                return;
+            }
+            var defaultAssistStrength = movementConfig.DefaultAssistStrength;
+            var defaultAssistDuration = movementConfig.DefaultAssistDuration;
+            
+            // 使用传入参数或默认值
+            float actualAssistStrength = assistStrength ?? defaultAssistStrength;
+            float actualDuration = duration ?? defaultAssistDuration;
+
+            // 停止之前的辅助瞄准
+            StopLookAssist();
+
+            Vector3 normalizedDirection = targetDirection.normalized;
+
+            // 计算目标旋转角度
+            float targetY = Mathf.Atan2(normalizedDirection.x, normalizedDirection.z) * Mathf.Rad2Deg;
+            float horizontalDistance = Mathf.Sqrt(normalizedDirection.x * normalizedDirection.x +
+                                                  normalizedDirection.z * normalizedDirection.z);
+            float targetX = -Mathf.Atan2(normalizedDirection.y, horizontalDistance) * Mathf.Rad2Deg;
+            targetX = Mathf.Clamp(targetX, -90f, 90f);
+
+            // 启动辅助瞄准协程
+            StartCoroutine(LookAssistCoroutine(targetX, targetY, actualAssistStrength, actualDuration));
+        }
+        /// <summary>
+        /// 停止视角辅助
+        /// </summary>
+        public void StopLookAssist()
+        {
+            if (_lookAssistCoroutine != null)
+            {
+                StopCoroutine(_lookAssistCoroutine);
+                _lookAssistCoroutine = null;
+            }
+        }
+        private System.Collections.IEnumerator LookAssistCoroutine(float targetX, float targetY, float assistStrength,
+            float duration)
+        {
+            float timer = 0f;
+
+            while (duration < 0f || timer < duration)
+            {
+                // 计算当前角度与目标角度的差值
+                float deltaX = Mathf.DeltaAngle(_targetXRotation, targetX);
+                float deltaY = Mathf.DeltaAngle(_targetYRotation, targetY);
+
+                // 应用辅助力，不覆盖玩家输入，而是添加到目标值上
+                float assistForceX = deltaX * assistStrength * Time.deltaTime * movementConfig.AssistResponseSpeed;
+                float assistForceY = deltaY * assistStrength * Time.deltaTime * movementConfig.AssistResponseSpeed;
+
+                _targetXRotation += assistForceX;
+                _targetYRotation += assistForceY;
+
+                // 限制垂直角度
+                _targetXRotation = Mathf.Clamp(_targetXRotation, -90f, 90f);
+
+                timer += Time.deltaTime;
+                yield return null;
+            }
         }
         
         /// <summary>
