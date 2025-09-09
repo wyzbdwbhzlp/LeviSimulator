@@ -52,5 +52,11 @@ namespace Utilities
         {
             OnPlayerReadySpawn?.Invoke(spawnPosition,spawnRotation);
         }
+
+        public static event Action<Vector3, Quaternion> OnUpdatePlayerCheckPoint;
+        public static void CallUpdatePlayerCheckPoint(Vector3 position, Quaternion rotation)
+        {
+            OnUpdatePlayerCheckPoint?.Invoke(position, rotation);
+        }
     }
 }

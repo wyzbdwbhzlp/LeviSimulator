@@ -5,16 +5,29 @@ using Utilities;
 
 namespace GlobalGameManager
 {
+    public struct PlayerSpawnInfo
+    {
+        public Vector3 Position;
+        public Quaternion Rotation;
+
+        public PlayerSpawnInfo(Vector3 pos, Quaternion rot)
+        {
+            Position = pos;
+            Rotation = rot;
+        }
+    }
     public class PlayerSpawnManager : MonoBehaviour
     {
         [Header("玩家配置")]
         [SerializeField]private GameObject playerPrefab;
-        private Vector3 spawnPosition = Vector3.zero;
-        private Quaternion spawnRotation = Quaternion.identity;
 
         [Header("生成设置")]
         public bool autoSpawnOnSceneLoad = true;
         public float spawnDelay = 1f;
+
+
+        private PlayerSpawnInfo _initialSpawnInfo;
+        private PlayerSpawnInfo _rebirthSpawnInfo;
 
         /// <summary>
         ///  当玩家准备生成时触发，提供生成位置
@@ -22,8 +35,8 @@ namespace GlobalGameManager
         public event Action<GameObject> OnPlayerSpawned;
         public event Action<GameObject> OnPlayerDespawned;
 
-        private GameObject currentPlayer;
-        private List<GameObject> spawnedPlayers = new List<GameObject>();
+        private GameObject _currentPlayer;
+        private readonly List<GameObject> _spawnedPlayers = new List<GameObject>();
 
         public void Initialize()
         {
@@ -31,9 +44,20 @@ namespace GlobalGameManager
             {
                 // 监听场景加载完成事件
                 GlobalManager.Instance.sceneLoadManager.OnSceneLoadCompleted += OnSceneLoaded;
-                EventBroadcaster.OnPlayerReadySpawn+= SetSpawnPostionRotation;
+                EventBroadcaster.OnPlayerReadySpawn+= SetInitialSpawnInfoWhenSceneReady;
+                EventBroadcaster.OnUpdatePlayerCheckPoint+= SetRebirthSpawnInfo;
             }
             Debug.Log("PlayerSpawnManager 初始化完成");
+        }
+
+        private void OnDisable()
+        {
+            if (GlobalManager.Instance!=null && GlobalManager.Instance.sceneLoadManager!=null)
+            {
+                GlobalManager.Instance.sceneLoadManager.OnSceneLoadCompleted -= OnSceneLoaded;
+            }
+            EventBroadcaster.OnPlayerReadySpawn-= SetInitialSpawnInfoWhenSceneReady;
+            EventBroadcaster.OnUpdatePlayerCheckPoint-= SetRebirthSpawnInfo;
         }
 
         private void OnSceneLoaded(string sceneName)
@@ -42,45 +66,85 @@ namespace GlobalGameManager
             Invoke(nameof(SpawnPlayer), spawnDelay);
             
         }
-        private void SetSpawnPostionRotation(Vector3 position,Quaternion rotation)
+        private void SetInitialSpawnInfoWhenSceneReady(Vector3 position, Quaternion rotation)
         {
-            spawnPosition = position;
-            spawnRotation = rotation;
+             _initialSpawnInfo=new PlayerSpawnInfo(position, rotation);
+        }
+        private void SetRebirthSpawnInfo(Vector3 position, Quaternion rotation)
+        {
+            _rebirthSpawnInfo=new PlayerSpawnInfo(position, rotation);
         }
 
-        public GameObject SpawnPlayer()
+        /// <summary>
+        ///  场景加载完毕后生成玩家
+        /// </summary>
+        /// <returns></returns>
+        private GameObject SpawnPlayer()
         {
             if (playerPrefab == null)
             {
                 Debug.LogError("玩家预制体未设置！");
                 return null;
             }
-            if(spawnPosition==Vector3.zero||spawnRotation==Quaternion.identity)
+            if(_initialSpawnInfo.Position==Vector3.zero && _initialSpawnInfo.Rotation==Quaternion.identity)
             {
-                LogUtil.LogWarning("玩家生成位置或旋转未设置");
+                LogUtil.Log("玩家生成点未设置，请通过EventBroadcaster.OnPlayerReadySpawn事件设置生成点");
+                
+              
             }
-            
+            var spawnInfo=_initialSpawnInfo;
+            var spawnPosition=spawnInfo.Position;
+            var spawnRotation=spawnInfo.Rotation;
             GameObject player = Instantiate(playerPrefab, spawnPosition, spawnRotation);
             player.name = "Player";
 
-            currentPlayer = player;
-            spawnedPlayers.Add(player);
+            _currentPlayer = player;
+            _spawnedPlayers.Add(player);
 
             OnPlayerSpawned?.Invoke(player);
             Debug.Log($"玩家已生成在位置: {spawnPosition}");
             
-            spawnPosition=Vector3.zero;// 重置参数
-            spawnRotation=Quaternion.identity;
 
             return player;
         }
+        /// <summary>
+        ///  复活玩家
+        /// </summary>
+        /// <returns></returns>
+        public GameObject RebirthPlayer()
+        {
+            if(_rebirthSpawnInfo.Position==Vector3.zero && _rebirthSpawnInfo.Rotation==Quaternion.identity)
+            {
+                LogUtil.Log("玩家复活点未设置，使用初始生成点");
+                return SpawnPlayer();
+            }
+            else
+            {
+                if(_currentPlayer!=null)
+                    DespawnPlayer(_currentPlayer);
+                
+                var spawnInfo=_rebirthSpawnInfo;
+                var spawnPosition=spawnInfo.Position;
+                var spawnRotation=spawnInfo.Rotation;
+                GameObject player = Instantiate(playerPrefab, spawnPosition, spawnRotation);
+                player.name = "Player";
+
+                _currentPlayer = player;
+                _spawnedPlayers.Add(player);
+
+                OnPlayerSpawned?.Invoke(player);
+                Debug.Log($"玩家已复活在位置: {spawnPosition}");
+                
+                return player;
+            }
+        }
         public void DespawnPlayer(GameObject player)
         {
-            if (player != null && spawnedPlayers.Contains(player))
+            if (player != null && _spawnedPlayers.Contains(player))
             {
-                spawnedPlayers.Remove(player);
-                if (currentPlayer == player)
-                    currentPlayer = null;
+                _spawnedPlayers.Remove(player);
+                if (_currentPlayer == player)
+                    _currentPlayer = null;
 
                 OnPlayerDespawned?.Invoke(player);
                 Destroy(player);
@@ -89,23 +153,21 @@ namespace GlobalGameManager
 
         public void DespawnAllPlayers()
         {
-            for (int i = spawnedPlayers.Count - 1; i >= 0; i--)
+            for (int i = _spawnedPlayers.Count - 1; i >= 0; i--)
             {
-                DespawnPlayer(spawnedPlayers[i]);
+                DespawnPlayer(_spawnedPlayers[i]);
             }
         }
 
-    
         
-
         public GameObject GetCurrentPlayer()
         {
-            return currentPlayer;
+            return _currentPlayer;
         }
 
         public List<GameObject> GetAllPlayers()
         {
-            return new List<GameObject>(spawnedPlayers);
+            return new List<GameObject>(_spawnedPlayers);
         }
     }
 }

@@ -4,6 +4,7 @@ using UIManager;
 using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
+using UnityEngine.Events;
 
 namespace HUD
 {
