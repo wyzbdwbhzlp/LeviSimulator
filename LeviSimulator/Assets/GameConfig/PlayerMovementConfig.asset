@@ -16,6 +16,10 @@ MonoBehaviour:
   smoothness: 1
   cameraTiltSpeed: 5
   maxCameraTiltAngle: 15
+  wallRunAngleThreshold: 80
+  defaultAssistStrength: 0.103
+  defaultAssistDuration: -1
+  assistResponseSpeed: 2
   walkSpeed: 8
   runSpeed: 12
   crouchSpeed: 3
@@ -25,9 +29,9 @@ MonoBehaviour:
   maxAirSpeed: 20
   jumpForce: 6.5
   gravity: 20
-  slideSpeed: 12
+  slideSpeed: 20
   slideDeceleration: 2
-  minSlideSpeed: 8
+  minSlideSpeed: 3
   slideDuration: 5
   wallMaxDistance: 2
   wallLayerMask:
