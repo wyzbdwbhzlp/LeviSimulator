@@ -177,8 +177,7 @@ namespace PlayerControllers.Refactored
         
         private void InitializeStates()
         {
-            
-            // 创建所有状态实例
+            //创建所有状态实例
             _states[PlayerState.Idle] = new IdleState(this);
             _states[PlayerState.Walking] = new WalkingState(this);
             _states[PlayerState.Running] = new RunningState(this);
@@ -201,6 +200,8 @@ namespace PlayerControllers.Refactored
             PlayerInputEvents.OnJumpPressed += HandleJumpPressed;
             PlayerInputEvents.OnCrouchPressed += HandleCrouchPressed;
             PlayerInputEvents.OnCrouchReleased += HandleCrouchReleased;
+            
+            //订阅场景事件（如有）
         }
         
         private void HandleJumpPressed()

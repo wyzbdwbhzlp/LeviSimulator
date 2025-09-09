@@ -20,12 +20,6 @@ namespace PlayerControllers.Refactored
             }
             
             // 移除旧的控制器组件（如果存在）
-            var oldController = targetObject.GetComponent<PlayerMovementController>();
-            if (oldController != null)
-            {
-                Debug.Log("Found old PlayerMovementController, removing...");
-                Object.DestroyImmediate(oldController);
-            }
             
             // 确保必要的组件存在
             EnsureRequiredComponents(targetObject);

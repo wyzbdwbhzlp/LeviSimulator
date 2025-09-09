@@ -19,6 +19,9 @@ namespace PlayerControllers.Refactored.Systems
         private InputAction _crouchAction;
         private InputAction _sprintAction;
         private InputAction _grappleAction;
+        private InputAction _interactAction;
+        
+        public InputAction InteractAction => _interactAction;
         
         public bool IsEnabled { get; set; } = true;
         
@@ -41,6 +44,7 @@ namespace PlayerControllers.Refactored.Systems
             _crouchAction = actionMap.FindAction("Crouch");
             _sprintAction = actionMap.FindAction("Sprint");
             _grappleAction = actionMap.FindAction("Grapple");
+            _interactAction = actionMap.FindAction("Interact");
             
             // 绑定输入事件
             _moveAction.performed += OnMovePerformed;
@@ -59,6 +63,7 @@ namespace PlayerControllers.Refactored.Systems
             
             _grappleAction.started += OnGrappleStarted;
             _grappleAction.canceled += OnGrappleCanceled;
+            
         }
         
         private void EnableInput()

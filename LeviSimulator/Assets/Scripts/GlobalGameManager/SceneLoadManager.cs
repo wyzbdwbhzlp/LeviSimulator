@@ -13,7 +13,7 @@ namespace GlobalGameManager
         public event SceneLoadEventHandler OnSceneLoadCompleted;
         public event SceneLoadProgressEventHandler OnSceneLoadProgress;
 
-        public string loadingSceneName = "LoadingScene";
+        private const SceneEnum LoadingSceneEnum = SceneEnum.LoadingScene;
         private bool isLoading = false;
     
         public void LoadScene(SceneEnum sceneEnum, bool useLoadingScreen = true)
@@ -64,7 +64,7 @@ namespace GlobalGameManager
             OnSceneLoadStarted?.Invoke(targetSceneName);
 
             // 先加载loading场景
-            yield return SceneManager.LoadSceneAsync(loadingSceneName);
+            yield return SceneManager.LoadSceneAsync(LoadingSceneEnum.GetSceneName());
 
             // 异步加载目标场景
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(targetSceneName);
@@ -96,7 +96,7 @@ namespace GlobalGameManager
             OnSceneLoadStarted?.Invoke(targetSceneName);
 
             // 先加载loading场景
-            yield return SceneManager.LoadSceneAsync(loadingSceneName);
+            yield return SceneManager.LoadSceneAsync(LoadingSceneEnum.GetSceneName());
 
             // 异步加载目标场景
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(buildIndex);
