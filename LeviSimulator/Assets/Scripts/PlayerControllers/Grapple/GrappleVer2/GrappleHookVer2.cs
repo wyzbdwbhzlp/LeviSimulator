@@ -1,5 +1,4 @@
-using PlayerControllers.PlayerCharacterStatusStrategy;
-using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
+
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
@@ -21,7 +20,7 @@ namespace PlayerControllers.Grapple.GrappleVer2
         [SerializeField][ReadOnly] private bool isInvalidGrapple = false; // 是否抓取到了无效对象
         [Title("依赖引用")]
         [ShowInInspector][ReadOnly]private Transform cameraTransform; // 摄像机位置引用
-        [ShowInInspector][ReadOnly]private PlayerInputRouter playerInputRouter; // 玩家输入路由器引用
+        // [ShowInInspector][ReadOnly]private PlayerInputRouter playerInputRouter; // 玩家输入路由器引用
         [SerializeField]private Transform grappleTipTransform; // 钩爪尖端位置引用(钩爪起始点)
         
         
@@ -54,8 +53,8 @@ namespace PlayerControllers.Grapple.GrappleVer2
         }
         private void Start()
         {
-            playerInputRouter = PlayerInputRouter.Instance;
-            cameraTransform= playerInputRouter.CameraController.gameObject.transform; 
+            // playerInputRouter = PlayerInputRouter.Instance;
+            // cameraTransform= playerInputRouter.CameraController.gameObject.transform; 
             grappleState = GrappleState.Idle; 
         }
         public void StartGrapple()
@@ -114,8 +113,8 @@ namespace PlayerControllers.Grapple.GrappleVer2
                 grapplePrefabInstance = Instantiate(grapplePrefab, grapplePoint, Quaternion.identity);
                 LogUtil.Log($"钩爪实例化成功，位置: {grapplePoint},{grapplePrefabInstance.gameObject.name}");
                 var grappleUnit= grapplePrefabInstance.GetComponent<GrappleUnit>();
-                grappleUnit.Initialize(playerInputRouter.MovementController.PlayerRigidbody);
-                playerInputRouter.ChangeParentStatus<GrapplingStatusStrategy>(); // 切换到钩爪状态
+                // grappleUnit.Initialize(playerInputRouter.MovementController.PlayerRigidbody);
+                // playerInputRouter.ChangeParentStatus<GrapplingStatusStrategy>(); // 切换到钩爪状态
                 grappleState= GrappleState.Grappling;
             }
             if(isInvalidGrapple)

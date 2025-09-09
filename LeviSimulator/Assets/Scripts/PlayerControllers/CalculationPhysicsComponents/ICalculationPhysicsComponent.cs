@@ -1,9 +1,9 @@
-﻿namespace PlayerControllers
-{
-    interface ICalculationPhysicsComponent
-    {
-        void OnInit(PlayerMovementController movementController);
-        void HandleMovementPhysics();
-        
-    } 
-}
+﻿// namespace PlayerControllers
+// {
+//     interface ICalculationPhysicsComponent
+//     {
+//         void OnInit(PlayerMovementController movementController);
+//         void HandleMovementPhysics();
+//         
+//     } 
+// }

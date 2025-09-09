@@ -1,5 +1,4 @@
-﻿using PlayerControllers.PlayerCharacterStatusStrategy;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using Unity.VisualScripting;
 using UnityEngine;
 using Utilities;
@@ -18,7 +17,7 @@ namespace PlayerControllers.Grapple
         [Header("场景引用")]
         [ShowInInspector][ReadOnly] private IGrapple grappleHook;
         [SerializeField] private GrappleCableRenderer grappleCableRenderer;
-        private PlayerInputRouter _playerInputRouter;
+        // private PlayerInputRouter _playerInputRouter;
         private bool _isGrappling;
         public bool IsGrappling => _isGrappling;
         
@@ -43,10 +42,10 @@ namespace PlayerControllers.Grapple
         {
             EventBroadcaster.RequestStopGrappleEvent -= StopGrapple;
         }
-        public void SetRouter(PlayerInputRouter playerInputRouter)
-        {
-            _playerInputRouter = playerInputRouter;
-        }
+        // public void SetRouter(PlayerInputRouter playerInputRouter)
+        // {
+        //     _playerInputRouter = playerInputRouter;
+        // }
 
         private void Update()
         {
@@ -56,7 +55,7 @@ namespace PlayerControllers.Grapple
                 grappleHook.UpdateGrapple();
                 if(grappleHook.GrappleState == GrappleState.Grappling)
                 {
-                    _playerInputRouter.DisablePlayerRbGravity();
+                    // _playerInputRouter.DisablePlayerRbGravity();
                 }
             }
 
@@ -82,10 +81,10 @@ namespace PlayerControllers.Grapple
 
         private void HandleGrappleStop()
         {
-            var rd= _playerInputRouter.MovementController.PlayerRigidbody;
-            recoveryVelocity = rd.linearVelocity; // 记录当前速度
-            _playerInputRouter.EnablePlayerRbGravity();
-            _playerInputRouter.MovementController.PlayerRigidbody.linearVelocity = recoveryVelocity; // 恢复玩家速度(惯性)
+            // var rd= _playerInputRouter.MovementController.PlayerRigidbody;
+            // recoveryVelocity = rd.linearVelocity; // 记录当前速度
+            // _playerInputRouter.EnablePlayerRbGravity();
+            // _playerInputRouter.MovementController.PlayerRigidbody.linearVelocity = recoveryVelocity; // 恢复玩家速度(惯性)
 
         }
 

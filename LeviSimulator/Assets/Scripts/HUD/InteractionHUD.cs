@@ -60,7 +60,7 @@ namespace HUD
 
             _isVisible = false;
             StopPulseAnimation();
-
+            
             // 淡出动画
             canvasGroup.DOFade(0f, fadeOutDuration)
                 .SetEase(Ease.InQuad)

@@ -31,7 +31,7 @@ namespace PlayerControllers
         [ShowInInspector] [ReadOnly] public Vector3 PlayerLookAt => transform.forward;
         [Title("依赖引用")] 
         [SerializeField] private Transform playerBody;
-        [SerializeField] private PlayerInputRouter _playerInputRouter;
+        [SerializeField] private object _playerInputRouter;
 
         // 平滑旋转目标值
         private float targetXRotation = 0f;
@@ -39,7 +39,7 @@ namespace PlayerControllers
 
         private void OnEnable()
         {
-            _playerInputRouter.PlayerInput.onActionTriggered += HandleonActionTriggered;
+            // _playerInputRouter.PlayerInput.onActionTriggered += HandleonActionTriggered;
         }
 
         private void LateUpdate()
@@ -81,33 +81,33 @@ namespace PlayerControllers
 
         private void ApplySmoothRotation()
         {
-            xRotation = Mathf.Lerp(xRotation, targetXRotation, smoothness * Time.deltaTime);
-            float currentY = playerBody.eulerAngles.y;
-            float smoothY = Mathf.LerpAngle(currentY, targetYRotation, smoothness * Time.deltaTime);
-
-            //处理镜头翻滚
-            float targetRollAngle = 0f;
-            if (_playerInputRouter.PlayerWallRunController.IsWallRunning)
-            {
-                Vector3 wallNormal = _playerInputRouter.PlayerWallRunController.WallNormal;
-                Vector3 playerLookDirection = transform.forward;
-                
-                float dot = Mathf.Abs(Vector3.Dot(playerLookDirection, wallNormal));
-                
-                float rollMultiplier = 1 - dot;
-
-                // 根据墙壁在左边还是右边决定基础翻滚方向和角度
-                float baseRollAngle = -_playerInputRouter.PlayerWallRunController.GetWallSide() * maxRollAngle;
-
-                // 应用系数
-                targetRollAngle = baseRollAngle * rollMultiplier;
-            }
-
-            currentRollAngle = Mathf.Lerp(currentRollAngle, targetRollAngle, rollSpeed * Time.deltaTime);
-
-            // 应用旋转
-            transform.localRotation = Quaternion.Euler(xRotation, 0f, currentRollAngle);
-            playerBody.rotation = Quaternion.Euler(0f, smoothY, 0f);
+            // xRotation = Mathf.Lerp(xRotation, targetXRotation, smoothness * Time.deltaTime);
+            // float currentY = playerBody.eulerAngles.y;
+            // float smoothY = Mathf.LerpAngle(currentY, targetYRotation, smoothness * Time.deltaTime);
+            //
+            // //处理镜头翻滚
+            // float targetRollAngle = 0f;
+            // if (_playerInputRouter.PlayerWallRunController.IsWallRunning)
+            // {
+            //     Vector3 wallNormal = _playerInputRouter.PlayerWallRunController.WallNormal;
+            //     Vector3 playerLookDirection = transform.forward;
+            //     
+            //     float dot = Mathf.Abs(Vector3.Dot(playerLookDirection, wallNormal));
+            //     
+            //     float rollMultiplier = 1 - dot;
+            //
+            //     // 根据墙壁在左边还是右边决定基础翻滚方向和角度
+            //     float baseRollAngle = -_playerInputRouter.PlayerWallRunController.GetWallSide() * maxRollAngle;
+            //
+            //     // 应用系数
+            //     targetRollAngle = baseRollAngle * rollMultiplier;
+            // }
+            //
+            // currentRollAngle = Mathf.Lerp(currentRollAngle, targetRollAngle, rollSpeed * Time.deltaTime);
+            //
+            // // 应用旋转
+            // transform.localRotation = Quaternion.Euler(xRotation, 0f, currentRollAngle);
+            // playerBody.rotation = Quaternion.Euler(0f, smoothY, 0f);
         }
 
         /// <summary>
@@ -187,12 +187,8 @@ namespace PlayerControllers
 
         private void OnDisable()
         {
-            _playerInputRouter.PlayerInput.onActionTriggered -= HandleonActionTriggered;
+            // _playerInputRouter.PlayerInput.onActionTriggered -= HandleonActionTriggered;
         }
-
-        public void SetRouter(PlayerInputRouter playerInputRouter)
-        {
-            _playerInputRouter = playerInputRouter;
-        }
+        
     }
 }

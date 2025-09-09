@@ -1,9 +1,4 @@
 ﻿using System;
-using Manager;
-using PlayerControllers.PlayerCharacterStatusStrategy;
-using PlayerControllers.PlayerCharacterStatusStrategyHFSM;
-using UIManager;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Utilities
@@ -37,16 +32,6 @@ namespace Utilities
         public static void CallEchoViewUIClosed()
         {
             EchoViewUIClosed?.Invoke();
-        }
-        public static event Action<HierarchicalBaseState,HierarchicalBaseState> PlayerCharacterStatusChanged;
-        /// <summary>
-        /// 调用玩家状态改变事件(from statusStrategy to newStatusStrategyInstance)
-        /// </summary>
-        /// <param name="statusStrategy"></param>
-        /// <param name="newStatusStrategyInstance"></param>
-        public static void CallPlayerChangeStatusEvent(HierarchicalBaseState statusStrategy, HierarchicalBaseState newStatusStrategyInstance)
-        {
-            PlayerCharacterStatusChanged?.Invoke(statusStrategy,newStatusStrategyInstance);
         }
         
         public static event Action PlayerEndGrappleEvent;
