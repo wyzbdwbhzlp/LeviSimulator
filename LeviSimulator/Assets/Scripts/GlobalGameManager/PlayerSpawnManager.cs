@@ -62,7 +62,7 @@ namespace GlobalGameManager
 
         private void OnSceneLoaded(string sceneName)
         {
-            
+            //tip 注意若是该场景存在挂载了SpawnPointItem的物体，则会自动设置生成位置
             Invoke(nameof(SpawnPlayer), spawnDelay);
             
         }
