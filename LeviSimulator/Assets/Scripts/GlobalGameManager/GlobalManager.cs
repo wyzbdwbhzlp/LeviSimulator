@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using GlobalGameManager;
+using UIManager;
 
 namespace GlobalGameManager
 {
@@ -35,6 +36,8 @@ namespace GlobalGameManager
         public SceneLoadManager sceneLoadManager;
         public PlayerSpawnManager playerSpawnManager;
         public GameStateManager gameStateManager;
+        public MainUIManager mainUIManager;
+        
 
         private void Awake()
         {
@@ -62,9 +65,13 @@ namespace GlobalGameManager
             if (gameStateManager == null)
                 gameStateManager = gameObject.AddComponent<GameStateManager>();
             
+            mainUIManager=MainUIManager.Instance;
+            if(mainUIManager==null)
+                mainUIManager= gameObject.AddComponent<MainUIManager>();
+            
             playerSpawnManager.Initialize();
             gameStateManager.Initialize();
-            
+            mainUIManager.Initialize();
             sceneLoadManager.LoadScene(initialScene);
         }
     }

@@ -11,6 +11,7 @@ namespace UIManager
 {
     public class MainUIManager:Singleton<MainUIManager>
     {
+        
         [LabelText("回声UI视窗")][SerializeField][UIComponent]private EchoDisplayViewUI echoViewUI; // 回声UI视窗
         [LabelText("E交互按钮")][SerializeField][HUD]private InteractionHUD interactionHUD; // E交互按钮
         [Header("运行时参数")]
@@ -21,10 +22,11 @@ namespace UIManager
         {
             base.Awake();
             DontDestroyOnLoad(gameObject);
+        }
+        public void Initialize()
+        {
             InitUiComponentsDic();
             InitHUDComponentsDic();
-           
-
         }
         public static T ShowUIComponent<T>() where T : class, IUIComponent
         {
