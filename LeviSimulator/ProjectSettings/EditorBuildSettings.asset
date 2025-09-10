@@ -17,7 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Resources/Scenes/HUDScene.unity
     guid: e0909c0b25bc4494dadb0310e95d58c4
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Level1.unity
     guid: 817f21d7fea5283418132f6e2aae7ff2
   - enabled: 1
@@ -35,6 +35,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Resources/Scenes/Home.unity
     guid: 6d2bc8951ef25d549b1333e31e20f136
+  - enabled: 1
+    path: Assets/Resources/Scenes/Level1.unity
+    guid: 77447bb88b58c8644aa72f00e079d098
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
