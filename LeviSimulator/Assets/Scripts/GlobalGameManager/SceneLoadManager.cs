@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Utilities;
 
 namespace GlobalGameManager
 {
@@ -64,7 +65,15 @@ namespace GlobalGameManager
             OnSceneLoadStarted?.Invoke(targetSceneName);
 
             // 先加载loading场景
-            yield return SceneManager.LoadSceneAsync(LoadingSceneEnum.GetSceneName());
+            var loadingScene = SceneManager.GetSceneByName(LoadingSceneEnum.GetSceneName());
+            if (!loadingScene.IsValid() || !loadingScene.isLoaded)
+            {
+                yield return SceneManager.LoadSceneAsync(LoadingSceneEnum.GetSceneName());
+            }
+            else
+            {
+                LogUtil.LogWarning("Loading场景已经加载或者不存在，请注意检查");
+            }
 
             // 异步加载目标场景
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(targetSceneName);
