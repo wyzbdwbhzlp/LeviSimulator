@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using GlobalGameManager;
@@ -72,7 +73,16 @@ namespace GlobalGameManager
             playerSpawnManager.Initialize();
             gameStateManager.Initialize();
             mainUIManager.Initialize();
-            sceneLoadManager.LoadScene(initialScene);
+
+        }
+        private IEnumerator Start()
+        {
+            // 等待一帧，确保其它系统完成 Awake/OnEnable
+            yield return null;
+            if (sceneLoadManager != null)
+            {
+                sceneLoadManager.LoadScene(initialScene);
+            }
         }
     }
 }

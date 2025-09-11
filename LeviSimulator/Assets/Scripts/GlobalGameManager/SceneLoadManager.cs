@@ -61,19 +61,22 @@ namespace GlobalGameManager
             isLoading = true;
             OnSceneLoadStarted?.Invoke(sceneEnum);
 
-            // 先加载loading场景
+            // 切换到 Loading 状态
+            GlobalManager.Instance?.gameStateManager?.ChangeState(GameState.Loading);
+
+            // 先加载loading场景（显式Additive）
             var loadingScene = SceneManager.GetSceneByName(LoadingSceneEnum.GetSceneName());
             if (!loadingScene.IsValid() || !loadingScene.isLoaded)
             {
-                yield return SceneManager.LoadSceneAsync(LoadingSceneEnum.GetSceneName());
+                yield return SceneManager.LoadSceneAsync(LoadingSceneEnum.GetSceneName(), LoadSceneMode.Additive);
             }
             else
             {
                 LogUtil.LogWarning("Loading场景已经加载或者不存在，请注意检查");
             }
 
-            // 异步加载目标场景
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(targetSceneName);
+            // 异步加载目标场景（Single）
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(targetSceneName, LoadSceneMode.Single);
             asyncLoad.allowSceneActivation = false;
 
             while (!asyncLoad.isDone)
@@ -83,22 +86,30 @@ namespace GlobalGameManager
 
                 if (asyncLoad.progress >= 0.9f)
                 {
-                    yield return new WaitForSeconds(1f);
+                    // 可根据UI就绪信号替换固定等待
+                    yield return new WaitForSeconds(0.1f);
                     asyncLoad.allowSceneActivation = true;
                 }
-
                 yield return null;
             }
 
+            // 设为激活场景，保证输入/光照等依赖正确
+            var targetScene = SceneManager.GetSceneByName(targetSceneName);
+            if (targetScene.IsValid())
+            {
+                SceneManager.SetActiveScene(targetScene);
+            }
+
+            // HUD 场景加载/卸载
             if (TheLevelScenes.Contains(sceneEnum))
             {
-                // 确保HUD场景被加载
                 var hudScene = SceneManager.GetSceneByName(HUDScene.GetSceneName());
                 if (!hudScene.IsValid() || !hudScene.isLoaded)
                 {
                     yield return SceneManager.LoadSceneAsync(HUDScene.GetSceneName(), LoadSceneMode.Additive);
                 }
-            }else
+            }
+            else
             {
                 var hudScene = SceneManager.GetSceneByName(HUDScene.GetSceneName());
                 if (hudScene.IsValid() && hudScene.isLoaded)
@@ -106,11 +117,20 @@ namespace GlobalGameManager
                     yield return SceneManager.UnloadSceneAsync(hudScene);
                 }
             }
-            //yield return SceneManager.UnloadSceneAsync(LoadingSceneEnum.GetSceneName());
+
+            // 卸载Loading场景（若仍存在）
+            var loading = SceneManager.GetSceneByName(LoadingSceneEnum.GetSceneName());
+            if (loading.IsValid() && loading.isLoaded)
+            {
+                yield return SceneManager.UnloadSceneAsync(loading);
+            }
 
             isLoading = false;
+
+            // 回到 InGame 状态
+            GlobalManager.Instance?.gameStateManager?.ChangeState(GameState.InGame);
+
             OnSceneLoadCompleted?.Invoke(sceneEnum);
-            
         }
 
         public void ReloadCurrentScene()
