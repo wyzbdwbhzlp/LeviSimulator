@@ -1,6 +1,8 @@
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using GlobalGameManager;
+using UIManager;
 
 namespace GlobalGameManager
 {
@@ -35,6 +37,8 @@ namespace GlobalGameManager
         public SceneLoadManager sceneLoadManager;
         public PlayerSpawnManager playerSpawnManager;
         public GameStateManager gameStateManager;
+        public MainUIManager mainUIManager;
+        
 
         private void Awake()
         {
@@ -62,10 +66,23 @@ namespace GlobalGameManager
             if (gameStateManager == null)
                 gameStateManager = gameObject.AddComponent<GameStateManager>();
             
+            mainUIManager=MainUIManager.Instance;
+            if(mainUIManager==null)
+                mainUIManager= gameObject.AddComponent<MainUIManager>();
+            
             playerSpawnManager.Initialize();
             gameStateManager.Initialize();
-            
-            sceneLoadManager.LoadScene(initialScene);
+            mainUIManager.Initialize();
+
+        }
+        private IEnumerator Start()
+        {
+            // 等待一帧，确保其它系统完成 Awake/OnEnable
+            yield return null;
+            if (sceneLoadManager != null)
+            {
+                sceneLoadManager.LoadScene(initialScene);
+            }
         }
     }
 }

@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utilities;
@@ -7,23 +9,34 @@ namespace GlobalGameManager
 {
     public class SceneLoadManager : MonoBehaviour
     {
-        public delegate void SceneLoadEventHandler(string sceneName);
+        public delegate void SceneLoadEventHandler(SceneEnum sceneEnum);
         public delegate void SceneLoadProgressEventHandler(float progress);
     
         public event SceneLoadEventHandler OnSceneLoadStarted;
         public event SceneLoadEventHandler OnSceneLoadCompleted;
         public event SceneLoadProgressEventHandler OnSceneLoadProgress;
 
-        private const SceneEnum LoadingSceneEnum = SceneEnum.LoadingScene;
+        private const SceneEnum LoadingSceneEnum = SceneEnum.LoadingScene; // Loading场景
+        private const SceneEnum HUDScene= SceneEnum.HUDScene; // HUD场景
         private bool isLoading = false;
-    
+
+        private static readonly SceneEnum[] TheLevelScenes = new SceneEnum[]// 游戏关卡场景
+        {
+            SceneEnum.Level1,
+            SceneEnum.Level2zhuizhu,
+            SceneEnum.Level3bianhuan,
+            SceneEnum.Level4pohuai,
+            SceneEnum.Level5end,
+            SceneEnum.Home
+        };
+
+
         public void LoadScene(SceneEnum sceneEnum, bool useLoadingScreen = true)
         {
-            string sceneName = sceneEnum.GetSceneName();
-            LoadSceneByName(sceneName, useLoadingScreen);
+            LoadSceneByName(sceneEnum, useLoadingScreen);
         }
 
-        public void LoadSceneByName(string sceneName, bool useLoadingScreen = true)
+        public void LoadSceneByName(SceneEnum sceneEnum, bool useLoadingScreen = true)
         {
             if (isLoading)
             {
@@ -33,50 +46,37 @@ namespace GlobalGameManager
 
             if (useLoadingScreen)
             {
-                StartCoroutine(LoadSceneWithLoadingScreen(sceneName));
+                StartCoroutine(LoadSceneWithLoadingScreen(sceneEnum));
             }
             else
             {
-                SceneManager.LoadScene(sceneName);
+                SceneManager.LoadScene(sceneEnum.GetSceneName());
             }
         }
+        
 
-        public void LoadSceneByIndex(int buildIndex, bool useLoadingScreen = true)
+        private IEnumerator LoadSceneWithLoadingScreen(SceneEnum sceneEnum)
         {
-            if (isLoading)
-            {
-                Debug.LogWarning("场景正在加载中，请等待...");
-                return;
-            }
-
-            if (useLoadingScreen)
-            {
-                StartCoroutine(LoadSceneByIndexWithLoadingScreen(buildIndex));
-            }
-            else
-            {
-                SceneManager.LoadScene(buildIndex);
-            }
-        }
-
-        private IEnumerator LoadSceneWithLoadingScreen(string targetSceneName)
-        {
+            var targetSceneName = sceneEnum.GetSceneName();
             isLoading = true;
-            OnSceneLoadStarted?.Invoke(targetSceneName);
+            OnSceneLoadStarted?.Invoke(sceneEnum);
 
-            // 先加载loading场景
+            // 切换到 Loading 状态
+            GlobalManager.Instance?.gameStateManager?.ChangeState(GameState.Loading);
+
+            // 先加载loading场景（显式Additive）
             var loadingScene = SceneManager.GetSceneByName(LoadingSceneEnum.GetSceneName());
             if (!loadingScene.IsValid() || !loadingScene.isLoaded)
             {
-                yield return SceneManager.LoadSceneAsync(LoadingSceneEnum.GetSceneName());
+                yield return SceneManager.LoadSceneAsync(LoadingSceneEnum.GetSceneName(), LoadSceneMode.Additive);
             }
             else
             {
                 LogUtil.LogWarning("Loading场景已经加载或者不存在，请注意检查");
             }
 
-            // 异步加载目标场景
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(targetSceneName);
+            // 异步加载目标场景（Single）
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(targetSceneName, LoadSceneMode.Single);
             asyncLoad.allowSceneActivation = false;
 
             while (!asyncLoad.isDone)
@@ -86,55 +86,71 @@ namespace GlobalGameManager
 
                 if (asyncLoad.progress >= 0.9f)
                 {
-                    yield return new WaitForSeconds(1f);
+                    // 可根据UI就绪信号替换固定等待
+                    yield return new WaitForSeconds(0.1f);
                     asyncLoad.allowSceneActivation = true;
                 }
-
                 yield return null;
             }
 
-            isLoading = false;
-            OnSceneLoadCompleted?.Invoke(targetSceneName);
-            
-        }
-
-        private IEnumerator LoadSceneByIndexWithLoadingScreen(int buildIndex)
-        {
-            isLoading = true;
-            string targetSceneName = $"Scene_{buildIndex}";
-            OnSceneLoadStarted?.Invoke(targetSceneName);
-
-            // 先加载loading场景
-            yield return SceneManager.LoadSceneAsync(LoadingSceneEnum.GetSceneName());
-
-            // 异步加载目标场景
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(buildIndex);
-            asyncLoad.allowSceneActivation = false;
-
-            while (!asyncLoad.isDone)
+            // 设为激活场景，保证输入/光照等依赖正确
+            var targetScene = SceneManager.GetSceneByName(targetSceneName);
+            if (targetScene.IsValid())
             {
-                float progress = Mathf.Clamp01(asyncLoad.progress / 0.9f);
-                OnSceneLoadProgress?.Invoke(progress);
+                SceneManager.SetActiveScene(targetScene);
+            }
 
-                if (asyncLoad.progress >= 0.9f)
+            // HUD 场景加载/卸载
+            if (TheLevelScenes.Contains(sceneEnum))
+            {
+                var hudScene = SceneManager.GetSceneByName(HUDScene.GetSceneName());
+                if (!hudScene.IsValid() || !hudScene.isLoaded)
                 {
-                    yield return new WaitForSeconds(1f);
-                    asyncLoad.allowSceneActivation = true;
+                    yield return SceneManager.LoadSceneAsync(HUDScene.GetSceneName(), LoadSceneMode.Additive);
                 }
+            }
+            else
+            {
+                var hudScene = SceneManager.GetSceneByName(HUDScene.GetSceneName());
+                if (hudScene.IsValid() && hudScene.isLoaded)
+                {
+                    yield return SceneManager.UnloadSceneAsync(hudScene);
+                }
+            }
 
-                yield return null;
+            // 卸载Loading场景（若仍存在）
+            var loading = SceneManager.GetSceneByName(LoadingSceneEnum.GetSceneName());
+            if (loading.IsValid() && loading.isLoaded)
+            {
+                yield return SceneManager.UnloadSceneAsync(loading);
             }
 
             isLoading = false;
-            OnSceneLoadCompleted?.Invoke(targetSceneName);
+
+            // 回到 InGame 状态
+            GlobalManager.Instance?.gameStateManager?.ChangeState(GameState.InGame);
+
+            OnSceneLoadCompleted?.Invoke(sceneEnum);
         }
 
         public void ReloadCurrentScene()
         {
             string currentSceneName = SceneManager.GetActiveScene().name;
-            LoadSceneByName(currentSceneName);
+            TryGetSceneEnum(currentSceneName, out var sceneEnum);
+            LoadSceneByName(sceneEnum);
         }
 
         public bool IsLoading => isLoading;
+
+        private bool TryGetSceneEnum(string sceneName, out SceneEnum sceneEnum)
+        {
+            bool effective =Enum.TryParse(sceneName, out sceneEnum);
+            if (!effective)
+            {
+                LogUtil.LogError($"无法将场景名 {sceneName} 转换为 SceneEnum 枚举，请检查枚举定义是否包含该场景名", true);
+                return false;
+            }
+            return true;
+        }
     }
 }

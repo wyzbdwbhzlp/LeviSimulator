@@ -1,6 +1,6 @@
 ﻿namespace Manager
 {
-    public interface IUIComponent
+    public interface IViewComponent
     {
         void ShowUIPanel(object data);
 

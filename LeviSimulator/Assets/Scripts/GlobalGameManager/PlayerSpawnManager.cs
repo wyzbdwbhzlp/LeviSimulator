@@ -60,7 +60,7 @@ namespace GlobalGameManager
             EventBroadcaster.OnUpdatePlayerCheckPoint-= SetRebirthSpawnInfo;
         }
 
-        private void OnSceneLoaded(string sceneName)
+        private void OnSceneLoaded(SceneEnum sceneEnum)
         {
             //tip 注意若是该场景存在挂载了SpawnPointItem的物体，则会自动设置生成位置
             Invoke(nameof(SpawnPlayer), spawnDelay);

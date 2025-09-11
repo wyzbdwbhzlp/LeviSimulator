@@ -8,7 +8,7 @@ using Sirenix.OdinInspector;
 
 namespace CollectibleEcho
 {
-    public class EchoDisplayViewUI:Singleton<EchoDisplayViewUI>,IUIComponent
+    public class EchoDisplayViewUI:Singleton<EchoDisplayViewUI>,IViewComponent
     {
         [SerializeField] private TextMeshProUGUI titleText;
         [SerializeField] private TextMeshProUGUI contentText;
