@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GlobalGameManager;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using PlayerControllers.Refactored.Core;
@@ -45,6 +46,8 @@ namespace PlayerControllers.Refactored
         // 状态实例
         private Dictionary<PlayerState, IState> _states = new Dictionary<PlayerState, IState>();
         
+        private Coroutine _playerRestartCoroutine;
+        
         // 公共访问器
         public PlayerRuntimeData RuntimeData => _runtimeData;
         public PlayerStateMachine StateMachine => _stateMachine;
@@ -57,6 +60,10 @@ namespace PlayerControllers.Refactored
         public Transform GrapplingMuzzle => grapplingMuzzle;
 
         private void Awake()
+        {
+            Initialize();
+        }
+        public void Initialize()
         {
             InitializeSceneObjects();
             InitializeCore();
@@ -200,10 +207,37 @@ namespace PlayerControllers.Refactored
             PlayerInputEvents.OnJumpPressed += HandleJumpPressed;
             PlayerInputEvents.OnCrouchPressed += HandleCrouchPressed;
             PlayerInputEvents.OnCrouchReleased += HandleCrouchReleased;
+            PlayerInputEvents.OnRestartFromCheckpointPressed += HandleRestartFromCheckpointPressed;
+            PlayerInputEvents.OnRestartFromCheckpointReleased += HandleRestartFromCheckpointReleased;
             
             //订阅场景事件（如有）
         }
-        
+
+        private void HandleRestartFromCheckpointReleased()
+        {
+            LogUtil.Log( "玩家取消从存档点重生");
+            if (_playerRestartCoroutine != null)
+            {
+                StopCoroutine(_playerRestartCoroutine);
+                _playerRestartCoroutine = null;
+            }
+        }
+
+        private void HandleRestartFromCheckpointPressed()
+        {
+            LogUtil.Log( "玩家请求从存档点重生");
+            if (_playerRestartCoroutine == null)
+            {
+                _playerRestartCoroutine = StartCoroutine(WaitAndRestartPlayer(2f));
+            }
+        }
+        private IEnumerator<WaitForSeconds> WaitAndRestartPlayer(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            GlobalManager.Instance.playerSpawnManager.RebirthPlayer();
+            _playerRestartCoroutine = null;
+        }
+
         private void HandleJumpPressed()
         {
             // 只有在地面上才能跳跃

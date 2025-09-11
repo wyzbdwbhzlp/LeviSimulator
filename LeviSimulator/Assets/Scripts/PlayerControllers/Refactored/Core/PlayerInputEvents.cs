@@ -24,6 +24,9 @@ namespace PlayerControllers.Refactored.Core
         public static event Action OnGrapplePressed;
         public static event Action OnGrappleReleased;
         
+        public static event Action OnRestartFromCheckpointPressed;
+        public static event Action OnRestartFromCheckpointReleased;
+        
         // 触发输入事件的方法
         public static void TriggerMoveInput(Vector2 input) => OnMoveInput?.Invoke(input);
         public static void TriggerLookInput(Vector2 input) => OnLookInput?.Invoke(input);
@@ -35,6 +38,8 @@ namespace PlayerControllers.Refactored.Core
         public static void TriggerSprintReleased() => OnSprintReleased?.Invoke();
         public static void TriggerGrapplePressed() => OnGrapplePressed?.Invoke();
         public static void TriggerGrappleReleased() => OnGrappleReleased?.Invoke();
+        public static void TriggerRestartFromCheckpointPressed() => OnRestartFromCheckpointPressed?.Invoke();
+        public static void TriggerRestartFromCheckpointReleased() => OnRestartFromCheckpointReleased?.Invoke();
         
         // 清理所有事件订阅
         public static void ClearAllEvents()
@@ -49,6 +54,10 @@ namespace PlayerControllers.Refactored.Core
             OnSprintReleased = null;
             OnGrapplePressed = null;
             OnGrappleReleased = null;
+            OnRestartFromCheckpointPressed = null;
+            OnRestartFromCheckpointReleased = null;
         }
+        
     }
+    
 }
