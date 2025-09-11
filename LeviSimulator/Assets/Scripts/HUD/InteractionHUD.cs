@@ -8,6 +8,7 @@ using UnityEngine.Events;
 
 namespace HUD
 {
+    [HUD("InteractionHUD")]
     public class InteractionHUD : MonoBehaviour, IHUDComponent
     {
         [Header("UI组件")]
@@ -36,8 +37,20 @@ namespace HUD
             // 初始化隐藏状态
             canvasGroup.alpha = 0f;
             hudContainer.SetActive(false);
+            RegisterMe();
         }
-    
+
+        public void RegisterMe()
+        {
+            var mainUiManager = MainUIManager.Instance;
+            if (mainUiManager == null)
+            {
+                Debug.LogError("InteractionHUD: 找不到 MainUIManager，无法注册HUD组件");
+                return;
+            }
+            MainUIManager.Instance.RegisterHUDComponent(this);
+        }
+
         [Button("显示HUD")]
         public void ShowHUD()
         {
