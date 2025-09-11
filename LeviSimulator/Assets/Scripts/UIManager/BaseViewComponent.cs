@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UIManager
 {
-    public abstract class BaseUIComponent:MonoBehaviour,IUIComponent
+    public abstract class BaseViewComponent:MonoBehaviour,IViewComponent
     {
         protected bool _isActive = false;
 

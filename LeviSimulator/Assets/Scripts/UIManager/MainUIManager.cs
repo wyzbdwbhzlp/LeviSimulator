@@ -15,7 +15,7 @@ namespace UIManager
     {
         
         [Header("运行时参数")]
-        [ShowInInspector]private Dictionary<Type, (IUIComponent,GameObject,bool)> _uiComponentsDic = new Dictionary<Type, (IUIComponent, GameObject,bool)>();
+        [ShowInInspector]private Dictionary<Type, (IViewComponent,GameObject,bool)> _uiComponentsDic = new Dictionary<Type, (IViewComponent, GameObject,bool)>();
         [ShowInInspector]private Dictionary<Type, IHUDComponent> _hudComponentsDic = new();
         [ShowInInspector]private Stack<Type> _uiComponentStack = new Stack<Type>(); // UI组件栈，用于管理UI组件的显示和隐藏
         [Header("实例化父节点（可选）")]
@@ -36,12 +36,12 @@ namespace UIManager
                 gm.gameStateManager.OnStateChanged += OnGameStateChanged;
             }
         }
-        public static T ShowUIComponent<T>() where T : class, IUIComponent
+        public static T ShowUIComponent<T>() where T : class, IViewComponent
         {
             return Instance?.ShowUIComponent(typeof(T)) as T;
         }
     
-        public static void HideUIComponent<T>() where T : class, IUIComponent
+        public static void HideUIComponent<T>() where T : class, IViewComponent
         {
             Instance?.HideUIComponent(typeof(T));
         }
@@ -81,8 +81,8 @@ namespace UIManager
             {
                 if (field.GetCustomAttributes(typeof(UIComponentAttribute), false).Length > 0)
                 {
-                    (IUIComponent,GameObject,bool) value = (null, null,false);
-                    var uiComponent = field.GetValue(this) as IUIComponent;
+                    (IViewComponent,GameObject,bool) value = (null, null,false);
+                    var uiComponent = field.GetValue(this) as IViewComponent;
 
                     // 新增：若未赋值，尝试按特性加载并实例化
                     if (uiComponent == null)
@@ -215,14 +215,14 @@ namespace UIManager
             return comp;
         }
 
-        private IUIComponent TryLoadUIComponentByAttribute(UIComponentAttribute attr, out GameObject go, Transform parent)
+        private IViewComponent TryLoadUIComponentByAttribute(UIComponentAttribute attr, out GameObject go, Transform parent)
         {
             go = null;
             if (attr == null) return null;
             var prefab = LoadPrefab(attr.PrefabPath, attr.PrefabName);
             var comp = InstantiateAndBind<MonoBehaviour>(prefab, parent);
             go = comp != null ? comp.gameObject : null;
-            return comp as IUIComponent;
+            return comp as IViewComponent;
         }
 
         private IHUDComponent TryLoadHUDComponentByAttribute(HUDAttribute attr, out GameObject go, Transform parent)
@@ -234,7 +234,7 @@ namespace UIManager
             go = comp != null ? comp.gameObject : null;
             return comp as IHUDComponent;
         }
-        protected IUIComponent ShowUIComponent(Type componentType)
+        protected IViewComponent ShowUIComponent(Type componentType)
         {
             if (_uiComponentsDic.TryGetValue(componentType, out var component))
             {
@@ -415,6 +415,7 @@ namespace UIManager
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public class UIComponentAttribute: BasePrefabAttribute
     {
+        //tip 传入path时优先按path加载
         public UIComponentAttribute(string prefabName = null, string prefabPath = null, string parentPath = null)
             : base(prefabPath, prefabName, parentPath) {}
     }
@@ -422,6 +423,7 @@ namespace UIManager
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public class HUDAttribute: BasePrefabAttribute
     {
+        //tip 传入path时优先按path加载
         public HUDAttribute(string prefabName = null, string prefabPath = null, string parentPath = null)
             : base(prefabPath, prefabName, parentPath) {}
     }
