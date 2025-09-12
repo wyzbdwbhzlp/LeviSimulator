@@ -76,7 +76,7 @@ namespace GlobalGameManager
             }
 
             // 异步加载目标场景（Single）
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(targetSceneName, LoadSceneMode.Single);
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(targetSceneName, LoadSceneMode.Additive);
             asyncLoad.allowSceneActivation = false;
 
             while (!asyncLoad.isDone)
@@ -99,24 +99,7 @@ namespace GlobalGameManager
             {
                 SceneManager.SetActiveScene(targetScene);
             }
-
-            // HUD 场景加载/卸载
-            if (TheLevelScenes.Contains(sceneEnum))
-            {
-                var hudScene = SceneManager.GetSceneByName(HUDScene.GetSceneName());
-                if (!hudScene.IsValid() || !hudScene.isLoaded)
-                {
-                    yield return SceneManager.LoadSceneAsync(HUDScene.GetSceneName(), LoadSceneMode.Additive);
-                }
-            }
-            else
-            {
-                var hudScene = SceneManager.GetSceneByName(HUDScene.GetSceneName());
-                if (hudScene.IsValid() && hudScene.isLoaded)
-                {
-                    yield return SceneManager.UnloadSceneAsync(hudScene);
-                }
-            }
+            
 
             // 卸载Loading场景（若仍存在）
             var loading = SceneManager.GetSceneByName(LoadingSceneEnum.GetSceneName());

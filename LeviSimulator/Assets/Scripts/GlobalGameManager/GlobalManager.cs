@@ -81,6 +81,9 @@ namespace GlobalGameManager
             yield return null;
             if (sceneLoadManager != null)
             {
+                // 首先加载HUD场景，并保持它不被卸载
+                sceneLoadManager.LoadScene(SceneEnum.HUDScene, false);
+                // 然后加载初始游戏场景
                 sceneLoadManager.LoadScene(initialScene);
             }
         }

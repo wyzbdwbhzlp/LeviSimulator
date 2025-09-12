@@ -12,7 +12,7 @@ namespace HUD
     public class InteractionHUD : MonoBehaviour, IHUDComponent
     {
         [Header("UI组件")]
-        [SerializeField] private GameObject hudContainer;
+        [SerializeField] private RectTransform hudContainer;
         [SerializeField] private TextMeshProUGUI interactionText;
         [SerializeField] private Image keyIcon;
         [SerializeField] private CanvasGroup canvasGroup;
@@ -36,7 +36,7 @@ namespace HUD
             
             // 初始化隐藏状态
             canvasGroup.alpha = 0f;
-            hudContainer.SetActive(false);
+            hudContainer.gameObject.SetActive(false);
             RegisterMe();
         }
 
@@ -57,7 +57,7 @@ namespace HUD
             if (!_isEnabled || _isVisible) return;
 
             _isVisible = true;
-            hudContainer.SetActive(true);
+            hudContainer.gameObject.SetActive(true);
 
             // 淡入动画
             canvasGroup.DOFade(1f, fadeInDuration)
@@ -78,7 +78,7 @@ namespace HUD
             // 淡出动画
             canvasGroup.DOFade(0f, fadeOutDuration)
                 .SetEase(Ease.InQuad)
-                .OnComplete(() => hudContainer.SetActive(false));
+                .OnComplete(() => hudContainer.gameObject.SetActive(false));
         }
 
         public void UpdateHUDData(object data)

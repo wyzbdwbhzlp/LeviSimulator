@@ -347,6 +347,10 @@ PrefabInstance:
       propertyPath: canvasGroup
       value: 
       objectReference: {fileID: 881505668}
+    - target: {fileID: 4773752976750215794, guid: f3be5d57c22ce0743a5ec120286ceb28, type: 3}
+      propertyPath: hudContainer
+      value: 
+      objectReference: {fileID: 881505669}
     - target: {fileID: 8245679158682402248, guid: f3be5d57c22ce0743a5ec120286ceb28, type: 3}
       propertyPath: m_Name
       value: MainHUDCanvas
@@ -370,6 +374,11 @@ RectTransform:
 --- !u!225 &881505668 stripped
 CanvasGroup:
   m_CorrespondingSourceObject: {fileID: 4768614841591910689, guid: f3be5d57c22ce0743a5ec120286ceb28, type: 3}
+  m_PrefabInstance: {fileID: 881505666}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &881505669 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2559045411613024942, guid: f3be5d57c22ce0743a5ec120286ceb28, type: 3}
   m_PrefabInstance: {fileID: 881505666}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1232148351
