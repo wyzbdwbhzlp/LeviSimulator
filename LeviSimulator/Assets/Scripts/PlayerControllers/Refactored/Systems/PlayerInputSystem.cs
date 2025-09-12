@@ -20,6 +20,7 @@ namespace PlayerControllers.Refactored.Systems
         private InputAction _sprintAction;
         private InputAction _grappleAction;
         private InputAction _interactAction;
+        private InputAction _restartFromCheckpointAction;
         
         public InputAction InteractAction => _interactAction;
         
@@ -31,10 +32,9 @@ namespace PlayerControllers.Refactored.Systems
                 playerInput = GetComponent<PlayerInput>();
                 
             SetupInputActions();
-            EnableInput();
         }
-        
-        private void SetupInputActions()
+
+        public void SetupInputActions()
         {
             var actionMap = playerInput.actions;
             
@@ -45,6 +45,8 @@ namespace PlayerControllers.Refactored.Systems
             _sprintAction = actionMap.FindAction("Sprint");
             _grappleAction = actionMap.FindAction("Grapple");
             _interactAction = actionMap.FindAction("Interact");
+            _restartFromCheckpointAction= actionMap.FindAction("RestartFromCheckpoint");
+            
             
             // 绑定输入事件
             _moveAction.performed += OnMovePerformed;
@@ -64,8 +66,27 @@ namespace PlayerControllers.Refactored.Systems
             _grappleAction.started += OnGrappleStarted;
             _grappleAction.canceled += OnGrappleCanceled;
             
+            _restartFromCheckpointAction.started += OnRestartFromCheckpointStarted;
+            _restartFromCheckpointAction.canceled += OnRestartFromCheckpointCanceled;
+            
+            EnableInput();// 启用输入
+            
         }
-        
+
+        private void OnRestartFromCheckpointCanceled(InputAction.CallbackContext obj)
+        {
+            if (!IsEnabled) return;
+            PlayerInputEvents.TriggerRestartFromCheckpointReleased();
+            
+        }
+
+        private void OnRestartFromCheckpointStarted(InputAction.CallbackContext obj)
+        {
+            if (!IsEnabled) return;
+            PlayerInputEvents.TriggerRestartFromCheckpointPressed();
+        }
+
+
         private void EnableInput()
         {
             playerInput.enabled = true;
@@ -143,6 +164,17 @@ namespace PlayerControllers.Refactored.Systems
         {
             if (!IsEnabled) return;
             PlayerInputEvents.TriggerGrappleReleased();
+        }
+        
+        /// <summary>
+        ///  玩家长按回到出生点
+        /// </summary>
+        /// <param name="obj"></param>
+        private void OnRestartFromCheckpointPerformed(InputAction.CallbackContext obj)
+        {
+            if (!IsEnabled) return;
+            PlayerInputEvents.TriggerRestartFromCheckpointPressed();
+            
         }
         
         public void Update() { }

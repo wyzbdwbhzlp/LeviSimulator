@@ -1,5 +1,9 @@
 using System;
 using System.Collections.Generic;
+using PlayerControllers.Refactored;
+using PlayerControllers.Refactored.Core;
+using PlayerControllers.Refactored.Systems;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
@@ -26,8 +30,8 @@ namespace GlobalGameManager
         public float spawnDelay = 1f;
 
 
-        private PlayerSpawnInfo _initialSpawnInfo;
-        private PlayerSpawnInfo _rebirthSpawnInfo;
+        [ShowInInspector]private PlayerSpawnInfo _initialSpawnInfo;
+        [ShowInInspector]private PlayerSpawnInfo _rebirthSpawnInfo;
 
         /// <summary>
         ///  当玩家准备生成时触发，提供生成位置
@@ -81,11 +85,9 @@ namespace GlobalGameManager
         /// <returns></returns>
         private GameObject SpawnPlayer()
         {
-            if(_initialSpawnInfo.Position==Vector3.zero && _initialSpawnInfo.Rotation==Quaternion.identity)
+            if(_initialSpawnInfo.Position==Vector3.zero)
             {
-                LogUtil.Log("玩家生成点未设置，请通过EventBroadcaster.OnPlayerReadySpawn事件设置生成点");
-                
-              
+                LogUtil.LogWarning("玩家生成点未设置，请通过EventBroadcaster.OnPlayerReadySpawn事件设置生成点");
             }
             return CreatePlayerBySpawnInfo(_initialSpawnInfo);
         }
@@ -119,13 +121,27 @@ namespace GlobalGameManager
             var spawnInfo = _rebirthSpawnInfo;
             if(_currentPlayer!=null)
                 DespawnPlayer(_currentPlayer);
-            if(spawnInfo.Position==Vector3.zero && spawnInfo.Rotation==Quaternion.identity)
+            if(spawnInfo.Position==Vector3.zero)
             {
                 LogUtil.Log("玩家存档点未设置，使用初始生成点");
                 spawnInfo=_initialSpawnInfo;
             }
-            
-            return CreatePlayerBySpawnInfo(spawnInfo);
+            var newPlayer = CreatePlayerBySpawnInfo(spawnInfo);
+            StartCoroutine(DelayedInputSetup(newPlayer));
+            return newPlayer;
+        }
+        private System.Collections.IEnumerator DelayedInputSetup(GameObject player)
+        {
+            yield return null;
+    
+            var playerController = player.GetComponent<PlayerController>();
+            if (playerController != null)
+            {
+                yield return null;
+                playerController.Initialize();
+        
+                LogUtil.Log("玩家输入系统重新初始化完成");
+            }
         }
         /// <summary>
         ///  销毁玩家
@@ -138,7 +154,7 @@ namespace GlobalGameManager
                 _spawnedPlayers.Remove(player);
                 if (_currentPlayer == player)
                     _currentPlayer = null;
-
+                PlayerInputEvents.ClearAllEvents();
                 OnPlayerDespawned?.Invoke(player);
                 Destroy(player);
             }
