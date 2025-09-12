@@ -18,7 +18,8 @@ namespace GlobalGameManager
 
         private const SceneEnum LoadingSceneEnum = SceneEnum.LoadingScene; // Loading场景
         private const SceneEnum HUDScene= SceneEnum.HUDScene; // HUD场景
-        private bool isLoading = false;
+        private bool _isLoading = false;
+        public bool IsLoading => _isLoading;
 
         private static readonly SceneEnum[] TheLevelScenes = new SceneEnum[]// 游戏关卡场景
         {
@@ -36,9 +37,9 @@ namespace GlobalGameManager
             LoadSceneByName(sceneEnum, useLoadingScreen);
         }
 
-        public void LoadSceneByName(SceneEnum sceneEnum, bool useLoadingScreen = true)
+        private void LoadSceneByName(SceneEnum sceneEnum, bool useLoadingScreen = true)
         {
-            if (isLoading)
+            if (_isLoading)
             {
                 Debug.LogWarning("场景正在加载中，请等待...");
                 return;
@@ -58,7 +59,7 @@ namespace GlobalGameManager
         private IEnumerator LoadSceneWithLoadingScreen(SceneEnum sceneEnum)
         {
             var targetSceneName = sceneEnum.GetSceneName();
-            isLoading = true;
+            _isLoading = true;
             OnSceneLoadStarted?.Invoke(sceneEnum);
 
             // 切换到 Loading 状态
@@ -81,8 +82,10 @@ namespace GlobalGameManager
                 var scene = SceneManager.GetSceneAt(i);
                 if(TryGetSceneEnum(scene.name,out var se))
                 {
-                    yield return SceneManager.UnloadSceneAsync(scene);
-                    continue;
+                    if (TheLevelScenes.Contains(se))
+                    {
+                        yield return SceneManager.UnloadSceneAsync(scene);
+                    }
                 }
             }
             // 加载目标场景（Additive），并在准备好后切换
@@ -117,7 +120,7 @@ namespace GlobalGameManager
             }
             
             // 回到 InGame 状态
-            isLoading = false;
+            _isLoading = false;
             GlobalManager.Instance?.gameStateManager?.ChangeState(GameState.InGame);
 
             OnSceneLoadCompleted?.Invoke(sceneEnum);
@@ -130,8 +133,12 @@ namespace GlobalGameManager
             LoadSceneByName(sceneEnum);
         }
 
-        public bool IsLoading => isLoading;
-
+        /// <summary>
+        ///  尝试将场景名转换为 SceneEnum 枚举
+        /// </summary>
+        /// <param name="sceneName"></param>
+        /// <param name="sceneEnum"></param>
+        /// <returns></returns>
         private bool TryGetSceneEnum(string sceneName, out SceneEnum sceneEnum)
         {
             bool effective =Enum.TryParse(sceneName, out sceneEnum);
