@@ -237,6 +237,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: diewall (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 8206505489425878193, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -753,6 +757,10 @@ PrefabInstance:
     - target: {fileID: 7037556225350230095, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
       propertyPath: m_Name
       value: diewall (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8206505489425878193, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1720,6 +1728,10 @@ PrefabInstance:
     - target: {fileID: 7037556225350230095, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
       propertyPath: m_Name
       value: diewall (12)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8206505489425878193, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2865,6 +2877,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: diewall (10)
       objectReference: {fileID: 0}
+    - target: {fileID: 8206505489425878193, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3976,6 +3992,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: diewall (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 8206505489425878193, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4157,6 +4177,10 @@ PrefabInstance:
     - target: {fileID: 7037556225350230095, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
       propertyPath: m_Name
       value: diewall
+      objectReference: {fileID: 0}
+    - target: {fileID: 8206505489425878193, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5211,6 +5235,10 @@ PrefabInstance:
     - target: {fileID: 7037556225350230095, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
       propertyPath: m_Name
       value: diewall (13)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8206505489425878193, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6745,6 +6773,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: diewall (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 8206505489425878193, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7878,6 +7910,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: diewall (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 8206505489425878193, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8044,6 +8080,72 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5793652343414850444, guid: 806f2660d20215f4d8bdbff5dc2d46b4, type: 3}
   m_PrefabInstance: {fileID: 1778939934}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1798105637
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1798105639}
+  - component: {fileID: 1798105638}
+  - component: {fileID: 1798105640}
+  m_Layer: 0
+  m_Name: Boundary
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &1798105638
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1798105637}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &1798105639
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1798105637}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 28.567108, y: 48.59, z: 773}
+  m_LocalScale: {x: 847.72815, y: 333.30286, z: 944.5424}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1798105640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1798105637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2cc08b252177d44c9247f073c0db209, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1799427827
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8427,6 +8529,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: diewall (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 8206505489425878193, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8495,6 +8601,10 @@ PrefabInstance:
     - target: {fileID: 7037556225350230095, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
       propertyPath: m_Name
       value: diewall (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8206505489425878193, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8691,6 +8801,10 @@ PrefabInstance:
     - target: {fileID: 7037556225350230095, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
       propertyPath: m_Name
       value: diewall (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8206505489425878193, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9363,6 +9477,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: diewall (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 8206505489425878193, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9634,6 +9752,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: diewall (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 8206505489425878193, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9745,3 +9867,4 @@ SceneRoots:
   - {fileID: 1269398590}
   - {fileID: 1275124816}
   - {fileID: 548246118}
+  - {fileID: 1798105639}
