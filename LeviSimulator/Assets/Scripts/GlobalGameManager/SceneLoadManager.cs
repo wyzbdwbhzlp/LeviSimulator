@@ -74,11 +74,20 @@ namespace GlobalGameManager
             {
                 LogUtil.LogWarning("Loading场景已经加载或者不存在，请注意检查");
             }
-
-            // 异步加载目标场景（Single）
+            
+            //存在关卡场景，则先卸载
+            for(int i=0;i<SceneManager.sceneCount;i++)
+            {
+                var scene = SceneManager.GetSceneAt(i);
+                if(TryGetSceneEnum(scene.name,out var se))
+                {
+                    yield return SceneManager.UnloadSceneAsync(scene);
+                    continue;
+                }
+            }
+            // 加载目标场景（Additive），并在准备好后切换
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(targetSceneName, LoadSceneMode.Additive);
             asyncLoad.allowSceneActivation = false;
-
             while (!asyncLoad.isDone)
             {
                 float progress = Mathf.Clamp01(asyncLoad.progress / 0.9f);
@@ -100,17 +109,15 @@ namespace GlobalGameManager
                 SceneManager.SetActiveScene(targetScene);
             }
             
-
             // 卸载Loading场景（若仍存在）
-            var loading = SceneManager.GetSceneByName(LoadingSceneEnum.GetSceneName());
-            if (loading.IsValid() && loading.isLoaded)
+            var currentLoadingScene = SceneManager.GetSceneByName(LoadingSceneEnum.GetSceneName());
+            if (currentLoadingScene.IsValid() && currentLoadingScene.isLoaded)
             {
-                yield return SceneManager.UnloadSceneAsync(loading);
+                yield return SceneManager.UnloadSceneAsync(currentLoadingScene);
             }
-
-            isLoading = false;
-
+            
             // 回到 InGame 状态
+            isLoading = false;
             GlobalManager.Instance?.gameStateManager?.ChangeState(GameState.InGame);
 
             OnSceneLoadCompleted?.Invoke(sceneEnum);
