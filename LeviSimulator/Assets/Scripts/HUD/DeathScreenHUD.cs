@@ -1,9 +1,9 @@
-﻿using System;
+﻿
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utilities;
 using GlobalGameManager;
+using Sirenix.OdinInspector;
 using UIManager; // 新增
 
 namespace HUD
@@ -63,12 +63,9 @@ namespace HUD
             }
             CleanUp();
         }
+        
 
-        private void OnDestroy()
-        {
-            CleanUp();
-        }
-
+        [Button ("测试黑屏效果")]
         private void OnGameStateChanged(GameState from, GameState to)
         {
             if (to == GameState.GameOver)
@@ -175,6 +172,10 @@ namespace HUD
             StopRespawnListening();
             _fadeTween?.Kill();
             _fadeTween = null;
+        }
+        private void OnDestroy()
+        {
+            CleanUp();
         }
     }
 }
