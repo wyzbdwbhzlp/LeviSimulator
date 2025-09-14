@@ -236,6 +236,8 @@ namespace PlayerControllers.Refactored.Systems
             playerRigidbody.useGravity = false;
         }
 
+        #if UNITY_EDITOR 
+
         // 调试绘制
         private void OnDrawGizmosSelected()
         {
@@ -274,7 +276,9 @@ namespace PlayerControllers.Refactored.Systems
             // 绘制玩家碰撞体轮廓
             Gizmos.color = Color.white;
             Gizmos.DrawWireCube(transform.position + playerCollider.center, 
-                               new Vector3(playerCollider.radius * 2, playerCollider.height, playerCollider.radius * 2));
+                new Vector3(playerCollider.radius * 2, playerCollider.height, playerCollider.radius * 2));
         }
+
+        #endif
     }
 }

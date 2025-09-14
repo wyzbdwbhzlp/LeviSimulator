@@ -209,6 +209,7 @@ namespace PlayerControllers.Refactored
             PlayerInputEvents.OnCrouchReleased += HandleCrouchReleased;
             PlayerInputEvents.OnRestartFromCheckpointPressed += HandleRestartFromCheckpointPressed;
             PlayerInputEvents.OnRestartFromCheckpointReleased += HandleRestartFromCheckpointReleased;
+            PlayerInputEvents.OnBulletTimePressed += ToggleBulletTime;
             
             //订阅场景事件（如有）
         }
@@ -379,6 +380,13 @@ namespace PlayerControllers.Refactored
             }
             playerCollider.material = material;
             currentPhysicsMaterial = material.name;
+        }
+        /// <summary>
+        ///  切换子弹时间
+        /// </summary>
+        private void ToggleBulletTime()
+        {
+            GlobalManager.Instance.timeManager.ToggleBulletTime();
         }
     }
 }

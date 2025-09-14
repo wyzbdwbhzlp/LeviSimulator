@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 925723589}
   - component: {fileID: 925723588}
   - component: {fileID: 925723587}
+  - component: {fileID: 925723590}
   m_Layer: 0
   m_Name: MainGameManager
   m_TagString: Untagged
@@ -199,6 +200,25 @@ MonoBehaviour:
   playerSpawnManager: {fileID: 925723588}
   gameStateManager: {fileID: 925723587}
   mainUIManager: {fileID: 0}
+--- !u!114 &925723590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925723583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96f982a6783647de90b0792e363c1bed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collectibleEchoDataBase: {fileID: 11400000, guid: af6e3c2e19213a9428e7b77a0874778d, type: 2}
+  currentCollectibleEchoData:
+    echoID: 0
+    echoTitle: 
+    echoText: 
+    echoIllustrationsSprite: {fileID: 0}
+    echoIllustrationsPath: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

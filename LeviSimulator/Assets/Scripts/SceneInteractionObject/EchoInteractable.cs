@@ -1,18 +1,19 @@
-﻿using System;
+﻿using CollectibleEcho;
 using HUD;
-using Manager;
+using PlayerControllers.Refactored.Systems;
 using Sirenix.OdinInspector;
 using UIManager;
 using UnityEngine;
 using Utilities;
 
-namespace CollectibleEcho
+namespace SceneInteractionObject
 {
     public class EchoInteractable : MonoBehaviour
     {
-        [SerializeField] private int echoId;
+        [SerializeField][LabelText("欲展示的回声ID")] private int echoId;
         
         [SerializeField][ReadOnly]private bool _playerInRange = false;
+        private PlayerInputSystem _playerInputSystem;
 
         private void OnEnable()
         {
@@ -26,13 +27,13 @@ namespace CollectibleEcho
             HideInteractionPrompt();
         }
 
-        private void Update()
-        {
-            if (_playerInRange&& Input.GetKeyDown(KeyCode.E))
-            {
-                InteractWithEcho();
-            }
-        }
+        // private void Update()
+        // {
+        //     if (_playerInRange&& Input.GetKeyDown(KeyCode.E))
+        //     {
+        //         InteractWithEcho();
+        //     }
+        // }
 
         private void OnTriggerEnter(Collider other)
         {
@@ -40,6 +41,8 @@ namespace CollectibleEcho
             {
                 _playerInRange = true;
                 ShowInteractionPrompt();
+                _playerInputSystem= other.GetComponent<PlayerInputSystem>();
+                _playerInputSystem.RegisterInteractCallback(InteractWithEcho);
             }
         }
 
@@ -49,6 +52,7 @@ namespace CollectibleEcho
             {
                 _playerInRange = false;
                 HideInteractionPrompt();
+                _playerInputSystem.UnregisterInteractCallback();
             }
         }
 

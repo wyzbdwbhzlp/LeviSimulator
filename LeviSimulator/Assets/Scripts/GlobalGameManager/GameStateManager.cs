@@ -18,8 +18,6 @@ public class GameStateManager : MonoBehaviour
     public GameState previousState = GameState.MainMenu;
 
     public event Action<GameState, GameState> OnStateChanged;
-    public event Action OnGamePaused;
-    public event Action OnGameResumed;
 
     public void Initialize()
     {
@@ -47,23 +45,16 @@ public class GameStateManager : MonoBehaviour
         switch (to)
         {
             case GameState.MainMenu:
-                Time.timeScale = 1f;
                 break;
             case GameState.Loading:
-                Time.timeScale = 1f;
                 break;
             case GameState.InGame:
-                Time.timeScale = 1f;
                 break;
             case GameState.Paused:
-                Time.timeScale = 0f;
-                OnGamePaused?.Invoke();
                 break;
             case GameState.GameOver:
-                Time.timeScale = 0f;
                 break;
             case GameState.Settings:
-                // 保持之前的时间缩放
                 break;
         }
     }
@@ -81,7 +72,6 @@ public class GameStateManager : MonoBehaviour
         if (currentState == GameState.Paused)
         {
             ChangeState(GameState.InGame);
-            OnGameResumed?.Invoke();
         }
     }
 

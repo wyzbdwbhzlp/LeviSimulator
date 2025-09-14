@@ -1,0 +1,235 @@
+using System;
+using UnityEngine;
+using Sirenix.OdinInspector;
+using Utilities;
+
+namespace GlobalGameManager
+{
+    /// <summary>
+    /// 时间管理系统 - 处理暂停、子弹时间等
+    /// </summary>
+    public class TimeManager : MonoBehaviour
+    {
+        [Title("时间控制设置")]
+        [SerializeField] private bool canPause = true;
+        [SerializeField] private bool canBulletTime = true;
+        
+        [Title("子弹时间设置")]
+        [SerializeField, Range(0.05f, 1f)] private float bulletTimeScale = 0.3f;
+        [SerializeField] private float bulletTimeDuration = 3f;
+        [SerializeField] private float bulletTimeCooldown = 5f;
+        
+        [Title("调试信息")]
+        [SerializeField, ReadOnly] private float currentTimeScale = 1f;
+        [SerializeField, ReadOnly] private bool isPaused = false;
+        [SerializeField, ReadOnly] private bool isBulletTimeActive = false;
+        [SerializeField, ReadOnly] private float bulletTimeRemaining = 0f;
+        [SerializeField, ReadOnly] private float bulletTimeCooldownRemaining = 0f;
+        
+        // 事件
+        public static event Action OnGamePaused;
+        public static event Action OnGameResumed;
+        public static event Action OnBulletTimeStarted;
+        public static event Action OnBulletTimeEnded;
+        public static event Action<float> OnTimeScaleChanged;
+        
+        // 属性
+        public bool IsPaused => isPaused;
+        public bool IsBulletTimeActive => isBulletTimeActive;
+        public float CurrentTimeScale => currentTimeScale;
+        public bool CanUseBulletTime => bulletTimeCooldownRemaining <= 0f && canBulletTime;
+        
+        public void OnEnable()
+        {
+            GlobalManager.Instance.gameStateManager.OnStateChanged+=HandleGameStateChanged;
+        }
+
+        
+        /// <summary>
+        ///  处理游戏状态变化
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        private void HandleGameStateChanged(GameState from, GameState to)
+        {
+            switch (to)
+            {//todo 根据不同状态调整时间缩放
+                case GameState.MainMenu:
+                    ResumeGame();
+                    break;
+                case GameState.Loading:
+                    ResumeGame();
+                    break;
+                case GameState.InGame:
+                    ResumeGame();
+                    break;
+                case GameState.Paused:
+                    PauseGame();
+                    OnGamePaused?.Invoke();
+                    break;
+                case GameState.GameOver:
+                    PauseGame();
+                    break;
+                case GameState.Settings:
+                    break;
+            }
+        }
+
+        public void Initialize()
+        {
+            ResetTimeManager();
+        }
+        
+        private void Update()
+        {
+            UpdateBulletTime();
+            UpdateCooldown();
+            // HandleInput();
+        }
+        
+        private void UpdateBulletTime()
+        {
+            if (isBulletTimeActive)
+            {
+                bulletTimeRemaining -= Time.unscaledDeltaTime;
+                if (bulletTimeRemaining <= 0f)
+                {
+                    EndBulletTime();
+                }
+            }
+        }
+        
+        private void UpdateCooldown()
+        {
+            if (bulletTimeCooldownRemaining > 0f)
+            {
+                bulletTimeCooldownRemaining -= Time.unscaledDeltaTime;
+            }
+        }
+        
+        // private void HandleInput()
+        // {
+        //     // // 暂停/恢复 (P键)
+        //     // if (Input.GetKeyDown(KeyCode.P) && canPause)
+        //     // {
+        //     //     TogglePause();
+        //     // }
+        //     //
+        //     // // 子弹时间 (T键)
+        //     // if (Input.GetKeyDown(KeyCode.T) && CanUseBulletTime && !isPaused)
+        //     // {
+        //     //     StartBulletTime();
+        //     // }
+        // }
+        
+        
+        /// <summary>
+        /// 暂停游戏
+        /// </summary>
+        [Button("暂停游戏")]
+        public void PauseGame()
+        {
+            if (!canPause || isPaused) return;
+            
+            isPaused = true;
+            SetTimeScale(0f);
+            OnGamePaused?.Invoke();
+            
+            LogUtil.Log("游戏已暂停");
+        }
+        
+        /// <summary>
+        /// 恢复游戏
+        /// </summary>
+        [Button("恢复游戏")]
+        public void ResumeGame()
+        {
+            if (!isPaused) return;
+            
+            isPaused = false;
+            
+            if (isBulletTimeActive)
+                SetTimeScale(bulletTimeScale);
+            else
+                SetTimeScale(1f);
+                
+            OnGameResumed?.Invoke();
+            LogUtil.Log("游戏已恢复");
+        }
+        public void ToggleBulletTime()
+        {
+            if (isBulletTimeActive)
+            {
+                EndBulletTime();
+            }
+            else
+            {
+                StartBulletTime();
+            }
+        }
+        
+        /// <summary>
+        /// 开始子弹时间
+        /// </summary>
+        public void StartBulletTime()
+        {
+            if (!CanUseBulletTime || isPaused) return;
+            
+            isBulletTimeActive = true;
+            bulletTimeRemaining = bulletTimeDuration;
+            SetTimeScale(bulletTimeScale);
+            
+            OnBulletTimeStarted?.Invoke();
+            LogUtil.Log("子弹时间开始");
+        }
+        
+        /// <summary>
+        /// 结束子弹时间
+        /// </summary>
+        public void EndBulletTime()
+        {
+            if (!isBulletTimeActive) return;
+            
+            isBulletTimeActive = false;
+            bulletTimeRemaining = 0f;
+            bulletTimeCooldownRemaining = bulletTimeCooldown;
+            
+            if (!isPaused)
+                SetTimeScale(1f);
+                
+            OnBulletTimeEnded?.Invoke();
+            LogUtil.Log("子弹时间结束");
+        }
+        
+        /// <summary>
+        /// 设置自定义时间缩放
+        /// </summary>
+        public void SetCustomTimeScale(float timeScale)
+        {
+            if (isPaused) return;
+            
+            SetTimeScale(timeScale);
+        }
+        
+        private void SetTimeScale(float timeScale)
+        {
+            currentTimeScale = timeScale;
+            Time.timeScale = timeScale;
+            OnTimeScaleChanged?.Invoke(timeScale);
+        }
+        
+        /// <summary>
+        /// 重置时间管理器
+        /// </summary>
+        public void ResetTimeManager()
+        {
+            isPaused = false;
+            isBulletTimeActive = false;
+            bulletTimeRemaining = 0f;
+            bulletTimeCooldownRemaining = 0f;
+            SetTimeScale(1f);
+        }
+
+
+    }
+}

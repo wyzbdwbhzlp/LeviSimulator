@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
+using UnityEngine.Events;
 
 namespace PlayerControllers.Refactored.Systems
 {
@@ -21,8 +22,9 @@ namespace PlayerControllers.Refactored.Systems
         private InputAction _grappleAction;
         private InputAction _interactAction;
         private InputAction _restartFromCheckpointAction;
+        private InputAction _bulletTimeAction;
         
-        public InputAction InteractAction => _interactAction;
+        private UnityAction _interactActionCallback;
         
         public bool IsEnabled { get; set; } = true;
         
@@ -33,6 +35,10 @@ namespace PlayerControllers.Refactored.Systems
                 
             SetupInputActions();
         }
+
+        public void Update() { }
+
+        public void FixedUpdate() { }
 
         public void SetupInputActions()
         {
@@ -46,6 +52,7 @@ namespace PlayerControllers.Refactored.Systems
             _grappleAction = actionMap.FindAction("Grapple");
             _interactAction = actionMap.FindAction("Interact");
             _restartFromCheckpointAction= actionMap.FindAction("RestartFromCheckpoint");
+            _bulletTimeAction= actionMap.FindAction("BulletTime");
             
             
             // 绑定输入事件
@@ -69,8 +76,19 @@ namespace PlayerControllers.Refactored.Systems
             _restartFromCheckpointAction.started += OnRestartFromCheckpointStarted;
             _restartFromCheckpointAction.canceled += OnRestartFromCheckpointCanceled;
             
+            _interactAction.started += CallInteractCallback;
+            _bulletTimeAction.started += OnBulletTimeStarted;
+            
+            
+            
             EnableInput();// 启用输入
             
+        }
+
+        private void OnBulletTimeStarted(InputAction.CallbackContext obj)
+        {
+            if (!IsEnabled) return;
+            PlayerInputEvents.TriggerBulletTimePressed();
         }
 
         private void OnRestartFromCheckpointCanceled(InputAction.CallbackContext obj)
@@ -165,20 +183,19 @@ namespace PlayerControllers.Refactored.Systems
             if (!IsEnabled) return;
             PlayerInputEvents.TriggerGrappleReleased();
         }
-        
-        /// <summary>
-        ///  玩家长按回到出生点
-        /// </summary>
-        /// <param name="obj"></param>
-        private void OnRestartFromCheckpointPerformed(InputAction.CallbackContext obj)
+        public void RegisterInteractCallback(UnityAction callback)
         {
-            if (!IsEnabled) return;
-            PlayerInputEvents.TriggerRestartFromCheckpointPressed();
-            
+            _interactActionCallback = callback;
         }
-        
-        public void Update() { }
-        public void FixedUpdate() { }
+        private void CallInteractCallback(InputAction.CallbackContext obj)
+        {
+            _interactActionCallback?.Invoke();
+            UnregisterInteractCallback();
+        }
+        public void UnregisterInteractCallback()
+        {
+            _interactActionCallback = null;
+        }
         
         public void Cleanup()
         {
