@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Collections.Generic;
+using ExternPropertyAttributes;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
@@ -22,7 +25,9 @@ namespace PlayerControllers.Refactored.Systems
         private PlayerRuntimeData _runtimeData;
         private Vector3 _originalColliderCenter;
         private float _originalColliderHeight;
-
+        private Queue<IEnumerator> _dashCoolDownQueue = new Queue<IEnumerator>();
+        private bool _isDashCooldownRunning = false;
+        
         public bool IsEnabled { get; set; } = true;
         public Rigidbody Rigidbody => playerRigidbody;
         public CapsuleCollider PlayerCollider => playerCollider;
@@ -184,6 +189,42 @@ namespace PlayerControllers.Refactored.Systems
             jumpVelocity.y = jumpForce;
             playerRigidbody.linearVelocity = jumpVelocity;
             _runtimeData.SetJumpTime();
+        }
+
+        [Button("尝试冲刺")]
+        public void TriggerDash()
+        {
+                
+                
+                //todo ... dash 逻辑 ...
+
+                // 入队冷却协程
+                _dashCoolDownQueue.Enqueue(DashCoolDownCoroutine());
+                TryStartNextDashCooldown();
+            
+        }
+        private void TryStartNextDashCooldown()
+        {
+            if (!_isDashCooldownRunning && _dashCoolDownQueue.Count > 0)
+            {
+                _isDashCooldownRunning = true;
+                StartCoroutine(RunDashCooldownQueue());
+            }
+        }
+
+        private IEnumerator RunDashCooldownQueue()
+        {
+            while (_dashCoolDownQueue.Count > 0)
+            {
+                yield return StartCoroutine(_dashCoolDownQueue.Dequeue());
+            }
+            _isDashCooldownRunning = false;
+        }
+
+        private IEnumerator DashCoolDownCoroutine()
+        {
+            yield return new WaitForSeconds(config.DashCooldown);
+            _runtimeData.RecoverDash();
         }
 
         /// <summary>

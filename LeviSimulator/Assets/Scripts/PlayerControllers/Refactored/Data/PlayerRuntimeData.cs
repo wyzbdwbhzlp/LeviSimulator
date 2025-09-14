@@ -21,6 +21,11 @@ namespace PlayerControllers.Refactored.Data
         public float HorizontalSpeed => HorizontalVelocity.magnitude;
         // 滑墙相关数据
         public Vector3 WallNormal { get; private set; }
+        // 冲刺相关数据
+        public int DashCount { get; set; } = 0;
+        public bool CanDash => DashCount < 1;
+        public void RecoverDash()=> DashCount +=1;
+        
         
         // 输入数据
         public Vector2 MoveInput { get; private set; }
