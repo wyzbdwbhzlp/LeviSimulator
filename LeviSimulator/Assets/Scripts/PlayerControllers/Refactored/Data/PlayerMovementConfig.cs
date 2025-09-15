@@ -83,17 +83,7 @@ namespace PlayerControllers.Refactored.Data
         [SerializeField] private float wallJumpForce = 4f;
         [LabelText("滑墙跳跃反弹力")]
         [SerializeField] private float wallJumpBounceForce = 2f;
-
-        [BoxGroup("冲刺设定")]
-		[LabelText("冲刺持续时间")]
-		[SerializeField] private float dashDuration = 1f;
-		[LabelText("冲刺距离")]
-		[SerializeField] private float dashDistance = 10f;
-		[LabelText("冲刺冷却时间")]
-		[SerializeField] private float dashCooldown = 5f;
-		[LabelText("冲刺最大存储数")]
-        [SerializeField] private int maxDashCount = 1;
-
+        
         [BoxGroup("地面检测")]
         [LabelText("地面检测距离")]
         [SerializeField] private float groundCheckDistance;
@@ -146,8 +136,6 @@ namespace PlayerControllers.Refactored.Data
         public float DefaultAssistStrength => defaultAssistStrength;
         public float DefaultAssistDuration => defaultAssistDuration;
         public float AssistResponseSpeed => assistResponseSpeed;
-		public float DashDuration => dashDuration;
-        public float DashDistance => dashDistance;
-		public float DashCooldown => dashCooldown;
+
     }
 }

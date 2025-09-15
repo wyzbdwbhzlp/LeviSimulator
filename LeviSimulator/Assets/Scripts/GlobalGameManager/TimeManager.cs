@@ -14,17 +14,12 @@ namespace GlobalGameManager
         [SerializeField] private bool canPause = true;
         [SerializeField] private bool canBulletTime = true;
         
-        [Title("子弹时间设置")]
-        [SerializeField, Range(0.05f, 1f)] private float bulletTimeScale = 0.3f;
-        [SerializeField] private float bulletTimeDuration = 3f;
-        [SerializeField] private float bulletTimeCooldown = 5f;
         
         [Title("调试信息")]
         [SerializeField, ReadOnly] private float currentTimeScale = 1f;
         [SerializeField, ReadOnly] private bool isPaused = false;
         [SerializeField, ReadOnly] private bool isBulletTimeActive = false;
-        [SerializeField, ReadOnly] private float bulletTimeRemaining = 0f;
-        [SerializeField, ReadOnly] private float bulletTimeCooldownRemaining = 0f;
+        private float _currentBulletTimeDuration = 0.3f;
         
         // 事件
         public static event Action OnGamePaused;
@@ -37,8 +32,7 @@ namespace GlobalGameManager
         public bool IsPaused => isPaused;
         public bool IsBulletTimeActive => isBulletTimeActive;
         public float CurrentTimeScale => currentTimeScale;
-        public bool CanUseBulletTime => bulletTimeCooldownRemaining <= 0f && canBulletTime;
-        
+    
         public void OnEnable()
         {
             GlobalManager.Instance.gameStateManager.OnStateChanged+=HandleGameStateChanged;
@@ -80,32 +74,9 @@ namespace GlobalGameManager
             ResetTimeManager();
         }
         
-        private void Update()
-        {
-            UpdateBulletTime();
-            UpdateCooldown();
-            // HandleInput();
-        }
+
+      
         
-        private void UpdateBulletTime()
-        {
-            if (isBulletTimeActive)
-            {
-                bulletTimeRemaining -= Time.unscaledDeltaTime;
-                if (bulletTimeRemaining <= 0f)
-                {
-                    EndBulletTime();
-                }
-            }
-        }
-        
-        private void UpdateCooldown()
-        {
-            if (bulletTimeCooldownRemaining > 0f)
-            {
-                bulletTimeCooldownRemaining -= Time.unscaledDeltaTime;
-            }
-        }
         
         // private void HandleInput()
         // {
@@ -149,35 +120,23 @@ namespace GlobalGameManager
             isPaused = false;
             
             if (isBulletTimeActive)
-                SetTimeScale(bulletTimeScale);
+                SetTimeScale(_currentBulletTimeDuration);
             else
                 SetTimeScale(1f);
                 
             OnGameResumed?.Invoke();
             LogUtil.Log("游戏已恢复");
         }
-        public void ToggleBulletTime()
-        {
-            if (isBulletTimeActive)
-            {
-                EndBulletTime();
-            }
-            else
-            {
-                StartBulletTime();
-            }
-        }
-        
         /// <summary>
         /// 开始子弹时间
         /// </summary>
-        public void StartBulletTime()
+        public void StartBulletTime(float bulletTimeScale)
         {
-            if (!CanUseBulletTime || isPaused) return;
-            
+            if (isPaused) return;
+
+            _currentBulletTimeDuration = bulletTimeScale;
             isBulletTimeActive = true;
-            bulletTimeRemaining = bulletTimeDuration;
-            SetTimeScale(bulletTimeScale);
+            SetTimeScale(_currentBulletTimeDuration);
             
             OnBulletTimeStarted?.Invoke();
             LogUtil.Log("子弹时间开始");
@@ -191,8 +150,6 @@ namespace GlobalGameManager
             if (!isBulletTimeActive) return;
             
             isBulletTimeActive = false;
-            bulletTimeRemaining = 0f;
-            bulletTimeCooldownRemaining = bulletTimeCooldown;
             
             if (!isPaused)
                 SetTimeScale(1f);
@@ -225,8 +182,6 @@ namespace GlobalGameManager
         {
             isPaused = false;
             isBulletTimeActive = false;
-            bulletTimeRemaining = 0f;
-            bulletTimeCooldownRemaining = 0f;
             SetTimeScale(1f);
         }
 

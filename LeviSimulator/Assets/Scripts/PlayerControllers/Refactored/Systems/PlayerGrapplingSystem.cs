@@ -22,7 +22,7 @@ namespace PlayerControllers.Refactored.Systems
         }
 
         
-        public void Initialize(PlayerController playerController, PlayerMovementConfig playerConfig)
+        public void Initialize(PlayerController playerController, ScriptableObject playerConfig)
         {
             _grappleHook = new GrappleHook();
             _grappleHook.Initialize(playerController);
@@ -33,8 +33,8 @@ namespace PlayerControllers.Refactored.Systems
             PlayerInputEvents.OnGrapplePressed += StartGrapple;
             PlayerInputEvents.OnGrappleReleased += StopGrapple;
         }
-        
 
+        
         public void Update()
         {
             if (_grappleHook != null && _grappleHook.GrappleState != GrappleState.Idle)

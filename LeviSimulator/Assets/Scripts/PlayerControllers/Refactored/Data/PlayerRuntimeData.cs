@@ -12,7 +12,6 @@ namespace PlayerControllers.Refactored.Data
         // 状态数据
         public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
         public PlayerState PreviousState { get; private set; } = PlayerState.Idle;
-        
         // 移动数据
         public Vector3 Velocity { get; private set; }
         public Vector3 HorizontalVelocity => new Vector3(Velocity.x, 0, Velocity.z);
@@ -25,6 +24,8 @@ namespace PlayerControllers.Refactored.Data
         public int DashCount { get; set; } = 0;
         public bool CanDash => DashCount < 1;
         public void RecoverDash()=> DashCount +=1;
+        // 子弹时间相关数据
+        public bool IsInBulletTime { get; set; } = false;
         
         
         // 输入数据

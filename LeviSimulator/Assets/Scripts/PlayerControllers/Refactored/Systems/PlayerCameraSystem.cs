@@ -53,10 +53,10 @@ namespace PlayerControllers.Refactored.Systems
         public Transform CameraTransform => playerCamera.transform;
         public Camera Camera => playerCamera;
         
-        public void Initialize(PlayerController playerController,PlayerMovementConfig playerConfig)
+        public void Initialize(PlayerController playerController,ScriptableObject playerConfig)
         {
             _playerController = playerController;
-            movementConfig = playerConfig;
+            movementConfig = playerConfig as PlayerMovementConfig;
             _runtimeData = playerController.RuntimeData;
             
             // 获取组件引用

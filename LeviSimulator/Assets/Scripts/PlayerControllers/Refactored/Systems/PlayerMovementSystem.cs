@@ -33,7 +33,7 @@ namespace PlayerControllers.Refactored.Systems
         public CapsuleCollider PlayerCollider => playerCollider;
         public PlayerMovementConfig Config => config;
 
-        public void Initialize(PlayerController playerController, PlayerMovementConfig playerConfig)
+        public void Initialize(PlayerController playerController, ScriptableObject playerConfig)
         {
             _playerController = playerController;
             _runtimeData = playerController.RuntimeData;
@@ -56,7 +56,7 @@ namespace PlayerControllers.Refactored.Systems
             PlayerInputEvents.OnSprintReleased += HandleSprintReleased;
 
             // 应用配置
-            this.config = playerConfig;
+            this.config = playerConfig as PlayerMovementConfig;
 
         }
 
@@ -191,40 +191,24 @@ namespace PlayerControllers.Refactored.Systems
             _runtimeData.SetJumpTime();
         }
 
-        [Button("尝试冲刺")]
-        public void TriggerDash()
+        public void ApplyDash(Vector3 dashVelocity)
         {
-                
-                
-                //todo ... dash 逻辑 ...
+            if (!_runtimeData.CanDash) return;
 
-                // 入队冷却协程
-                _dashCoolDownQueue.Enqueue(DashCoolDownCoroutine());
-                TryStartNextDashCooldown();
+            Vector3 dashDirection = _runtimeData.MoveDirection;
+            if (dashDirection.magnitude < 0.1f)
+            {
+                // 如果没有输入方向，朝向当前前方
+                dashDirection = transform.forward;
+            }
+
+            // 应用冲刺速度
+            playerRigidbody.linearVelocity = new Vector3(dashVelocity.x, playerRigidbody.linearVelocity.y, dashVelocity.z);
+            _runtimeData.SetVelocity(playerRigidbody.linearVelocity);
+            _runtimeData.SetGrappling(false); // 取消抓钩状态
+            _runtimeData.SetJumping(false); // 取消跳跃状态
+            //todo _runtimeData.SetDashCount(_runtimeData.DashCount + 1);
             
-        }
-        private void TryStartNextDashCooldown()
-        {
-            if (!_isDashCooldownRunning && _dashCoolDownQueue.Count > 0)
-            {
-                _isDashCooldownRunning = true;
-                StartCoroutine(RunDashCooldownQueue());
-            }
-        }
-
-        private IEnumerator RunDashCooldownQueue()
-        {
-            while (_dashCoolDownQueue.Count > 0)
-            {
-                yield return StartCoroutine(_dashCoolDownQueue.Dequeue());
-            }
-            _isDashCooldownRunning = false;
-        }
-
-        private IEnumerator DashCoolDownCoroutine()
-        {
-            yield return new WaitForSeconds(config.DashCooldown);
-            _runtimeData.RecoverDash();
         }
 
         /// <summary>

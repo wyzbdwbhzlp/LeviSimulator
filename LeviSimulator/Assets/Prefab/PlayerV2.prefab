@@ -185,6 +185,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementConfig: {fileID: 11400000, guid: 54a6d35342aba8f4085a2233ef751083, type: 2}
   grapplingConfig: {fileID: 11400000, guid: f85f0fe6d7ef05d42b52b3cc5ae2c931, type: 2}
+  skillConfig: {fileID: 11400000, guid: daeb0266d2f514b4ca377e7289e5b06d, type: 2}
   playerAnimator: {fileID: 486145106846040086}
   grapplingMuzzle: {fileID: 4263070464167727981}
   currentState: 

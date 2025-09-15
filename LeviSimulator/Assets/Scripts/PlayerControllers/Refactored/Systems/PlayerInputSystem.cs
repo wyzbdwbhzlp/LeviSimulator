@@ -23,12 +23,13 @@ namespace PlayerControllers.Refactored.Systems
         private InputAction _interactAction;
         private InputAction _restartFromCheckpointAction;
         private InputAction _bulletTimeAction;
+        private InputAction _dashAction;
         
         private UnityAction _interactActionCallback;
         
         public bool IsEnabled { get; set; } = true;
         
-        public void Initialize(PlayerController playerController,PlayerMovementConfig playerConfig)
+        public void Initialize(PlayerController playerController,ScriptableObject playerConfig)
         {
             if (playerInput == null)
                 playerInput = GetComponent<PlayerInput>();
@@ -53,6 +54,7 @@ namespace PlayerControllers.Refactored.Systems
             _interactAction = actionMap.FindAction("Interact");
             _restartFromCheckpointAction= actionMap.FindAction("RestartFromCheckpoint");
             _bulletTimeAction= actionMap.FindAction("BulletTime");
+            _dashAction= actionMap.FindAction("Dash");
             
             
             // 绑定输入事件
@@ -79,10 +81,18 @@ namespace PlayerControllers.Refactored.Systems
             _interactAction.started += CallInteractCallback;
             _bulletTimeAction.started += OnBulletTimeStarted;
             
+            _dashAction.started += OnDashStarted;
+            
             
             
             EnableInput();// 启用输入
             
+        }
+
+        private void OnDashStarted(InputAction.CallbackContext obj)
+        {
+            if (!IsEnabled) return;
+            PlayerInputEvents.TriggerDashPressed();
         }
 
         private void OnBulletTimeStarted(InputAction.CallbackContext obj)

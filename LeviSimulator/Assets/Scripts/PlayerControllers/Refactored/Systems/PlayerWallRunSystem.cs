@@ -35,13 +35,13 @@ namespace PlayerControllers.Refactored.Systems
         public float WallRunMinimumSpeed => _config?.WallRunMinimumSpeed ?? 2f;
         public LayerMask WallLayerMask => _config?.WallLayerMask ?? 1;
         
-        public void Initialize(PlayerController playerController, PlayerMovementConfig playerConfig)
+        public void Initialize(PlayerController playerController, ScriptableObject playerConfig)
         {
             _playerController = playerController;
             _runtimeData = playerController.RuntimeData;
             _movementSystem = playerController.MovementSystem;
             _cameraSystem = playerController.CameraSystem;
-            _config = playerConfig;
+            _config = playerConfig as PlayerMovementConfig;
             
             // 订阅输入事件
             PlayerInputEvents.OnJumpPressed += HandleWallJump;

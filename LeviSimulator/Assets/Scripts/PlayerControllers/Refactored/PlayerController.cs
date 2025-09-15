@@ -16,8 +16,9 @@ namespace PlayerControllers.Refactored
     public class PlayerController : MonoBehaviour
     {
         [Title("配置")]
-        [SerializeField][InlineEditor] private PlayerMovementConfig movementConfig;
+        [SerializeField][InlineEditor]private PlayerMovementConfig movementConfig;
         [SerializeField][InlineEditor]private PlayerGrapplingConfig grapplingConfig;
+        [SerializeField][InlineEditor]private PlayerSkillConfig skillConfig;
         [Title("组件引用")]
         [SerializeField] private Animator playerAnimator;
         [SerializeField] private Transform grapplingMuzzle;
@@ -38,6 +39,7 @@ namespace PlayerControllers.Refactored
         private PlayerCameraSystem _cameraSystem;
         private PlayerWallRunSystem _wallRunSystem;
         private PlayerGrapplingSystem _grapplingSystem;
+        private PlayerSkillSystem _skillSystem;
         
         // 核心组件
         private PlayerStateMachine _stateMachine;
@@ -167,19 +169,26 @@ namespace PlayerControllers.Refactored
                 _grapplingSystem = gameObject.AddComponent<PlayerGrapplingSystem>();
             _grapplingSystem.SetGrappleSetting(grapplingConfig,grapplingMuzzle);
             
+            _skillSystem = GetComponent<PlayerSkillSystem>();
+            if (_skillSystem == null)
+                _skillSystem = gameObject.AddComponent<PlayerSkillSystem>();
+            
             // 添加系统到列表
             _systems.Add(_inputSystem);
             _systems.Add(_movementSystem);
             _systems.Add(_wallRunSystem);
             _systems.Add(_grapplingSystem);
+            _systems.Add(_skillSystem);
             if (_cameraSystem != null)
                 _systems.Add(_cameraSystem);
             
             // 初始化所有系统
-            foreach (var system in _systems)
-            {
-                system.Initialize(this,movementConfig);
-            }
+            _inputSystem.Initialize(this,movementConfig);
+            _movementSystem.Initialize(this,movementConfig);
+            _cameraSystem?.Initialize(this,movementConfig);
+            _wallRunSystem.Initialize(this,movementConfig);
+            _grapplingSystem.Initialize(this,grapplingConfig);
+            _skillSystem.Initialize(this,skillConfig);
         }
         
         private void InitializeStates()
@@ -209,7 +218,6 @@ namespace PlayerControllers.Refactored
             PlayerInputEvents.OnCrouchReleased += HandleCrouchReleased;
             PlayerInputEvents.OnRestartFromCheckpointPressed += HandleRestartFromCheckpointPressed;
             PlayerInputEvents.OnRestartFromCheckpointReleased += HandleRestartFromCheckpointReleased;
-            PlayerInputEvents.OnBulletTimePressed += ToggleBulletTime;
             
             //订阅场景事件（如有）
         }
@@ -381,12 +389,6 @@ namespace PlayerControllers.Refactored
             playerCollider.material = material;
             currentPhysicsMaterial = material.name;
         }
-        /// <summary>
-        ///  切换子弹时间
-        /// </summary>
-        private void ToggleBulletTime()
-        {
-            GlobalManager.Instance.timeManager.ToggleBulletTime();
-        }
+
     }
 }
