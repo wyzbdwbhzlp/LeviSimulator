@@ -12,10 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44f292b8d4c84322bdac38e74d41ea71, type: 3}
   m_Name: PlayerSkillConfig
   m_EditorClassIdentifier: 
-  dashDuration: 1
+  dashDuration: 0.3
   dashDistance: 10
   dashCooldown: 5
   maxDashCount: 1
+  verticalRetention: 0.5
+  dashDirectionSmoothing: 12
+  moveInputThreshold: 0.01
+  useMaxVerticalAngle: 1
+  maxVerticalAngleDeg: 60
   maxBulletTimeEnergy: 5
   minEnableBulletTimeEnergy: 0.5
   bulletTimeCooldownFactor: 1

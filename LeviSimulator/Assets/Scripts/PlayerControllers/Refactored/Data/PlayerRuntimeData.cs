@@ -24,6 +24,7 @@ namespace PlayerControllers.Refactored.Data
         public int DashCount { get; set; } = 0;
         public bool CanDash => DashCount < 1;
         public void RecoverDash()=> DashCount +=1;
+        public bool IsDashing { get; set; } = false;
         // 子弹时间相关数据
         public bool IsInBulletTime { get; set; } = false;
         

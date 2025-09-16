@@ -18,6 +18,12 @@ namespace PlayerControllers.Refactored.States
         
         protected override void CheckTransitions()
         {
+            if (runtimeData.IsDashing)
+            {
+                ChangeState(PlayerState.Dashing);
+                return;
+            }
+
             // 检查是否可以开始滑墙
             var wallRunSystem = playerController.WallRunSystem;
             if (wallRunSystem != null && wallRunSystem.CanWallRun && 

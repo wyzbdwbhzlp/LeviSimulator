@@ -19,6 +19,12 @@ namespace PlayerControllers.Refactored.States
         
         protected override void CheckTransitions()
         {
+            if (runtimeData.IsDashing)
+            {
+                ChangeState(PlayerState.Dashing);
+                return;
+            }
+
             // 检查是否开始移动
             if (runtimeData.MoveInput.magnitude > 0.1f)
             {

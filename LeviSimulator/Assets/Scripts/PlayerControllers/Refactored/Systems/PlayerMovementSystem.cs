@@ -194,16 +194,9 @@ namespace PlayerControllers.Refactored.Systems
         public void ApplyDash(Vector3 dashVelocity)
         {
             if (!_runtimeData.CanDash) return;
-
-            Vector3 dashDirection = _runtimeData.MoveDirection;
-            if (dashDirection.magnitude < 0.1f)
-            {
-                // 如果没有输入方向，朝向当前前方
-                dashDirection = transform.forward;
-            }
-
+            
             // 应用冲刺速度
-            playerRigidbody.linearVelocity = new Vector3(dashVelocity.x, playerRigidbody.linearVelocity.y, dashVelocity.z);
+            playerRigidbody.linearVelocity = new Vector3(dashVelocity.x,dashVelocity.y, dashVelocity.z);
             _runtimeData.SetVelocity(playerRigidbody.linearVelocity);
             _runtimeData.SetGrappling(false); // 取消抓钩状态
             _runtimeData.SetJumping(false); // 取消跳跃状态

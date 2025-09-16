@@ -15,7 +15,8 @@ namespace PlayerControllers.Refactored.Core
         Jumping,
         Falling,
         Grappling,
-        WallRunning
+        WallRunning,
+        Dashing
     }
 
     /// <summary>

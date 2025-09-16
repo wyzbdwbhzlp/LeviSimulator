@@ -202,6 +202,7 @@ namespace PlayerControllers.Refactored
             _states[PlayerState.Crouching] = new CrouchingState(this);
             _states[PlayerState.Sliding] = new SlidingState(this);
             _states[PlayerState.WallRunning] = new WallRunningState(this);
+            _states[PlayerState.Dashing] = new DashState(this);
             
             // 注册状态到状态机
             foreach (var kvp in _states)
