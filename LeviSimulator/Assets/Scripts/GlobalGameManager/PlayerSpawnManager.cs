@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using PlayerControllers.Refactored;
 using PlayerControllers.Refactored.Core;
@@ -90,34 +91,38 @@ namespace GlobalGameManager
         ///  场景加载完毕后生成玩家
         /// </summary>
         /// <returns></returns>
-        private GameObject SpawnPlayer()
+        private void SpawnPlayer()
         {
             if (_initialSpawnInfo.Position == Vector3.zero)
             {
                 LogUtil.LogWarning("玩家生成点未设置，请通过EventBroadcaster.OnPlayerReadySpawn事件设置生成点");
             }
-            return CreatePlayerBySpawnInfo(_initialSpawnInfo);
+            StartCoroutine(CreatePlayerBySpawnInfo(_initialSpawnInfo));
         }
-        private GameObject CreatePlayerBySpawnInfo(PlayerSpawnInfo spawnInfo)
+        private IEnumerator CreatePlayerBySpawnInfo(PlayerSpawnInfo spawnInfo,bool isRebirth=false)
         {
             if (playerPrefab == null)
             {
                 Debug.LogError("玩家预制体未设置！");
-                return null;
+                yield  break;
             }
             var spawnPosition = spawnInfo.Position;
             var spawnRotation = spawnInfo.Rotation;
             GameObject player = Instantiate(playerPrefab, spawnPosition, spawnRotation);
             player.name = "Player";
             
-            
             _currentPlayer = player;
             _spawnedPlayers.Add(player);
             Debug.Log($"玩家已生成在位置: {spawnPosition}");
-            StartCoroutine(DelayedInputSetup(player));
-
-
-            return player;
+            yield return StartCoroutine(DelayedInputSetup(player));
+            if (isRebirth)
+            {
+                OnPlayerRebirth?.Invoke(player);
+            }
+            else
+            {
+                OnPlayerSpawned?.Invoke(player);
+            }
         }
         /// <summary>
         ///  复活玩家
@@ -133,10 +138,10 @@ namespace GlobalGameManager
                 LogUtil.Log("玩家存档点未设置，使用初始生成点");
                 spawnInfo = _initialSpawnInfo;
             }
-            CreatePlayerBySpawnInfo(spawnInfo);
+            StartCoroutine(CreatePlayerBySpawnInfo(spawnInfo,true));
             
         }
-        private System.Collections.IEnumerator DelayedInputSetup(GameObject player)
+        private IEnumerator DelayedInputSetup(GameObject player)
         {
             yield return new WaitForEndOfFrame();
 
@@ -152,16 +157,6 @@ namespace GlobalGameManager
                 LogUtil.Log("玩家完全重新初始化完成");
             }
             
-            yield return null;
-            
-            if (playerController.IsSystemAllInitialized())// 确保所有子系统都初始化完成
-            {
-                OnPlayerSpawned?.Invoke(player);
-            }
-            else
-            {
-                LogUtil.LogError("玩家子系统未能正确初始化，可能会导致输入异常", true);
-            }
         }
         /// <summary>
         ///  销毁玩家
