@@ -29,6 +29,7 @@ namespace PlayerControllers.Refactored.Core
         void FixedUpdate();
         void Exit();
         bool CanTransitionTo(PlayerState targetState);
+        void OnJumpPressed();
     }
 
     /// <summary>

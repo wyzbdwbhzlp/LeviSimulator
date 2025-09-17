@@ -11,7 +11,9 @@ namespace PlayerControllers.Refactored.Core
         void Initialize(PlayerController playerController,ScriptableObject playerConfig);
         void Update();
         void FixedUpdate();
-        void Cleanup();
+        void CleanUp();
+        
+
         bool IsEnabled { get; set; }
     }
 }

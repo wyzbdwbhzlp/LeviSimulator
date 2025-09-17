@@ -47,7 +47,15 @@ namespace PlayerControllers.Refactored.States
         {
             return true; // 默认允许所有转换
         }
-        
+
+        public virtual void OnJumpPressed()
+        {
+            if (runtimeData.IsGrounded && playerController.StateMachine.CurrentState != PlayerState.Crouching)
+            {
+                ChangeState(PlayerState.Jumping);
+            }
+        }
+
         /// <summary>
         /// 检查状态转换条件
         /// </summary>

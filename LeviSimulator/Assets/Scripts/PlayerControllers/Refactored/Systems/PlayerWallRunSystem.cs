@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
@@ -43,10 +44,18 @@ namespace PlayerControllers.Refactored.Systems
             _cameraSystem = playerController.CameraSystem;
             _config = playerConfig as PlayerMovementConfig;
             
-            // 订阅输入事件
+        }
+
+        private void OnEnable()
+        {
+            SubscribeToEvents();
+        }
+
+        private void SubscribeToEvents()
+        {
             PlayerInputEvents.OnJumpPressed += HandleWallJump;
         }
-        
+
         public void Update()
         {
             if (!IsEnabled) return;
@@ -228,7 +237,7 @@ namespace PlayerControllers.Refactored.Systems
             return Mathf.Sign(localNormal.x);
         }
         
-        public void Cleanup()
+        public void UnsubscribeToEvents()
         {
             PlayerInputEvents.OnJumpPressed -= HandleWallJump;
             if (isWallRunning)
@@ -237,9 +246,13 @@ namespace PlayerControllers.Refactored.Systems
             }
         }
         
-        private void OnDestroy()
+        private void OnDisable()
         {
-            Cleanup();
+            UnsubscribeToEvents();
+        }
+        public void CleanUp()
+        {
+           
         }
         
         // 调试绘制

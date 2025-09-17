@@ -16,15 +16,14 @@ namespace PlayerControllers.Refactored.Systems
         [Title("运行中数据")] [ReadOnly] [SerializeField] [LabelText("冲刺冷却计时")]
         private float dashCoolDownTimer;
 
-        [ReadOnly] [SerializeField] [LabelText("当前冲刺数量")]
-        private int currentDashCount;
+        [ReadOnly] [ShowInInspector] [LabelText("当前冲刺数量")]
+        private int currentDashCount=>_playerRuntimeData.DashCount;
 
-        [ReadOnly] [SerializeField] [LabelText("子弹时间计时")]
-        private float bulletTimeEnergy;
+        [ReadOnly] [ShowInInspector] [LabelText("子弹时间计时")]
+        private float bulletTimeEnergy=>_playerRuntimeData.BulletTimeEnergy;
 
 
         private Vector3 _dashDirectionSmooth = Vector3.forward;
-        private Vector3 _lastNonZeroDashDirection = Vector3.forward;
 
 
         private Coroutine _rechargeCoroutine;
@@ -32,6 +31,8 @@ namespace PlayerControllers.Refactored.Systems
         private PlayerController _playerController;
         private PlayerSkillConfig _skillConfig;
         private PlayerRuntimeData _playerRuntimeData;
+        
+        private TimeManager timeManager=>GlobalManager.Instance?.timeManager;
 
         public void Initialize(PlayerController playerController, ScriptableObject playerConfig)
         {
@@ -45,27 +46,38 @@ namespace PlayerControllers.Refactored.Systems
             _playerController = playerController;
             _playerRuntimeData = playerController.RuntimeData;
 
-            currentDashCount = _skillConfig.MaxDashCount;
-            bulletTimeEnergy = _skillConfig.MaxBulletTimeEnergy;
-
-            // // 初始化冲刺方向为摄像机前方（水平）
-            // UpdateDefaultDashDirection(Vector2.zero);
-            _lastNonZeroDashDirection = _dashDirectionSmooth;
+            _playerRuntimeData.DashCount = _skillConfig.MaxDashCount;
+            _playerRuntimeData.BulletTimeEnergy = _skillConfig.MaxBulletTimeEnergy;
+            
         }
 
         private void OnEnable()
         {
-            PlayerInputEvents.OnBulletTimePressed += HandleBulletTimePressed;
-            PlayerInputEvents.OnDashPressed += TryUseDash;
+            SubscribeToEvents();
             // PlayerInputEvents.OnLookInput += UpdateDefaultDashDirection;
         }
 
 
         private void OnDisable()
         {
+            UnsubscribeToEvents();
+            // PlayerInputEvents.OnLookInput -= UpdateDefaultDashDirection;
+        }
+
+        public void UnsubscribeToEvents()
+        {
             PlayerInputEvents.OnBulletTimePressed -= HandleBulletTimePressed;
             PlayerInputEvents.OnDashPressed -= TryUseDash;
-            // PlayerInputEvents.OnLookInput -= UpdateDefaultDashDirection;
+        }
+
+        private void SubscribeToEvents()
+        {
+            PlayerInputEvents.OnBulletTimePressed += HandleBulletTimePressed;
+            PlayerInputEvents.OnDashPressed += TryUseDash;
+        }
+        public void CleanUp()
+        {
+           
         }
 
         private void HandleBulletTimePressed()
@@ -90,10 +102,7 @@ namespace PlayerControllers.Refactored.Systems
         public void FixedUpdate()
         {
         }
-
-        public void Cleanup()
-        {
-        }
+        
 
         #region 冲刺相关
 
@@ -101,7 +110,7 @@ namespace PlayerControllers.Refactored.Systems
         {
             if (currentDashCount > 0)
             {
-                currentDashCount--;
+                _playerRuntimeData.ConsumeDash();// 消耗一次冲刺
                 if (_rechargeCoroutine == null)
                 {
                     _rechargeCoroutine = StartCoroutine(DashCoolDownCoroutine());
@@ -123,6 +132,7 @@ namespace PlayerControllers.Refactored.Systems
             _playerController.RuntimeData.IsDashing= false;
             // 冲刺结束后的逻辑（如果有）
         }
+        
         private Vector3 CalculateDashVelocity()
         {
             // 始终使用摄像机朝向作为冲刺方向
@@ -177,7 +187,7 @@ namespace PlayerControllers.Refactored.Systems
                     yield return null;
                 }
 
-                currentDashCount++;
+                _playerRuntimeData.RecoverDash();
                 LogUtil.Log($"冲刺冷却完毕{currentDashCount}");
             }
 
@@ -191,7 +201,7 @@ namespace PlayerControllers.Refactored.Systems
             if (bulletTimeEnergy >= _skillConfig.MinEnableBulletTimeEnergy)
             {
                 _playerRuntimeData.IsInBulletTime = true;
-                GlobalManager.Instance.timeManager.StartBulletTime(_skillConfig.BulletTimeScale);
+                timeManager.StartBulletTime(_skillConfig.BulletTimeScale);
             }
             else
             {
@@ -202,7 +212,7 @@ namespace PlayerControllers.Refactored.Systems
         private void StopBulletTime()
         {
             _playerRuntimeData.IsInBulletTime = false;
-            GlobalManager.Instance.timeManager.EndBulletTime();
+            timeManager.EndBulletTime();
         }
 
         /// <summary>
@@ -212,20 +222,20 @@ namespace PlayerControllers.Refactored.Systems
         {
             if (_playerRuntimeData.IsInBulletTime)
             {
-                bulletTimeEnergy -= Time.unscaledDeltaTime;
+                _playerRuntimeData.BulletTimeEnergy -= Time.unscaledDeltaTime;
                 if (bulletTimeEnergy <= 0)
                 {
-                    bulletTimeEnergy = 0;
+                    _playerRuntimeData.BulletTimeEnergy = 0;
                     StopBulletTime();
                 }
             }
             else if (!_playerRuntimeData.IsInBulletTime &&
                      bulletTimeEnergy < _skillConfig.MaxBulletTimeEnergy)
             {
-                bulletTimeEnergy += Time.unscaledDeltaTime * _skillConfig.BulletTimeCooldownFactor;
+                _playerRuntimeData.BulletTimeEnergy += Time.unscaledDeltaTime * _skillConfig.BulletTimeCooldownFactor;
                 if (bulletTimeEnergy > _skillConfig.MaxBulletTimeEnergy)
                 {
-                    bulletTimeEnergy = _skillConfig.MaxBulletTimeEnergy;
+                    _playerRuntimeData.BulletTimeEnergy = _skillConfig.MaxBulletTimeEnergy;
                 }
             }
         }

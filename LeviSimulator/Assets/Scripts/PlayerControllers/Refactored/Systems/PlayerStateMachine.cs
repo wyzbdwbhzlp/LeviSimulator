@@ -14,11 +14,21 @@ namespace PlayerControllers.Refactored.Systems
         private Animator _playerAnimator;
         private PlayerController _playerController;
         public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
+        public IState CurrentStateInstance => _currentStateInstance;
 
         public PlayerStateMachine(PlayerController playerController)
         {
             _playerController = playerController;
             _playerAnimator = playerController.PlayerAnimator;
+        }
+        public void Initialize(PlayerState initialState)
+        {
+            if (_states.ContainsKey(initialState))
+            {
+                CurrentState = initialState;
+                _currentStateInstance = _states[initialState];
+                _currentStateInstance?.Enter();
+            }
         }
 
         public void RegisterState(PlayerState state, IState stateInstance)
@@ -164,16 +174,7 @@ namespace PlayerControllers.Refactored.Systems
                     break;
             }
         }
-        
-        public void Initialize(PlayerState initialState)
-        {
-            if (_states.ContainsKey(initialState))
-            {
-                CurrentState = initialState;
-                _currentStateInstance = _states[initialState];
-                _currentStateInstance?.Enter();
-            }
-        }
+                
         
         public void Cleanup()
         {

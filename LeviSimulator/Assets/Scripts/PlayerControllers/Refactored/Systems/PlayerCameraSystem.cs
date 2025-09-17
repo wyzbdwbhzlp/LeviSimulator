@@ -48,7 +48,9 @@ namespace PlayerControllers.Refactored.Systems
         
         // 当前输入（用于即时响应）
         private Vector2 _currentLookInput;
-        
+
+
+
         public bool IsEnabled { get; set; } = true;
         public Transform CameraTransform => playerCamera.transform;
         public Camera Camera => playerCamera;
@@ -64,15 +66,23 @@ namespace PlayerControllers.Refactored.Systems
                 playerCamera = GetComponentInChildren<Camera>();
             if (playerBody == null)
                 playerBody = playerController.transform;// 默认使用玩家物体作为身体
-                
-            // 订阅输入事件
-            PlayerInputEvents.OnLookInput += HandleLookInput;
+            
             
             // 锁定光标
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
-        
+
+        private void OnEnable()
+        {
+            SubscribeToEvents();
+        }
+
+        private void SubscribeToEvents()
+        {
+            PlayerInputEvents.OnLookInput += HandleLookInput;
+        }
+
         public void Update()
         {
             if (!IsEnabled) return;
@@ -315,14 +325,17 @@ namespace PlayerControllers.Refactored.Systems
         }
         
         
-        public void Cleanup()
+        public void UnsubscribeToEvents()
         {
             PlayerInputEvents.OnLookInput -= HandleLookInput;
         }
-        
-        private void OnDestroy()
+        public void CleanUp()
         {
-            Cleanup();
+          
+        }
+        private void OnDisable()
+        {
+            UnsubscribeToEvents();
         }
     }
 }

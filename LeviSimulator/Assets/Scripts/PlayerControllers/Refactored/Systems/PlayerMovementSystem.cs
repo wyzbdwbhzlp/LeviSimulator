@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using ExternPropertyAttributes;
@@ -50,14 +51,20 @@ namespace PlayerControllers.Refactored.Systems
             _originalColliderCenter = playerCollider.center;
             _originalColliderHeight = playerCollider.height;
 
-            // 订阅输入事件
-            PlayerInputEvents.OnMoveInput += HandleMoveInput;
-            PlayerInputEvents.OnSprintPressed += HandleSprintPressed;
-            PlayerInputEvents.OnSprintReleased += HandleSprintReleased;
-
             // 应用配置
             this.config = playerConfig as PlayerMovementConfig;
 
+        }
+
+        private void OnEnable()
+        {
+            SubscribeToEvents();//订阅事件
+        }
+        private void SubscribeToEvents()
+        {
+            PlayerInputEvents.OnMoveInput += HandleMoveInput;
+            PlayerInputEvents.OnSprintPressed += HandleSprintPressed;
+            PlayerInputEvents.OnSprintReleased += HandleSprintReleased;
         }
 
         public void Update()
@@ -232,16 +239,20 @@ namespace PlayerControllers.Refactored.Systems
             return Physics.Raycast(rayStart, Vector3.up, rayDistance, config.GroundLayerMask);
         }
 
-        public void Cleanup()
+        public void UnsubscribeToEvents()
         {
             PlayerInputEvents.OnMoveInput -= HandleMoveInput;
             PlayerInputEvents.OnSprintPressed -= HandleSprintPressed;
             PlayerInputEvents.OnSprintReleased -= HandleSprintReleased;
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
-            Cleanup();
+            UnsubscribeToEvents();
+        }
+        public void CleanUp()
+        {
+           
         }
 
         public void EnablePlayerGravity()

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using PlayerControllers.Refactored.Core;
@@ -33,30 +34,13 @@ namespace PlayerControllers.Refactored.Systems
         {
             if (playerInput == null)
                 playerInput = GetComponent<PlayerInput>();
-                
+            
             SetupInputActions();
         }
+        
 
-        public void Update() { }
-
-        public void FixedUpdate() { }
-
-        public void SetupInputActions()
+        private void SubscribeToEvents()
         {
-            var actionMap = playerInput.actions;
-            
-            _moveAction = actionMap.FindAction("Move");
-            _lookAction = actionMap.FindAction("Look");
-            _jumpAction = actionMap.FindAction("Jump");
-            _crouchAction = actionMap.FindAction("Crouch");
-            _sprintAction = actionMap.FindAction("Sprint");
-            _grappleAction = actionMap.FindAction("Grapple");
-            _interactAction = actionMap.FindAction("Interact");
-            _restartFromCheckpointAction= actionMap.FindAction("RestartFromCheckpoint");
-            _bulletTimeAction= actionMap.FindAction("BulletTime");
-            _dashAction= actionMap.FindAction("Dash");
-            
-            
             // 绑定输入事件
             _moveAction.performed += OnMovePerformed;
             _moveAction.canceled += OnMoveCanceled;
@@ -82,7 +66,84 @@ namespace PlayerControllers.Refactored.Systems
             _bulletTimeAction.started += OnBulletTimeStarted;
             
             _dashAction.started += OnDashStarted;
+        }
+
+        public void UnsubscribeToEvents()
+        {
+            if (_moveAction != null)
+            {
+                _moveAction.performed -= OnMovePerformed;
+                _moveAction.canceled -= OnMoveCanceled;
+            }
+            if (_lookAction != null)
+                _lookAction.performed -= OnLookPerformed;
+            if (_jumpAction != null)
+            {
+                _jumpAction.started -= OnJumpStarted;
+                _jumpAction.canceled -= OnJumpCanceled;
+            }
+            if (_crouchAction != null)
+            {
+                _crouchAction.started -= OnCrouchStarted;
+                _crouchAction.canceled -= OnCrouchCanceled;
+            }
+            if (_sprintAction != null)
+            {
+                _sprintAction.started -= OnSprintStarted;
+                _sprintAction.canceled -= OnSprintCanceled;
+            }
+            if (_grappleAction != null)
+            {
+                _grappleAction.started -= OnGrappleStarted;
+                _grappleAction.canceled -= OnGrappleCanceled;
+            }
+            if (_restartFromCheckpointAction != null)
+            {
+                _restartFromCheckpointAction.started -= OnRestartFromCheckpointStarted;
+                _restartFromCheckpointAction.canceled -= OnRestartFromCheckpointCanceled;
+            }
+            if (_interactAction != null)
+                _interactAction.started -= CallInteractCallback;
+            if (_bulletTimeAction != null)
+                _bulletTimeAction.started -= OnBulletTimeStarted;
+            if (_dashAction != null)
+                _dashAction.started -= OnDashStarted;
+        }
+
+        public void Update() { }
+
+        public void FixedUpdate() { }
+        public void CleanUp()
+        {
+            PlayerInputEvents.ClearAllEvents();
+            DisableInput();
+        }
+        private void OnDisable()
+        {
+            UnsubscribeToEvents();
+        }
+        private void OnDestroy()
+        {
+            CleanUp();
+        }
+
+        public void SetupInputActions()
+        {
+            var actionMap = playerInput.actions;
             
+            _moveAction = actionMap.FindAction("Move");
+            _lookAction = actionMap.FindAction("Look");
+            _jumpAction = actionMap.FindAction("Jump");
+            _crouchAction = actionMap.FindAction("Crouch");
+            _sprintAction = actionMap.FindAction("Sprint");
+            _grappleAction = actionMap.FindAction("Grapple");
+            _interactAction = actionMap.FindAction("Interact");
+            _restartFromCheckpointAction= actionMap.FindAction("RestartFromCheckpoint");
+            _bulletTimeAction= actionMap.FindAction("BulletTime");
+            _dashAction= actionMap.FindAction("Dash");
+            
+            
+            SubscribeToEvents();
             
             
             EnableInput();// 启用输入
@@ -207,15 +268,5 @@ namespace PlayerControllers.Refactored.Systems
             _interactActionCallback = null;
         }
         
-        public void Cleanup()
-        {
-            PlayerInputEvents.ClearAllEvents();
-            DisableInput();
-        }
-        
-        private void OnDestroy()
-        {
-            Cleanup();
-        }
     }
 }

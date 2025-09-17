@@ -250,11 +250,12 @@ namespace PlayerControllers.Refactored
 
         private void HandleJumpPressed()
         {
-            // 只有在地面上才能跳跃
-            if (_runtimeData.IsGrounded && _stateMachine.CurrentState != PlayerState.Crouching)
-            {
-                _stateMachine.ChangeState(PlayerState.Jumping);
-            }
+            _stateMachine.CurrentStateInstance.OnJumpPressed();
+            // // 只有在地面上才能跳跃
+            // if (_runtimeData.IsGrounded && _stateMachine.CurrentState != PlayerState.Crouching)
+            // {
+            //     _stateMachine.ChangeState(PlayerState.Jumping);
+            // }
         }
         
         private void HandleCrouchPressed()
@@ -333,24 +334,32 @@ namespace PlayerControllers.Refactored
             
             Debug.Log("Player reset complete");
         }
-        
+        private void OnDisable()
+        {
+            UnsubscribeToEvents();// 取消订阅所有事件
+        }
         private void OnDestroy()
         {
-            // 清理事件订阅
-            PlayerInputEvents.OnJumpPressed -= HandleJumpPressed;
-            PlayerInputEvents.OnCrouchPressed -= HandleCrouchPressed;
-            PlayerInputEvents.OnCrouchReleased -= HandleCrouchReleased;
-            
             // 清理所有系统
             foreach (var system in _systems)
             {
-                system.Cleanup();
+                system.CleanUp();
+                Destroy(system as MonoBehaviour);
             }
             
             // 清理状态机
             _stateMachine?.Cleanup();
         }
-        
+
+        private void UnsubscribeToEvents()
+        {
+            PlayerInputEvents.OnJumpPressed -= HandleJumpPressed;
+            PlayerInputEvents.OnCrouchPressed -= HandleCrouchPressed;
+            PlayerInputEvents.OnCrouchReleased -= HandleCrouchReleased;
+            PlayerInputEvents.OnRestartFromCheckpointPressed -= HandleRestartFromCheckpointPressed;
+            PlayerInputEvents.OnRestartFromCheckpointReleased -= HandleRestartFromCheckpointReleased;
+        }
+
         private void OnValidate()
         {
             // 确保配置文件已分配
