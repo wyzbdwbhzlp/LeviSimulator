@@ -27,8 +27,11 @@ namespace PlayerControllers.Refactored.Systems
         private InputAction _dashAction;
         
         private UnityAction _interactActionCallback;
-        
+
+    
+
         public bool IsEnabled { get; set; } = true;
+        public bool IsInitialized { get; set; } = false;
         
         public void Initialize(PlayerController playerController,ScriptableObject playerConfig)
         {
@@ -36,8 +39,14 @@ namespace PlayerControllers.Refactored.Systems
                 playerInput = GetComponent<PlayerInput>();
             
             SetupInputActions();
+            IsInitialized = true;
         }
-        
+
+        private void RefreshEventSubscription()
+        {
+            UnsubscribeToEvents();
+            SubscribeToEvents();
+        }
 
         private void SubscribeToEvents()
         {
@@ -141,9 +150,9 @@ namespace PlayerControllers.Refactored.Systems
             _restartFromCheckpointAction= actionMap.FindAction("RestartFromCheckpoint");
             _bulletTimeAction= actionMap.FindAction("BulletTime");
             _dashAction= actionMap.FindAction("Dash");
-            
-            
-            SubscribeToEvents();
+
+
+            RefreshEventSubscription();
             
             
             EnableInput();// 启用输入

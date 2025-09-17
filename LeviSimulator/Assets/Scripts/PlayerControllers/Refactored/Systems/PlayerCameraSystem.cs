@@ -49,9 +49,10 @@ namespace PlayerControllers.Refactored.Systems
         // 当前输入（用于即时响应）
         private Vector2 _currentLookInput;
 
-
+        
 
         public bool IsEnabled { get; set; } = true;
+        public bool IsInitialized { get; set; } = false;
         public Transform CameraTransform => playerCamera.transform;
         public Camera Camera => playerCamera;
         
@@ -66,15 +67,18 @@ namespace PlayerControllers.Refactored.Systems
                 playerCamera = GetComponentInChildren<Camera>();
             if (playerBody == null)
                 playerBody = playerController.transform;// 默认使用玩家物体作为身体
-            
-            
+
+            RefreshEventSubscription(); // 订阅事件
             // 锁定光标
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            IsInitialized = true;
         }
 
-        private void OnEnable()
+
+        private void RefreshEventSubscription()
         {
+            UnsubscribeToEvents();
             SubscribeToEvents();
         }
 

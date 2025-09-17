@@ -15,5 +15,6 @@ namespace PlayerControllers.Refactored.Core
         
 
         bool IsEnabled { get; set; }
+        bool IsInitialized { get; set; }
     }
 }

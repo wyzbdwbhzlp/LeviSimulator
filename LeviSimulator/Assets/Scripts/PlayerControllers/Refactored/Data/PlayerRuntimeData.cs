@@ -24,7 +24,7 @@ namespace PlayerControllers.Refactored.Data
         public Vector3 WallNormal { get; private set; }
         // 冲刺相关数据
         public int DashCount { get; set; } = 0;
-        public bool CanDash => DashCount < 1;
+        public bool CanDash => DashCount >= 1;
         public void RecoverDash()=> DashCount +=1;
         public void ConsumeDash()=> DashCount -=1;
         public bool IsDashing { get; set; } = false;
@@ -118,6 +118,41 @@ namespace PlayerControllers.Refactored.Data
             
             // 如果法线的x分量为负，则墙在右边，反之在左边
             return Mathf.Sign(localNormal.x);
+        }
+
+        public void ResetToDefault()
+        {
+            CurrentState = PlayerState.Idle;
+            PreviousState = PlayerState.Idle;
+            Velocity = Vector3.zero;
+            DashCount = 0;
+            IsDashing = false;
+            BulletTimeEnergy = 1f;
+            IsInBulletTime = false;
+            MoveInput = Vector2.zero;
+            LookInput = Vector2.zero;
+            MoveDirection = Vector3.zero;
+            IsGrounded = false;
+            IsSprinting = false;
+            IsCrouching = false;
+            IsJumping = false;
+            IsSliding = false;
+            IsGrappling = false;
+            IsWallRunning = false;
+            GroundHit = new RaycastHit();
+            GroundNormal = Vector3.up;
+            GroundAngle = 0f;
+            StateEnterTime = Time.time;
+            TimeSinceGrounded = 0f;
+            TimeSinceJump = 0f;
+            WallNormal = Vector3.zero;
+            ResetSkillState();
+        }
+        public void ResetSkillState()
+        {
+            DashCount = 1;
+            IsDashing = false;
+            IsInBulletTime = false;
         }
     }
 }

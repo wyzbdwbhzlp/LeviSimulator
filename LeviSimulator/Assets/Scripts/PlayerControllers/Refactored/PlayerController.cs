@@ -61,10 +61,7 @@ namespace PlayerControllers.Refactored
         public Animator PlayerAnimator => playerAnimator;
         public Transform GrapplingMuzzle => grapplingMuzzle;
 
-        private void Awake()
-        {
-            Initialize();
-        }
+        
         public void Initialize()
         {
             InitializeSceneObjects();
@@ -72,6 +69,18 @@ namespace PlayerControllers.Refactored
             InitializeSystems();
             InitializeStates();
             SubscribeToEvents();
+            
+            _stateMachine.Initialize(PlayerState.Idle);
+        }
+
+        public bool IsSystemAllInitialized()
+        {
+            foreach (var system in _systems)
+            {
+                if (!system.IsInitialized)
+                    return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -88,12 +97,6 @@ namespace PlayerControllers.Refactored
                     LogUtil.LogWarning("PlayerAnimator未分配且在子对象中未找到Animator组件");
                 }
             }
-        }
-
-        private void Start()
-        {
-            // 启动状态机
-            _stateMachine.Initialize(PlayerState.Idle);
         }
         
         private void Update()
@@ -349,6 +352,7 @@ namespace PlayerControllers.Refactored
             
             // 清理状态机
             _stateMachine?.Cleanup();
+            _runtimeData = null;
         }
 
         private void UnsubscribeToEvents()
@@ -399,6 +403,6 @@ namespace PlayerControllers.Refactored
             playerCollider.material = material;
             currentPhysicsMaterial = material.name;
         }
-
+        
     }
 }

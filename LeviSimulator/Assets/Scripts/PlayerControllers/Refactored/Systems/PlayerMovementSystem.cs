@@ -27,9 +27,11 @@ namespace PlayerControllers.Refactored.Systems
         private Vector3 _originalColliderCenter;
         private float _originalColliderHeight;
         private Queue<IEnumerator> _dashCoolDownQueue = new Queue<IEnumerator>();
-        private bool _isDashCooldownRunning = false;
-        
+
+     
+
         public bool IsEnabled { get; set; } = true;
+        public bool IsInitialized { get; set; }
         public Rigidbody Rigidbody => playerRigidbody;
         public CapsuleCollider PlayerCollider => playerCollider;
         public PlayerMovementConfig Config => config;
@@ -53,11 +55,12 @@ namespace PlayerControllers.Refactored.Systems
 
             // 应用配置
             this.config = playerConfig as PlayerMovementConfig;
-
+            RefreshEventSubscription();
         }
 
-        private void OnEnable()
+        private void RefreshEventSubscription()
         {
+            UnsubscribeToEvents();
             SubscribeToEvents();//订阅事件
         }
         private void SubscribeToEvents()

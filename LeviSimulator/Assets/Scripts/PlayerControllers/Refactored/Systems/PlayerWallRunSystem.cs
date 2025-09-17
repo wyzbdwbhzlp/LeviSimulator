@@ -28,6 +28,7 @@ namespace PlayerControllers.Refactored.Systems
         
         // 公共访问器
         public bool IsEnabled { get; set; } = true;
+        public bool IsInitialized { get; set; } = false;
         public bool IsWallRunning => isWallRunning;
         public bool CanWallRun => canWallRun;
         public Vector3 WallNormal => wallNormal;
@@ -43,11 +44,15 @@ namespace PlayerControllers.Refactored.Systems
             _movementSystem = playerController.MovementSystem;
             _cameraSystem = playerController.CameraSystem;
             _config = playerConfig as PlayerMovementConfig;
-            
+
+            RefreshEventSubscription();
+            IsInitialized = true;
+
         }
 
-        private void OnEnable()
+        private void RefreshEventSubscription()
         {
+            UnsubscribeToEvents();
             SubscribeToEvents();
         }
 

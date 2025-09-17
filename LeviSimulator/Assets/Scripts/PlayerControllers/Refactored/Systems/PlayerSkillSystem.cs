@@ -31,7 +31,7 @@ namespace PlayerControllers.Refactored.Systems
         private PlayerController _playerController;
         private PlayerSkillConfig _skillConfig;
         private PlayerRuntimeData _playerRuntimeData;
-        
+        public bool IsInitialized { get; set; } = false;
         private TimeManager timeManager=>GlobalManager.Instance?.timeManager;
 
         public void Initialize(PlayerController playerController, ScriptableObject playerConfig)
@@ -48,11 +48,13 @@ namespace PlayerControllers.Refactored.Systems
 
             _playerRuntimeData.DashCount = _skillConfig.MaxDashCount;
             _playerRuntimeData.BulletTimeEnergy = _skillConfig.MaxBulletTimeEnergy;
-            
+            RefreshEventSubscription();
+            IsInitialized = true;
         }
 
-        private void OnEnable()
+        private void RefreshEventSubscription()
         {
+            UnsubscribeToEvents();
             SubscribeToEvents();
             // PlayerInputEvents.OnLookInput += UpdateDefaultDashDirection;
         }

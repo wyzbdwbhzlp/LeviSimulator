@@ -31,11 +31,16 @@ namespace PlayerControllers.Refactored.Systems
             
             _grappleCableRenderer = _grappleMuzzleTransform.gameObject.GetComponent<GrappleCableRenderer>();
             _grappleCableRenderer.SetGrappleHook(_grappleHook);
-            
+
+            RefreshEventSubscription();
+
+            IsInitialized = true;
+
         }
 
-        private void OnEnable()
+        private void RefreshEventSubscription()
         {
+            UnsubscribeToEvents();
             SubscribeToEvents();
         }
 
@@ -80,10 +85,12 @@ namespace PlayerControllers.Refactored.Systems
             _grappleHook?.StopGrapple();
             _inputDirectionTween?.Kill();
         }
+        
 
 
         public bool IsEnabled { get; set; }
-        
+        public bool IsInitialized { get; set; } = false;
+
         // 公开方法供外部调用
         public void StartGrapple() => _grappleHook?.StartGrapple();
         public void StopGrapple() => _grappleHook?.StopGrapple();
