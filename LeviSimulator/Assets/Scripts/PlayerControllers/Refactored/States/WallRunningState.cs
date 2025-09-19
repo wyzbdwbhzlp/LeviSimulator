@@ -89,7 +89,7 @@ namespace PlayerControllers.Refactored.States
             if (velocity.y < 0) // 只在下落时抵消重力
             {
                 Vector3 gravityCounterForce = Vector3.up * (config.Gravity * 0.8f); // 轻微的重力抵消
-                movementSystem.Rigidbody.AddForce(gravityCounterForce, ForceMode.Acceleration);
+                movementSystem.AddPlayerRigidbodyForce(gravityCounterForce, ForceMode.Acceleration);
             }
         }
         

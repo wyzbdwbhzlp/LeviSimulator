@@ -57,7 +57,7 @@ namespace PlayerControllers.Refactored.States
                 Vector3 velocity = movementSystem.Rigidbody.linearVelocity;
                 velocity.x = Mathf.MoveTowards(velocity.x, 0, config.Deceleration * Time.fixedDeltaTime);
                 velocity.z = Mathf.MoveTowards(velocity.z, 0, config.Deceleration * Time.fixedDeltaTime);
-                movementSystem.Rigidbody.linearVelocity = velocity;
+                movementSystem.SetPlayerLinearVelocity(velocity);
             }
         }
     }

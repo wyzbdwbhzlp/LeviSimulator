@@ -24,7 +24,6 @@ namespace PlayerControllers.Refactored.Data
         public Vector3 WallNormal { get; private set; }
         // 冲刺相关数据
         public int DashCount { get; set; } = 0;
-        public bool CanDash => DashCount >= 1;
         public void RecoverDash()=> DashCount +=1;
         public void ConsumeDash()=> DashCount -=1;
         public bool IsDashing { get; set; } = false;

@@ -201,7 +201,7 @@ namespace PlayerControllers.Refactored.Systems
         {
             Vector3 velocity = _movementSystem.Rigidbody.linearVelocity;
             velocity.y = 0;
-            _movementSystem.Rigidbody.linearVelocity = velocity;
+            _movementSystem.SetPlayerLinearVelocity(velocity);
         }
         
         public void StopWallRun()
@@ -228,8 +228,8 @@ namespace PlayerControllers.Refactored.Systems
             Vector3 upwardForce = Vector3.up * _config.WallJumpForce;
             Vector3 bounceForce = wallNormal * _config.WallJumpBounceForce;
             
-            _movementSystem.Rigidbody.linearVelocity = Vector3.zero;
-            _movementSystem.Rigidbody.AddForce(upwardForce + bounceForce, ForceMode.Impulse);
+            _movementSystem.SetPlayerLinearVelocity(Vector3.zero);
+            _movementSystem.AddPlayerRigidbodyForce(upwardForce + bounceForce, ForceMode.Impulse);
             
             // 切换到跳跃状态
             _playerController.ForceChangeState(PlayerState.Jumping);

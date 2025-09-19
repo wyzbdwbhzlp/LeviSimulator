@@ -403,6 +403,11 @@ namespace PlayerControllers.Refactored
             playerCollider.material = material;
             currentPhysicsMaterial = material.name;
         }
-        
+
+        public void SetPlayerPostion(Vector3 position)
+        {
+            transform.position = position;
+        }
+
     }
 }
