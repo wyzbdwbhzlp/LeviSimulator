@@ -320,7 +320,7 @@ namespace PlayerControllers.Refactored
         /// 重置玩家到初始状态
         /// </summary>
         [Button]
-        public void ResetPlayer()
+        private void ResetPlayer()
         {
             // 重置物理
             if (_movementSystem != null && _movementSystem.Rigidbody != null)
