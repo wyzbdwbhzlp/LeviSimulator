@@ -73,7 +73,7 @@ namespace GlobalGameManager
             if (timeManager == null)
                 timeManager = gameObject.AddComponent<TimeManager>();
             
-            playerSpawnManager.Initialize();
+            playerSpawnManager.Initialize(gameStateManager);
             gameStateManager.Initialize();
             mainUIManager.Initialize();
             timeManager.Initialize();

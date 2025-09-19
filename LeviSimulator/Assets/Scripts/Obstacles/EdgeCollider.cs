@@ -18,7 +18,7 @@ public class EdgeCollider : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            GlobalManager.Instance.playerSpawnManager.RebirthPlayer();
+            GlobalManager.Instance.playerSpawnManager.PlayerIsDeath();
         }
     }
 }

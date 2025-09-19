@@ -247,7 +247,7 @@ namespace PlayerControllers.Refactored
         private IEnumerator<WaitForSeconds> WaitAndRestartPlayer(float delay)
         {
             yield return new WaitForSeconds(delay);
-            GlobalManager.Instance.playerSpawnManager.RebirthPlayer();
+            GlobalManager.Instance.playerSpawnManager.PlayerIsDeath();
             _playerRestartCoroutine = null;
         }
 

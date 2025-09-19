@@ -33,6 +33,8 @@ namespace GlobalGameManager
 
         [ShowInInspector] private PlayerSpawnInfo _initialSpawnInfo;
         [ShowInInspector] private PlayerSpawnInfo _rebirthSpawnInfo;
+        
+        private GameStateManager _gameStateManager;//用于改变游戏状态
 
         /// <summary>
         ///  当玩家准备生成时触发，提供生成位置
@@ -50,7 +52,7 @@ namespace GlobalGameManager
         private GameObject _currentPlayer;
         private readonly List<GameObject> _spawnedPlayers = new List<GameObject>();
 
-        public void Initialize()
+        public void Initialize(GameStateManager gameStateManager)
         {
             if (autoSpawnOnSceneLoad)
             {
@@ -59,6 +61,8 @@ namespace GlobalGameManager
                 EventBroadcaster.OnPlayerReadySpawn += SetInitialSpawnInfoWhenSceneReady;
                 EventBroadcaster.OnUpdatePlayerCheckPoint += SetRebirthSpawnInfo;
             }
+
+            _gameStateManager = gameStateManager;
             Debug.Log("PlayerSpawnManager 初始化完成");
         }
 
@@ -124,6 +128,13 @@ namespace GlobalGameManager
                 OnPlayerSpawned?.Invoke(player);
             }
         }
+
+        public void PlayerIsDeath()
+        {
+            _gameStateManager.ChangeState(GameState.GameOver);// 切换到游戏结束状态
+            //tip 黑屏hud会接受来自GameOver状态的事件，然后监听玩家复活输入
+        }
+
         /// <summary>
         ///  复活玩家
         /// </summary>

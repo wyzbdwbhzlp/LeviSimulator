@@ -184,7 +184,7 @@ namespace PlayerControllers.Refactored.Systems
             _currentTilt = Mathf.Lerp(_currentTilt, targetRollAngle, movementConfig.CameraTiltSpeed * Time.deltaTime);
 
             // 应用旋转
-            transform.localRotation = Quaternion.Euler(_xRotation, 0f, _currentTilt);
+             playerCamera.transform.localRotation = Quaternion.Euler(_xRotation, 0f, _currentTilt);
         }
         /// <summary>
         /// 平滑地将摄像机朝向指定方向（类似手柄辅助瞄准，不阻止玩家输入）

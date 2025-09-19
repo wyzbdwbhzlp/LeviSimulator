@@ -18,7 +18,7 @@ public class EdgeCheck : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            GlobalManager.Instance.playerSpawnManager.RebirthPlayer();
+            GlobalManager.Instance.playerSpawnManager.PlayerIsDeath();
         }
     }
 }
