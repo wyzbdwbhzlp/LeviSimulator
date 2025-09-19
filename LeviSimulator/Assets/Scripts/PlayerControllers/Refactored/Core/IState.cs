@@ -15,7 +15,8 @@ namespace PlayerControllers.Refactored.Core
         Jumping,
         Falling,
         Grappling,
-        WallRunning
+        WallRunning,
+        Dashing
     }
 
     /// <summary>
@@ -28,6 +29,7 @@ namespace PlayerControllers.Refactored.Core
         void FixedUpdate();
         void Exit();
         bool CanTransitionTo(PlayerState targetState);
+        void OnJumpPressed();
     }
 
     /// <summary>

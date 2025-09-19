@@ -31,6 +31,12 @@ namespace PlayerControllers.Refactored.States
         
         protected override void CheckTransitions()
         {
+            if (runtimeData.IsDashing)
+            {
+                ChangeState(PlayerState.Dashing);
+                return;
+            }
+
             // 如果开始下落，转换到下落状态
             if (movementSystem.Rigidbody.linearVelocity.y <= 0)
             {

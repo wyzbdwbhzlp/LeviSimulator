@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 using UnityEngine.Serialization;
 
 namespace PlayerControllers.Refactored.Data
-{
+{ 
     /// <summary>
     /// 玩家移动配置
     /// </summary>
@@ -136,5 +136,6 @@ namespace PlayerControllers.Refactored.Data
         public float DefaultAssistStrength => defaultAssistStrength;
         public float DefaultAssistDuration => defaultAssistDuration;
         public float AssistResponseSpeed => assistResponseSpeed;
+
     }
 }

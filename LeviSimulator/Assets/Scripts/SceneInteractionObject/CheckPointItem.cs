@@ -1,6 +1,7 @@
 using System;
 using GlobalGameManager;
 using HUD;
+using PlayerControllers.Refactored.Systems;
 using UIManager;
 using UnityEngine;
 using Utilities;
@@ -11,6 +12,7 @@ namespace SceneInteractionObject
     {
         private bool _canInteract = false;
         private GameObject _player;
+        private PlayerInputSystem _playerInputSystem;
 
         private void Awake()
         {
@@ -33,16 +35,18 @@ namespace SceneInteractionObject
                 InteractionData interactionData = new InteractionData("按下[E]键保存游戏进度");
                 interactionHUD.UpdateHUDData(interactionData);
                 _player = other.gameObject;
+                _playerInputSystem = _player.GetComponent<PlayerInputSystem>();
+                _playerInputSystem.RegisterInteractCallback(OnInteractButtonPressed);
                 _canInteract = true;
             }
         } 
-        private void Update()
-        {
-            if (_canInteract && Input.GetKeyDown(KeyCode.E))
-            {
-                OnInteractButtonPressed();
-            }
-        }
+        // private void Update()
+        // {
+        //     if (_canInteract && Input.GetKeyDown(KeyCode.E))
+        //     {
+        //         OnInteractButtonPressed();
+        //     }
+        // }
 
         private void OnInteractButtonPressed()
         {
@@ -55,6 +59,7 @@ namespace SceneInteractionObject
             if (other.CompareTag("Player"))
             {
                 MainUIManager.HideHUDComponent<InteractionHUD>();
+                _playerInputSystem.UnregisterInteractCallback();
                 _player = null;
                 _canInteract = false;
             }

@@ -1,3 +1,7 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using ExternPropertyAttributes;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
@@ -22,13 +26,17 @@ namespace PlayerControllers.Refactored.Systems
         private PlayerRuntimeData _runtimeData;
         private Vector3 _originalColliderCenter;
         private float _originalColliderHeight;
+        private Queue<IEnumerator> _dashCoolDownQueue = new Queue<IEnumerator>();
+
+     
 
         public bool IsEnabled { get; set; } = true;
+        public bool IsInitialized { get; set; }
         public Rigidbody Rigidbody => playerRigidbody;
         public CapsuleCollider PlayerCollider => playerCollider;
         public PlayerMovementConfig Config => config;
 
-        public void Initialize(PlayerController playerController, PlayerMovementConfig playerConfig)
+        public void Initialize(PlayerController playerController, ScriptableObject playerConfig)
         {
             _playerController = playerController;
             _runtimeData = playerController.RuntimeData;
@@ -45,14 +53,21 @@ namespace PlayerControllers.Refactored.Systems
             _originalColliderCenter = playerCollider.center;
             _originalColliderHeight = playerCollider.height;
 
-            // 订阅输入事件
+            // 应用配置
+            this.config = playerConfig as PlayerMovementConfig;
+            RefreshEventSubscription();
+        }
+
+        private void RefreshEventSubscription()
+        {
+            UnsubscribeToEvents();
+            SubscribeToEvents();//订阅事件
+        }
+        private void SubscribeToEvents()
+        {
             PlayerInputEvents.OnMoveInput += HandleMoveInput;
             PlayerInputEvents.OnSprintPressed += HandleSprintPressed;
             PlayerInputEvents.OnSprintReleased += HandleSprintReleased;
-
-            // 应用配置
-            this.config = playerConfig;
-
         }
 
         public void Update()
@@ -186,6 +201,19 @@ namespace PlayerControllers.Refactored.Systems
             _runtimeData.SetJumpTime();
         }
 
+        public void ApplyDash(Vector3 dashVelocity)
+        {
+            if (!_runtimeData.CanDash) return;
+            
+            // 应用冲刺速度
+            playerRigidbody.linearVelocity = new Vector3(dashVelocity.x,dashVelocity.y, dashVelocity.z);
+            _runtimeData.SetVelocity(playerRigidbody.linearVelocity);
+            _runtimeData.SetGrappling(false); // 取消抓钩状态
+            _runtimeData.SetJumping(false); // 取消跳跃状态
+            //todo _runtimeData.SetDashCount(_runtimeData.DashCount + 1);
+            
+        }
+
         /// <summary>
         /// 设置碰撞体高度（用于蹲伏）
         /// </summary>
@@ -214,16 +242,20 @@ namespace PlayerControllers.Refactored.Systems
             return Physics.Raycast(rayStart, Vector3.up, rayDistance, config.GroundLayerMask);
         }
 
-        public void Cleanup()
+        public void UnsubscribeToEvents()
         {
             PlayerInputEvents.OnMoveInput -= HandleMoveInput;
             PlayerInputEvents.OnSprintPressed -= HandleSprintPressed;
             PlayerInputEvents.OnSprintReleased -= HandleSprintReleased;
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
-            Cleanup();
+            UnsubscribeToEvents();
+        }
+        public void CleanUp()
+        {
+           
         }
 
         public void EnablePlayerGravity()
@@ -235,6 +267,8 @@ namespace PlayerControllers.Refactored.Systems
         {
             playerRigidbody.useGravity = false;
         }
+
+        #if UNITY_EDITOR 
 
         // 调试绘制
         private void OnDrawGizmosSelected()
@@ -274,7 +308,9 @@ namespace PlayerControllers.Refactored.Systems
             // 绘制玩家碰撞体轮廓
             Gizmos.color = Color.white;
             Gizmos.DrawWireCube(transform.position + playerCollider.center, 
-                               new Vector3(playerCollider.radius * 2, playerCollider.height, playerCollider.radius * 2));
+                new Vector3(playerCollider.radius * 2, playerCollider.height, playerCollider.radius * 2));
         }
+
+        #endif
     }
 }

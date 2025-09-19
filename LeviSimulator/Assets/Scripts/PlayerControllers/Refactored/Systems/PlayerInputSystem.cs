@@ -1,7 +1,9 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
+using UnityEngine.Events;
 
 namespace PlayerControllers.Refactored.Systems
 {
@@ -21,33 +23,33 @@ namespace PlayerControllers.Refactored.Systems
         private InputAction _grappleAction;
         private InputAction _interactAction;
         private InputAction _restartFromCheckpointAction;
+        private InputAction _bulletTimeAction;
+        private InputAction _dashAction;
         
-        public InputAction InteractAction => _interactAction;
-        
+        private UnityAction _interactActionCallback;
+
+    
+
         public bool IsEnabled { get; set; } = true;
+        public bool IsInitialized { get; set; } = false;
         
-        public void Initialize(PlayerController playerController,PlayerMovementConfig playerConfig)
+        public void Initialize(PlayerController playerController,ScriptableObject playerConfig)
         {
             if (playerInput == null)
                 playerInput = GetComponent<PlayerInput>();
-                
+            
             SetupInputActions();
+            IsInitialized = true;
         }
 
-        public void SetupInputActions()
+        private void RefreshEventSubscription()
         {
-            var actionMap = playerInput.actions;
-            
-            _moveAction = actionMap.FindAction("Move");
-            _lookAction = actionMap.FindAction("Look");
-            _jumpAction = actionMap.FindAction("Jump");
-            _crouchAction = actionMap.FindAction("Crouch");
-            _sprintAction = actionMap.FindAction("Sprint");
-            _grappleAction = actionMap.FindAction("Grapple");
-            _interactAction = actionMap.FindAction("Interact");
-            _restartFromCheckpointAction= actionMap.FindAction("RestartFromCheckpoint");
-            
-            
+            UnsubscribeToEvents();
+            SubscribeToEvents();
+        }
+
+        private void SubscribeToEvents()
+        {
             // 绑定输入事件
             _moveAction.performed += OnMovePerformed;
             _moveAction.canceled += OnMoveCanceled;
@@ -69,8 +71,104 @@ namespace PlayerControllers.Refactored.Systems
             _restartFromCheckpointAction.started += OnRestartFromCheckpointStarted;
             _restartFromCheckpointAction.canceled += OnRestartFromCheckpointCanceled;
             
+            _interactAction.started += CallInteractCallback;
+            _bulletTimeAction.started += OnBulletTimeStarted;
+            
+            _dashAction.started += OnDashStarted;
+        }
+
+        public void UnsubscribeToEvents()
+        {
+            if (_moveAction != null)
+            {
+                _moveAction.performed -= OnMovePerformed;
+                _moveAction.canceled -= OnMoveCanceled;
+            }
+            if (_lookAction != null)
+                _lookAction.performed -= OnLookPerformed;
+            if (_jumpAction != null)
+            {
+                _jumpAction.started -= OnJumpStarted;
+                _jumpAction.canceled -= OnJumpCanceled;
+            }
+            if (_crouchAction != null)
+            {
+                _crouchAction.started -= OnCrouchStarted;
+                _crouchAction.canceled -= OnCrouchCanceled;
+            }
+            if (_sprintAction != null)
+            {
+                _sprintAction.started -= OnSprintStarted;
+                _sprintAction.canceled -= OnSprintCanceled;
+            }
+            if (_grappleAction != null)
+            {
+                _grappleAction.started -= OnGrappleStarted;
+                _grappleAction.canceled -= OnGrappleCanceled;
+            }
+            if (_restartFromCheckpointAction != null)
+            {
+                _restartFromCheckpointAction.started -= OnRestartFromCheckpointStarted;
+                _restartFromCheckpointAction.canceled -= OnRestartFromCheckpointCanceled;
+            }
+            if (_interactAction != null)
+                _interactAction.started -= CallInteractCallback;
+            if (_bulletTimeAction != null)
+                _bulletTimeAction.started -= OnBulletTimeStarted;
+            if (_dashAction != null)
+                _dashAction.started -= OnDashStarted;
+        }
+
+        public void Update() { }
+
+        public void FixedUpdate() { }
+        public void CleanUp()
+        {
+            PlayerInputEvents.ClearAllEvents();
+            DisableInput();
+        }
+        private void OnDisable()
+        {
+            UnsubscribeToEvents();
+        }
+        private void OnDestroy()
+        {
+            CleanUp();
+        }
+
+        public void SetupInputActions()
+        {
+            var actionMap = playerInput.actions;
+            
+            _moveAction = actionMap.FindAction("Move");
+            _lookAction = actionMap.FindAction("Look");
+            _jumpAction = actionMap.FindAction("Jump");
+            _crouchAction = actionMap.FindAction("Crouch");
+            _sprintAction = actionMap.FindAction("Sprint");
+            _grappleAction = actionMap.FindAction("Grapple");
+            _interactAction = actionMap.FindAction("Interact");
+            _restartFromCheckpointAction= actionMap.FindAction("RestartFromCheckpoint");
+            _bulletTimeAction= actionMap.FindAction("BulletTime");
+            _dashAction= actionMap.FindAction("Dash");
+
+
+            RefreshEventSubscription();
+            
+            
             EnableInput();// 启用输入
             
+        }
+
+        private void OnDashStarted(InputAction.CallbackContext obj)
+        {
+            if (!IsEnabled) return;
+            PlayerInputEvents.TriggerDashPressed();
+        }
+
+        private void OnBulletTimeStarted(InputAction.CallbackContext obj)
+        {
+            if (!IsEnabled) return;
+            PlayerInputEvents.TriggerBulletTimePressed();
         }
 
         private void OnRestartFromCheckpointCanceled(InputAction.CallbackContext obj)
@@ -165,30 +263,19 @@ namespace PlayerControllers.Refactored.Systems
             if (!IsEnabled) return;
             PlayerInputEvents.TriggerGrappleReleased();
         }
-        
-        /// <summary>
-        ///  玩家长按回到出生点
-        /// </summary>
-        /// <param name="obj"></param>
-        private void OnRestartFromCheckpointPerformed(InputAction.CallbackContext obj)
+        public void RegisterInteractCallback(UnityAction callback)
         {
-            if (!IsEnabled) return;
-            PlayerInputEvents.TriggerRestartFromCheckpointPressed();
-            
+            _interactActionCallback = callback;
+        }
+        private void CallInteractCallback(InputAction.CallbackContext obj)
+        {
+            _interactActionCallback?.Invoke();
+            UnregisterInteractCallback();
+        }
+        public void UnregisterInteractCallback()
+        {
+            _interactActionCallback = null;
         }
         
-        public void Update() { }
-        public void FixedUpdate() { }
-        
-        public void Cleanup()
-        {
-            PlayerInputEvents.ClearAllEvents();
-            DisableInput();
-        }
-        
-        private void OnDestroy()
-        {
-            Cleanup();
-        }
     }
 }

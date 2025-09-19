@@ -16,8 +16,9 @@ namespace PlayerControllers.Refactored
     public class PlayerController : MonoBehaviour
     {
         [Title("配置")]
-        [SerializeField][InlineEditor] private PlayerMovementConfig movementConfig;
+        [SerializeField][InlineEditor]private PlayerMovementConfig movementConfig;
         [SerializeField][InlineEditor]private PlayerGrapplingConfig grapplingConfig;
+        [SerializeField][InlineEditor]private PlayerSkillConfig skillConfig;
         [Title("组件引用")]
         [SerializeField] private Animator playerAnimator;
         [SerializeField] private Transform grapplingMuzzle;
@@ -38,6 +39,7 @@ namespace PlayerControllers.Refactored
         private PlayerCameraSystem _cameraSystem;
         private PlayerWallRunSystem _wallRunSystem;
         private PlayerGrapplingSystem _grapplingSystem;
+        private PlayerSkillSystem _skillSystem;
         
         // 核心组件
         private PlayerStateMachine _stateMachine;
@@ -59,10 +61,7 @@ namespace PlayerControllers.Refactored
         public Animator PlayerAnimator => playerAnimator;
         public Transform GrapplingMuzzle => grapplingMuzzle;
 
-        private void Awake()
-        {
-            Initialize();
-        }
+        
         public void Initialize()
         {
             InitializeSceneObjects();
@@ -70,6 +69,18 @@ namespace PlayerControllers.Refactored
             InitializeSystems();
             InitializeStates();
             SubscribeToEvents();
+            
+            _stateMachine.Initialize(PlayerState.Idle);
+        }
+
+        public bool IsSystemAllInitialized()
+        {
+            foreach (var system in _systems)
+            {
+                if (!system.IsInitialized)
+                    return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -86,12 +97,6 @@ namespace PlayerControllers.Refactored
                     LogUtil.LogWarning("PlayerAnimator未分配且在子对象中未找到Animator组件");
                 }
             }
-        }
-
-        private void Start()
-        {
-            // 启动状态机
-            _stateMachine.Initialize(PlayerState.Idle);
         }
         
         private void Update()
@@ -167,19 +172,26 @@ namespace PlayerControllers.Refactored
                 _grapplingSystem = gameObject.AddComponent<PlayerGrapplingSystem>();
             _grapplingSystem.SetGrappleSetting(grapplingConfig,grapplingMuzzle);
             
+            _skillSystem = GetComponent<PlayerSkillSystem>();
+            if (_skillSystem == null)
+                _skillSystem = gameObject.AddComponent<PlayerSkillSystem>();
+            
             // 添加系统到列表
             _systems.Add(_inputSystem);
             _systems.Add(_movementSystem);
             _systems.Add(_wallRunSystem);
             _systems.Add(_grapplingSystem);
+            _systems.Add(_skillSystem);
             if (_cameraSystem != null)
                 _systems.Add(_cameraSystem);
             
             // 初始化所有系统
-            foreach (var system in _systems)
-            {
-                system.Initialize(this,movementConfig);
-            }
+            _inputSystem.Initialize(this,movementConfig);
+            _movementSystem.Initialize(this,movementConfig);
+            _cameraSystem?.Initialize(this,movementConfig);
+            _wallRunSystem.Initialize(this,movementConfig);
+            _grapplingSystem.Initialize(this,grapplingConfig);
+            _skillSystem.Initialize(this,skillConfig);
         }
         
         private void InitializeStates()
@@ -193,6 +205,7 @@ namespace PlayerControllers.Refactored
             _states[PlayerState.Crouching] = new CrouchingState(this);
             _states[PlayerState.Sliding] = new SlidingState(this);
             _states[PlayerState.WallRunning] = new WallRunningState(this);
+            _states[PlayerState.Dashing] = new DashState(this);
             
             // 注册状态到状态机
             foreach (var kvp in _states)
@@ -234,17 +247,18 @@ namespace PlayerControllers.Refactored
         private IEnumerator<WaitForSeconds> WaitAndRestartPlayer(float delay)
         {
             yield return new WaitForSeconds(delay);
-            GlobalManager.Instance.playerSpawnManager.RebirthPlayer();
+            GlobalManager.Instance.playerSpawnManager.PlayerIsDeath();
             _playerRestartCoroutine = null;
         }
 
         private void HandleJumpPressed()
         {
-            // 只有在地面上才能跳跃
-            if (_runtimeData.IsGrounded && _stateMachine.CurrentState != PlayerState.Crouching)
-            {
-                _stateMachine.ChangeState(PlayerState.Jumping);
-            }
+            _stateMachine.CurrentStateInstance.OnJumpPressed();
+            // // 只有在地面上才能跳跃
+            // if (_runtimeData.IsGrounded && _stateMachine.CurrentState != PlayerState.Crouching)
+            // {
+            //     _stateMachine.ChangeState(PlayerState.Jumping);
+            // }
         }
         
         private void HandleCrouchPressed()
@@ -323,24 +337,33 @@ namespace PlayerControllers.Refactored
             
             Debug.Log("Player reset complete");
         }
-        
+        private void OnDisable()
+        {
+            UnsubscribeToEvents();// 取消订阅所有事件
+        }
         private void OnDestroy()
         {
-            // 清理事件订阅
-            PlayerInputEvents.OnJumpPressed -= HandleJumpPressed;
-            PlayerInputEvents.OnCrouchPressed -= HandleCrouchPressed;
-            PlayerInputEvents.OnCrouchReleased -= HandleCrouchReleased;
-            
             // 清理所有系统
             foreach (var system in _systems)
             {
-                system.Cleanup();
+                system.CleanUp();
+                Destroy(system as MonoBehaviour);
             }
             
             // 清理状态机
             _stateMachine?.Cleanup();
+            _runtimeData = null;
         }
-        
+
+        private void UnsubscribeToEvents()
+        {
+            PlayerInputEvents.OnJumpPressed -= HandleJumpPressed;
+            PlayerInputEvents.OnCrouchPressed -= HandleCrouchPressed;
+            PlayerInputEvents.OnCrouchReleased -= HandleCrouchReleased;
+            PlayerInputEvents.OnRestartFromCheckpointPressed -= HandleRestartFromCheckpointPressed;
+            PlayerInputEvents.OnRestartFromCheckpointReleased -= HandleRestartFromCheckpointReleased;
+        }
+
         private void OnValidate()
         {
             // 确保配置文件已分配
@@ -380,5 +403,6 @@ namespace PlayerControllers.Refactored
             playerCollider.material = material;
             currentPhysicsMaterial = material.name;
         }
+        
     }
 }

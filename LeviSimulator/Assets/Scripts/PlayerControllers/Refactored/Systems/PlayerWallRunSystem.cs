@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
@@ -27,6 +28,7 @@ namespace PlayerControllers.Refactored.Systems
         
         // 公共访问器
         public bool IsEnabled { get; set; } = true;
+        public bool IsInitialized { get; set; } = false;
         public bool IsWallRunning => isWallRunning;
         public bool CanWallRun => canWallRun;
         public Vector3 WallNormal => wallNormal;
@@ -35,18 +37,30 @@ namespace PlayerControllers.Refactored.Systems
         public float WallRunMinimumSpeed => _config?.WallRunMinimumSpeed ?? 2f;
         public LayerMask WallLayerMask => _config?.WallLayerMask ?? 1;
         
-        public void Initialize(PlayerController playerController, PlayerMovementConfig playerConfig)
+        public void Initialize(PlayerController playerController, ScriptableObject playerConfig)
         {
             _playerController = playerController;
             _runtimeData = playerController.RuntimeData;
             _movementSystem = playerController.MovementSystem;
             _cameraSystem = playerController.CameraSystem;
-            _config = playerConfig;
-            
-            // 订阅输入事件
+            _config = playerConfig as PlayerMovementConfig;
+
+            RefreshEventSubscription();
+            IsInitialized = true;
+
+        }
+
+        private void RefreshEventSubscription()
+        {
+            UnsubscribeToEvents();
+            SubscribeToEvents();
+        }
+
+        private void SubscribeToEvents()
+        {
             PlayerInputEvents.OnJumpPressed += HandleWallJump;
         }
-        
+
         public void Update()
         {
             if (!IsEnabled) return;
@@ -228,7 +242,7 @@ namespace PlayerControllers.Refactored.Systems
             return Mathf.Sign(localNormal.x);
         }
         
-        public void Cleanup()
+        public void UnsubscribeToEvents()
         {
             PlayerInputEvents.OnJumpPressed -= HandleWallJump;
             if (isWallRunning)
@@ -237,9 +251,13 @@ namespace PlayerControllers.Refactored.Systems
             }
         }
         
-        private void OnDestroy()
+        private void OnDisable()
         {
-            Cleanup();
+            UnsubscribeToEvents();
+        }
+        public void CleanUp()
+        {
+           
         }
         
         // 调试绘制

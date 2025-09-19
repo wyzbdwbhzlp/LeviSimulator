@@ -38,6 +38,7 @@ namespace GlobalGameManager
         public PlayerSpawnManager playerSpawnManager;
         public GameStateManager gameStateManager;
         public MainUIManager mainUIManager;
+        public TimeManager timeManager;
         
 
         private void Awake()
@@ -69,11 +70,15 @@ namespace GlobalGameManager
             mainUIManager=MainUIManager.Instance;
             if(mainUIManager==null)
                 mainUIManager= gameObject.AddComponent<MainUIManager>();
+            if (timeManager == null)
+                timeManager = gameObject.AddComponent<TimeManager>();
             
-            playerSpawnManager.Initialize();
             gameStateManager.Initialize();
+            playerSpawnManager.Initialize(gameStateManager);
             mainUIManager.Initialize();
+            timeManager.Initialize();
 
+            gameStateManager.SubscribeToEvents(this);
         }
         private IEnumerator Start()
         {

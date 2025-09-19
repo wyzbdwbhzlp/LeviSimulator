@@ -48,15 +48,18 @@ namespace PlayerControllers.Refactored.Systems
         
         // 当前输入（用于即时响应）
         private Vector2 _currentLookInput;
+
         
+
         public bool IsEnabled { get; set; } = true;
+        public bool IsInitialized { get; set; } = false;
         public Transform CameraTransform => playerCamera.transform;
         public Camera Camera => playerCamera;
         
-        public void Initialize(PlayerController playerController,PlayerMovementConfig playerConfig)
+        public void Initialize(PlayerController playerController,ScriptableObject playerConfig)
         {
             _playerController = playerController;
-            movementConfig = playerConfig;
+            movementConfig = playerConfig as PlayerMovementConfig;
             _runtimeData = playerController.RuntimeData;
             
             // 获取组件引用
@@ -64,15 +67,26 @@ namespace PlayerControllers.Refactored.Systems
                 playerCamera = GetComponentInChildren<Camera>();
             if (playerBody == null)
                 playerBody = playerController.transform;// 默认使用玩家物体作为身体
-                
-            // 订阅输入事件
-            PlayerInputEvents.OnLookInput += HandleLookInput;
-            
+
+            RefreshEventSubscription(); // 订阅事件
             // 锁定光标
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            IsInitialized = true;
         }
-        
+
+
+        private void RefreshEventSubscription()
+        {
+            UnsubscribeToEvents();
+            SubscribeToEvents();
+        }
+
+        private void SubscribeToEvents()
+        {
+            PlayerInputEvents.OnLookInput += HandleLookInput;
+        }
+
         public void Update()
         {
             if (!IsEnabled) return;
@@ -170,7 +184,7 @@ namespace PlayerControllers.Refactored.Systems
             _currentTilt = Mathf.Lerp(_currentTilt, targetRollAngle, movementConfig.CameraTiltSpeed * Time.deltaTime);
 
             // 应用旋转
-            transform.localRotation = Quaternion.Euler(_xRotation, 0f, _currentTilt);
+             playerCamera.transform.localRotation = Quaternion.Euler(_xRotation, 0f, _currentTilt);
         }
         /// <summary>
         /// 平滑地将摄像机朝向指定方向（类似手柄辅助瞄准，不阻止玩家输入）
@@ -315,14 +329,17 @@ namespace PlayerControllers.Refactored.Systems
         }
         
         
-        public void Cleanup()
+        public void UnsubscribeToEvents()
         {
             PlayerInputEvents.OnLookInput -= HandleLookInput;
         }
-        
-        private void OnDestroy()
+        public void CleanUp()
         {
-            Cleanup();
+          
+        }
+        private void OnDisable()
+        {
+            UnsubscribeToEvents();
         }
     }
 }

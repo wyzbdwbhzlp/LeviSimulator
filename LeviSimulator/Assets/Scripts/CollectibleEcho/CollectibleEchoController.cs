@@ -10,15 +10,15 @@ namespace CollectibleEcho
     public class CollectibleEchoController : Singleton<CollectibleEchoController>
     {
         [Title("echo数据配置")]
-        [SerializeField] private SO.CollectibleEchoSO _collectibleEchoDataBase;
+        [SerializeField] private SO.CollectibleEchoSO collectibleEchoDataBase;
         [Title("当前回声数据")]
         [SerializeField] [ReadOnly] [LabelText("当前播放的Echo")]
-        private SO.CollectibleEcho _currentCollectibleEchoData;
+        private SO.CollectibleEcho currentCollectibleEchoData;
 
         protected override void Awake()
         {
             base.Awake();
-            if (_collectibleEchoDataBase == null)
+            if (collectibleEchoDataBase == null)
             {
                 LogUtil.LogError("回声数据库未设置，请检查配置。", true);
             }
@@ -27,7 +27,7 @@ namespace CollectibleEcho
         [Button("打开回声UI")]
         public void OpenEcho(int echoId)
         {
-            var echoData= _collectibleEchoDataBase.GetCollectibleEchoByID(echoId);
+            var echoData= collectibleEchoDataBase.GetCollectibleEchoByID(echoId);
             if (echoData == null)
             {
                 LogUtil.LogError($"未找到ID为{echoId}的回声数据，请检查配置。", true);

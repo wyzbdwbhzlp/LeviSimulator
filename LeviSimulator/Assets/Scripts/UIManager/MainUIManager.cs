@@ -83,7 +83,7 @@ namespace UIManager
             }
         }
 
-        protected void InitUiComponentsDic()
+        private void InitUiComponentsDic()
         {
             var UIfields = GetType()
                 .GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
@@ -134,7 +134,7 @@ namespace UIManager
             }
         }
 
-        protected void InitHUDComponentsDic()
+        private void InitHUDComponentsDic()
         {
             var hudFields = GetType()
                 .GetFields(BindingFlags.NonPublic | BindingFlags.Instance);

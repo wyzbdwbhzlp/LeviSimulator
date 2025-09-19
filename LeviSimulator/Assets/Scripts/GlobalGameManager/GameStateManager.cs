@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using GlobalGameManager;
 
 public enum GameState
 {
@@ -18,12 +19,38 @@ public class GameStateManager : MonoBehaviour
     public GameState previousState = GameState.MainMenu;
 
     public event Action<GameState, GameState> OnStateChanged;
-    public event Action OnGamePaused;
-    public event Action OnGameResumed;
 
+    private GlobalManager _globalManager;
     public void Initialize()
     {
         Debug.Log("GameStateManager 初始化完成");
+    }
+
+    public void SubscribeToEvents(GlobalManager globalManager)
+    {
+        _globalManager = globalManager;
+        globalManager.playerSpawnManager.OnPlayerRebirth+=HandlePlayerRebirth;
+    }
+    private void UnsubscribeFromEvents()
+    {
+        _globalManager.playerSpawnManager.OnPlayerRebirth-=HandlePlayerRebirth;
+    }
+
+    public void OnDestroy()
+    {
+        UnsubscribeFromEvents();
+    }
+
+    /// <summary>
+    ///  因玩家复活而触发的状态切换
+    /// </summary>
+    /// <param name="player"></param>
+    private void HandlePlayerRebirth(GameObject player)
+    {
+        if (currentState == GameState.GameOver)
+        {
+            ChangeState(GameState.InGame);
+        }
     }
 
     public void ChangeState(GameState newState)
@@ -47,23 +74,16 @@ public class GameStateManager : MonoBehaviour
         switch (to)
         {
             case GameState.MainMenu:
-                Time.timeScale = 1f;
                 break;
             case GameState.Loading:
-                Time.timeScale = 1f;
                 break;
             case GameState.InGame:
-                Time.timeScale = 1f;
                 break;
             case GameState.Paused:
-                Time.timeScale = 0f;
-                OnGamePaused?.Invoke();
                 break;
             case GameState.GameOver:
-                Time.timeScale = 0f;
                 break;
             case GameState.Settings:
-                // 保持之前的时间缩放
                 break;
         }
     }
@@ -81,7 +101,6 @@ public class GameStateManager : MonoBehaviour
         if (currentState == GameState.Paused)
         {
             ChangeState(GameState.InGame);
-            OnGameResumed?.Invoke();
         }
     }
 

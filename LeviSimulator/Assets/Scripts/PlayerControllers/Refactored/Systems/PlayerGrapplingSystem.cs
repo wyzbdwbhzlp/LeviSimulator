@@ -1,10 +1,12 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using PlayerControllers.Grapple;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
+using Object = UnityEngine.Object;
 
 namespace PlayerControllers.Refactored.Systems
 {
@@ -22,19 +24,32 @@ namespace PlayerControllers.Refactored.Systems
         }
 
         
-        public void Initialize(PlayerController playerController, PlayerMovementConfig playerConfig)
+        public void Initialize(PlayerController playerController, ScriptableObject playerConfig)
         {
             _grappleHook = new GrappleHook();
             _grappleHook.Initialize(playerController);
             
             _grappleCableRenderer = _grappleMuzzleTransform.gameObject.GetComponent<GrappleCableRenderer>();
             _grappleCableRenderer.SetGrappleHook(_grappleHook);
-            
+
+            RefreshEventSubscription();
+
+            IsInitialized = true;
+
+        }
+
+        private void RefreshEventSubscription()
+        {
+            UnsubscribeToEvents();
+            SubscribeToEvents();
+        }
+
+        private void SubscribeToEvents()
+        {
             PlayerInputEvents.OnGrapplePressed += StartGrapple;
             PlayerInputEvents.OnGrappleReleased += StopGrapple;
         }
         
-
         public void Update()
         {
             if (_grappleHook != null && _grappleHook.GrappleState != GrappleState.Idle)
@@ -52,17 +67,30 @@ namespace PlayerControllers.Refactored.Systems
             }
         }
 
-        public void Cleanup()
+        public void UnsubscribeToEvents()
         {
-            _grappleHook?.StopGrapple();
-            _inputDirectionTween?.Kill();
             
             PlayerInputEvents.OnGrapplePressed -= StartGrapple;
             PlayerInputEvents.OnGrappleReleased -= StopGrapple;
         }
 
-        public bool IsEnabled { get; set; }
+        private void OnDisable()
+        {
+            CleanUp();
+            UnsubscribeToEvents();
+        }
+
+        public void CleanUp()
+        {
+            _grappleHook?.StopGrapple();
+            _inputDirectionTween?.Kill();
+        }
         
+
+
+        public bool IsEnabled { get; set; }
+        public bool IsInitialized { get; set; } = false;
+
         // 公开方法供外部调用
         public void StartGrapple() => _grappleHook?.StartGrapple();
         public void StopGrapple() => _grappleHook?.StopGrapple();

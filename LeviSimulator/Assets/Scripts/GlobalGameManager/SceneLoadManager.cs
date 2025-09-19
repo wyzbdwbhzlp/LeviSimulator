@@ -18,7 +18,8 @@ namespace GlobalGameManager
 
         private const SceneEnum LoadingSceneEnum = SceneEnum.LoadingScene; // Loading场景
         private const SceneEnum HUDScene= SceneEnum.HUDScene; // HUD场景
-        private bool isLoading = false;
+        private bool _isLoading = false;
+        public bool IsLoading => _isLoading;
 
         private static readonly SceneEnum[] TheLevelScenes = new SceneEnum[]// 游戏关卡场景
         {
@@ -36,9 +37,9 @@ namespace GlobalGameManager
             LoadSceneByName(sceneEnum, useLoadingScreen);
         }
 
-        public void LoadSceneByName(SceneEnum sceneEnum, bool useLoadingScreen = true)
+        private void LoadSceneByName(SceneEnum sceneEnum, bool useLoadingScreen = true)
         {
-            if (isLoading)
+            if (_isLoading)
             {
                 Debug.LogWarning("场景正在加载中，请等待...");
                 return;
@@ -58,7 +59,7 @@ namespace GlobalGameManager
         private IEnumerator LoadSceneWithLoadingScreen(SceneEnum sceneEnum)
         {
             var targetSceneName = sceneEnum.GetSceneName();
-            isLoading = true;
+            _isLoading = true;
             OnSceneLoadStarted?.Invoke(sceneEnum);
 
             // 切换到 Loading 状态
@@ -74,11 +75,22 @@ namespace GlobalGameManager
             {
                 LogUtil.LogWarning("Loading场景已经加载或者不存在，请注意检查");
             }
-
-            // 异步加载目标场景（Single）
+            
+            //存在关卡场景，则先卸载
+            for(int i=0;i<SceneManager.sceneCount;i++)
+            {
+                var scene = SceneManager.GetSceneAt(i);
+                if(TryGetSceneEnum(scene.name,out var se))
+                {
+                    if (TheLevelScenes.Contains(se))
+                    {
+                        yield return SceneManager.UnloadSceneAsync(scene);
+                    }
+                }
+            }
+            // 加载目标场景（Additive），并在准备好后切换
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(targetSceneName, LoadSceneMode.Additive);
             asyncLoad.allowSceneActivation = false;
-
             while (!asyncLoad.isDone)
             {
                 float progress = Mathf.Clamp01(asyncLoad.progress / 0.9f);
@@ -100,17 +112,15 @@ namespace GlobalGameManager
                 SceneManager.SetActiveScene(targetScene);
             }
             
-
             // 卸载Loading场景（若仍存在）
-            var loading = SceneManager.GetSceneByName(LoadingSceneEnum.GetSceneName());
-            if (loading.IsValid() && loading.isLoaded)
+            var currentLoadingScene = SceneManager.GetSceneByName(LoadingSceneEnum.GetSceneName());
+            if (currentLoadingScene.IsValid() && currentLoadingScene.isLoaded)
             {
-                yield return SceneManager.UnloadSceneAsync(loading);
+                yield return SceneManager.UnloadSceneAsync(currentLoadingScene);
             }
-
-            isLoading = false;
-
+            
             // 回到 InGame 状态
+            _isLoading = false;
             GlobalManager.Instance?.gameStateManager?.ChangeState(GameState.InGame);
 
             OnSceneLoadCompleted?.Invoke(sceneEnum);
@@ -123,8 +133,12 @@ namespace GlobalGameManager
             LoadSceneByName(sceneEnum);
         }
 
-        public bool IsLoading => isLoading;
-
+        /// <summary>
+        ///  尝试将场景名转换为 SceneEnum 枚举
+        /// </summary>
+        /// <param name="sceneName"></param>
+        /// <param name="sceneEnum"></param>
+        /// <returns></returns>
         private bool TryGetSceneEnum(string sceneName, out SceneEnum sceneEnum)
         {
             bool effective =Enum.TryParse(sceneName, out sceneEnum);
