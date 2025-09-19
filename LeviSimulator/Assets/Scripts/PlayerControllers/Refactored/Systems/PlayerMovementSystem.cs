@@ -203,7 +203,7 @@ namespace PlayerControllers.Refactored.Systems
 
         public void ApplyDash(Vector3 dashVelocity)
         {
-            if (!_runtimeData.CanDash) return;
+            // if (!_runtimeData.CanDash) return;
             
             // 应用冲刺速度
             playerRigidbody.linearVelocity = new Vector3(dashVelocity.x,dashVelocity.y, dashVelocity.z);

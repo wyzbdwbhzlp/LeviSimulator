@@ -153,7 +153,7 @@ namespace PlayerControllers.Refactored.Systems
             
             // 应用垂直角度限制（如果配置中启用）
             targetDirection = ApplyVerticalAngleLimitation(targetDirection);
-            
+            LogUtil.Log($"冲刺方向:{targetDirection}");
             return targetDirection * (_skillConfig.DashDistance / _skillConfig.DashDuration);
         }
  
