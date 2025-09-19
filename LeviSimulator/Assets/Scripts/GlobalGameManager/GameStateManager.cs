@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using GlobalGameManager;
 
 public enum GameState
 {
@@ -19,9 +20,37 @@ public class GameStateManager : MonoBehaviour
 
     public event Action<GameState, GameState> OnStateChanged;
 
+    private GlobalManager _globalManager;
     public void Initialize()
     {
         Debug.Log("GameStateManager 初始化完成");
+    }
+
+    public void SubscribeToEvents(GlobalManager globalManager)
+    {
+        _globalManager = globalManager;
+        globalManager.playerSpawnManager.OnPlayerRebirth+=HandlePlayerRebirth;
+    }
+    private void UnsubscribeFromEvents()
+    {
+        _globalManager.playerSpawnManager.OnPlayerRebirth-=HandlePlayerRebirth;
+    }
+
+    public void OnDestroy()
+    {
+        UnsubscribeFromEvents();
+    }
+
+    /// <summary>
+    ///  因玩家复活而触发的状态切换
+    /// </summary>
+    /// <param name="player"></param>
+    private void HandlePlayerRebirth(GameObject player)
+    {
+        if (currentState == GameState.GameOver)
+        {
+            ChangeState(GameState.InGame);
+        }
     }
 
     public void ChangeState(GameState newState)
