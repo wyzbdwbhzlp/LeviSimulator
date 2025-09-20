@@ -1,4 +1,4 @@
-ï»¿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -6,33 +6,33 @@ using UnityEngine.Audio;
 namespace Game.Audio
 {
     /// <summary>
-    /// éŸ³æ•ˆç³»ç»Ÿæ€»ç®¡ï¼šè´Ÿè´£å¯¹è±¡æ± ã€é€šé“ç®¡ç†ã€é…é¢é™åˆ¶ã€BGM æ·¡å…¥æ·¡å‡ºã€‚
+    /// ÒôĞ§ÏµÍ³×Ü¹Ü£º¸ºÔğ¶ÔÏó³Ø¡¢Í¨µÀ¹ÜÀí¡¢Åä¶îÏŞÖÆ¡¢BGM µ­Èëµ­³ö¡£
     /// </summary>
     public class AudioHub : MonoBehaviour, IAudioPlayer
     {
         public static AudioHub Instance { get; private set; }
 
-        [Header("åŸºç¡€è®¾ç½®")]
-        [SerializeField] private GameObject audioPrefab;   // éŸ³é¢‘å¯¹è±¡é¢„åˆ¶ä½“
-        [SerializeField] private int initPoolSize = 16;    // åˆå§‹å¯¹è±¡æ± å¤§å°
-        [SerializeField] private bool dontDestroyOnLoad = true; // æ˜¯å¦åœ¨åˆ‡æ¢åœºæ™¯æ—¶ä¿ç•™
+        [Header("»ù´¡ÉèÖÃ")]
+        [SerializeField] private GameObject audioPrefab;
+        [SerializeField] private int initPoolSize = 16;
+        [SerializeField] private bool dontDestroyOnLoad = true;
 
-        [Header("æ··éŸ³ç»„")]
-        public AudioMixerGroup bgmGroup;  // èƒŒæ™¯éŸ³ä¹æ··éŸ³ç»„
-        public AudioMixerGroup sfxGroup;  // éŸ³æ•ˆæ··éŸ³ç»„
-        public AudioMixerGroup uiGroup;   // UI éŸ³æ•ˆæ··éŸ³ç»„
+        [Header("»ìÒô×é")]
+        public AudioMixerGroup bgmGroup;
+        public AudioMixerGroup sfxGroup;
+        public AudioMixerGroup uiGroup;
 
-        [Header("é€šé“ä¸Šé™")]
-        public int sfxVoices = 16;  // SFX é€šé“åŒæ—¶èƒ½æ’­æ”¾çš„éŸ³æ•ˆæ•°
-        public int uiVoices = 8;    // UI é€šé“åŒæ—¶èƒ½æ’­æ”¾çš„éŸ³æ•ˆæ•°
+        [Header("Í¨µÀÉÏÏŞ")]
+        public int sfxVoices = 16;
+        public int uiVoices = 8;
 
-        private Queue<AudioSourceWrapper> pool = new Queue<AudioSourceWrapper>(); // éŸ³æ•ˆå¯¹è±¡æ± 
+        private Queue<AudioSourceWrapper> pool = new Queue<AudioSourceWrapper>();
         private Dictionary<AudioChannel, LinkedList<AudioSourceWrapper>> activeByChannel;
 
-        // èŠ‚æµé™åˆ¶ï¼šé¿å…æŒ‰é’®éŸ³æ•ˆé¢‘ç¹è§¦å‘
+        // ½ÚÁ÷¿ØÖÆ£º±ÜÃâ°´Å¥¿ñµãË¢ÒôĞ§
         private Dictionary<AudioClip, float> lastPlayedTime = new Dictionary<AudioClip, float>();
 
-        // BGM åŒé€šé“ï¼Œç”¨äºæ·¡å…¥æ·¡å‡º
+        // BGM Ë«Í¨µÀµ­Èëµ­³ö
         private AudioSource bgmA, bgmB;
         private bool bgmAIsActive = true;
         private Coroutine bgmCrossRoutine;
@@ -43,17 +43,17 @@ namespace Game.Audio
             Instance = this;
             if (dontDestroyOnLoad) DontDestroyOnLoad(gameObject);
 
-            // åˆå§‹åŒ–å¯¹è±¡æ± 
+            // ³õÊ¼»¯³Ø
             for (int i = 0; i < initPoolSize; i++) CreateNew();
 
-            // åˆå§‹åŒ–æ´»åŠ¨åˆ—è¡¨
+            // ³õÊ¼»¯»îÔ¾ÁĞ±í
             activeByChannel = new Dictionary<AudioChannel, LinkedList<AudioSourceWrapper>>
             {
                 { AudioChannel.SFX, new LinkedList<AudioSourceWrapper>() },
                 { AudioChannel.UI, new LinkedList<AudioSourceWrapper>() }
             };
 
-            // åˆå§‹åŒ– BGM åŒæº
+            // ³õÊ¼»¯ BGM Ë«Ô´
             bgmA = CreateBgmSource("BGM_A");
             bgmB = CreateBgmSource("BGM_B");
         }
@@ -92,8 +92,7 @@ namespace Game.Audio
             pool.Enqueue(wrapper);
         }
 
-        // ----------- Active ç®¡ç†ï¼ˆé€šé“ä¸Šçš„æ´»è·ƒå¯¹è±¡ï¼‰ -----------
-
+        // ----------- Active¹ÜÀí£¨Åä¶î£© -----------
         public void NotifyActive(AudioSourceWrapper wrapper, AudioChannel channel)
         {
             if (channel == AudioChannel.BGM) return;
@@ -103,7 +102,7 @@ namespace Game.Audio
             int limit = (channel == AudioChannel.SFX) ? sfxVoices : uiVoices;
             if (list.Count > limit)
             {
-                // è¶…å‡ºä¸Šé™æ—¶ï¼Œå¼ºåˆ¶åœæ­¢æœ€æ—©çš„éŸ³æº
+                // ÌÔÌ­×îÔçµÄ
                 list.First.Value.Stop();
             }
         }
@@ -114,7 +113,7 @@ namespace Game.Audio
             activeByChannel[channel].Remove(wrapper);
         }
 
-        // ----------- IAudioPlayer å®ç° -----------
+        // ----------- IAudioPlayerÊµÏÖ -----------
 
         public void PlayOneShot(AudioClip clip, float volume = 1f, AudioChannel channel = AudioChannel.SFX, float pitch = 1f, float throttleInterval = 0f)
         {
@@ -125,7 +124,7 @@ namespace Game.Audio
             var group = GetGroup(channel);
 
             wrapper.PlayOneShot(clip, volume, pitch, channel, group, null,
-                channel == AudioChannel.UI ? 0f : 1f); // UI=2D, å…¶ä»–=3D
+                channel == AudioChannel.UI ? 0f : 1f); // UI=2D, ÆäËû=3D
         }
 
         public void PlayAtPosition(AudioClip clip, Vector3 pos, float volume = 1f, AudioChannel channel = AudioChannel.SFX, float pitch = 1f, float spatialBlend = 1f, float throttleInterval = 0f)
@@ -156,7 +155,7 @@ namespace Game.Audio
             list.Clear();
         }
 
-        // ----------- BGM æ·¡å…¥æ·¡å‡º -----------
+        // ----------- BGM µ­Èëµ­³ö -----------
 
         public void PlayBGM(AudioClip clip, float fadeSeconds = 0.75f, float targetVolume = 1f)
         {
@@ -211,7 +210,7 @@ namespace Game.Audio
             src.volume = start;
         }
 
-        // ----------- å·¥å…·å‡½æ•° -----------
+        // ----------- ¹¤¾ßº¯Êı -----------
 
         private AudioMixerGroup GetGroup(AudioChannel ch)
         {

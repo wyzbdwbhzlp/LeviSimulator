@@ -1,28 +1,26 @@
-ï»¿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
 
 namespace Game.Audio
 {
     /// <summary>
-    /// éŸ³æ•ˆæºçš„å°è£…ç±»ï¼šç”¨äºæ’­æ”¾éŸ³æ•ˆï¼Œå¹¶åœ¨ç»“æŸåå½’è¿˜åˆ°å¯¹è±¡æ± ã€‚
+    /// ÒôĞ§³ØÀïµÄµ¥¸ö¡°¹¤ÈË¡±£º¸ºÔğ²¥·ÅÒôĞ§£¬²¢ÔÚ²¥·Å½áÊøºó¹é»¹¸ø³Ø×Ó¡£
     /// </summary>
     [RequireComponent(typeof(AudioSource))]
     public class AudioSourceWrapper : MonoBehaviour, IAudioHandle
     {
-        private AudioSource source;      // Unity éŸ³é¢‘æº
-        private AudioHub hub;            // éŸ³é¢‘æ€»ç®¡ï¼ˆç”¨äºå›æ”¶è‡ªèº«ï¼‰
-        private AudioChannel channel;    // å½“å‰æ‰€å±é€šé“
-        private bool isLoop;             // æ˜¯å¦å¾ªç¯æ’­æ”¾
-        private Coroutine lifeRoutine;   // ç”Ÿå‘½å‘¨æœŸåç¨‹
+        private AudioSource source;      // Unity µÄÒôÔ´
+        private AudioHub hub;            // ÒıÓÃ×Ü¹Ü£¬ÓÃÀ´¹é»¹×Ô¼º
+        private AudioChannel channel;    // µ±Ç°ËùÊôÍ¨µÀ
+        private bool isLoop;             // ÊÇ·ñÑ­»·²¥·Å
+        private Coroutine lifeRoutine;   // ¿ØÖÆÉúÃüÖÜÆÚµÄĞ­³Ì
 
-        // IAudioHandle æ¥å£å®ç°
+        // IAudioHandle½Ó¿ÚÊµÏÖ
         public bool IsPlaying => source && source.isPlaying;
         public AudioSource Source => source;
 
-        /// <summary>
-        /// åˆå§‹åŒ–ï¼Œä¸ AudioHub å»ºç«‹å…³è”
-        /// </summary>
+        /// <summary>³õÊ¼»¯£¨ÓÉ AudioHub µ÷ÓÃ£©¡£</summary>
         public void Init(AudioHub hubRef)
         {
             hub = hubRef;
@@ -30,9 +28,7 @@ namespace Game.Audio
             gameObject.SetActive(false);
         }
 
-        /// <summary>
-        /// æ’­æ”¾ä¸€æ¬¡æ€§éŸ³æ•ˆï¼ˆä¸ä¼šå¾ªç¯ï¼‰
-        /// </summary>
+        /// <summary>²¥·ÅÒ»´ÎĞÔÒôĞ§£¨²»Ñ­»·£©¡£</summary>
         public void PlayOneShot(AudioClip clip, float volume, float pitch, AudioChannel ch, AudioMixerGroup group, Vector3? worldPos, float spatialBlend)
         {
             ConfigureSource(group, volume, pitch, spatialBlend, loop: false);
@@ -45,14 +41,12 @@ namespace Game.Audio
             source.clip = clip;
             source.Play();
 
-            // å¼€å¯åç¨‹ç­‰å¾…æ’­æ”¾ç»“æŸåå›æ”¶
+            // Ğ­³ÌµÈ´ı²¥·ÅÍê±Ï ¡ú »ØÊÕ
             lifeRoutine = StartCoroutine(ReturnWhenFinished());
             hub.NotifyActive(this, ch);
         }
 
-        /// <summary>
-        /// æ’­æ”¾å¾ªç¯éŸ³æ•ˆï¼ˆéœ€å¤–éƒ¨è°ƒç”¨ Stop åœæ­¢ï¼‰
-        /// </summary>
+        /// <summary>Ñ­»·²¥·Å£¨Íâ²¿ĞèÒª Stop£©¡£</summary>
         public void PlayLoop(AudioClip clip, float volume, float pitch, AudioChannel ch, AudioMixerGroup group, Vector3? worldPos, float spatialBlend)
         {
             ConfigureSource(group, volume, pitch, spatialBlend, loop: true);
@@ -67,9 +61,6 @@ namespace Game.Audio
             hub.NotifyActive(this, ch);
         }
 
-        /// <summary>
-        /// é…ç½® AudioSource çš„å‚æ•°
-        /// </summary>
         private void ConfigureSource(AudioMixerGroup group, float volume, float pitch, float spatialBlend, bool loop)
         {
             source.outputAudioMixerGroup = group;
@@ -82,18 +73,12 @@ namespace Game.Audio
             source.maxDistance = 30f;
         }
 
-        /// <summary>
-        /// ç­‰å¾…æ’­æ”¾ç»“æŸåå›æ”¶å¯¹è±¡
-        /// </summary>
         private IEnumerator ReturnWhenFinished()
         {
             while (source && source.isPlaying) yield return null;
             StopAndReturnImmediate();
         }
 
-        /// <summary>
-        /// åœæ­¢æ’­æ”¾ï¼ˆå¯é€‰æ·¡å‡ºæ—¶é—´ï¼‰
-        /// </summary>
         public void Stop(float fadeOut = 0f)
         {
             if (!source) return;
@@ -101,9 +86,6 @@ namespace Game.Audio
             StartCoroutine(FadeOutThenStop(fadeOut));
         }
 
-        /// <summary>
-        /// æ‰§è¡Œæ·¡å‡ºååœæ­¢æ’­æ”¾
-        /// </summary>
         private IEnumerator FadeOutThenStop(float dur)
         {
             float startVol = source.volume;
@@ -117,16 +99,13 @@ namespace Game.Audio
             StopAndReturnImmediate();
         }
 
-        /// <summary>
-        /// ç«‹å³åœæ­¢å¹¶å½’è¿˜åˆ°å¯¹è±¡æ± 
-        /// </summary>
         private void StopAndReturnImmediate()
         {
             if (lifeRoutine != null) StopCoroutine(lifeRoutine);
             if (source) source.Stop();
 
-            hub.NotifyInactive(this, channel);   // é€šçŸ¥ AudioHub å½“å‰éŸ³æºå·²åœæ­¢
-            hub.ReturnToPool(this);              // å½’è¿˜åˆ°å¯¹è±¡æ± 
+            hub.NotifyInactive(this, channel);   // ¸æËß×Ü¹Ü£ºÎÒÏÂÏßÁË
+            hub.ReturnToPool(this);              // ÕæÕı»Ø³Ø
         }
     }
 }
