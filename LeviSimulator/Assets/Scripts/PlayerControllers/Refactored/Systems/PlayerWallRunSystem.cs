@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
+using Sirenix.OdinInspector;
 using Utilities;
 
 namespace PlayerControllers.Refactored.Systems
@@ -28,7 +29,7 @@ namespace PlayerControllers.Refactored.Systems
         
         // 公共访问器
         public bool IsEnabled { get; set; } = true;
-        public bool IsInitialized { get; set; } = false;
+        [ShowInInspector]public bool IsInitialized { get; set; } = false;
         public bool IsWallRunning => isWallRunning;
         public bool CanWallRun => canWallRun;
         public Vector3 WallNormal => wallNormal;
@@ -63,7 +64,11 @@ namespace PlayerControllers.Refactored.Systems
 
         public void Update()
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+            {
+                return;
+            }
+
             
             canWallRun = CheckCanWallRun();
             
@@ -81,7 +86,11 @@ namespace PlayerControllers.Refactored.Systems
         
         public void FixedUpdate()
         {
-            if (!IsEnabled || !isWallRunning) return;
+            if (!IsEnabled||!isWallRunning)
+            {
+                return;
+            }
+            
             
             HandleWallRunPhysics();
         }
@@ -201,7 +210,7 @@ namespace PlayerControllers.Refactored.Systems
         {
             Vector3 velocity = _movementSystem.Rigidbody.linearVelocity;
             velocity.y = 0;
-            _movementSystem.Rigidbody.linearVelocity = velocity;
+            _movementSystem.SetPlayerLinearVelocity(velocity);
         }
         
         public void StopWallRun()
@@ -228,8 +237,8 @@ namespace PlayerControllers.Refactored.Systems
             Vector3 upwardForce = Vector3.up * _config.WallJumpForce;
             Vector3 bounceForce = wallNormal * _config.WallJumpBounceForce;
             
-            _movementSystem.Rigidbody.linearVelocity = Vector3.zero;
-            _movementSystem.Rigidbody.AddForce(upwardForce + bounceForce, ForceMode.Impulse);
+            _movementSystem.SetPlayerLinearVelocity(Vector3.zero);
+            _movementSystem.AddPlayerRigidbodyForce(upwardForce + bounceForce, ForceMode.Impulse);
             
             // 切换到跳跃状态
             _playerController.ForceChangeState(PlayerState.Jumping);

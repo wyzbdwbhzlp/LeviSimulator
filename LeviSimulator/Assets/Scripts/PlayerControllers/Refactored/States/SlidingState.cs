@@ -37,7 +37,8 @@ namespace PlayerControllers.Refactored.States
             // 给予初始滑铲速度
             Vector3 slideVelocity = _slideDirection * config.SlideSpeed;
             slideVelocity.y = movementSystem.Rigidbody.linearVelocity.y;
-            movementSystem.Rigidbody.linearVelocity = slideVelocity;
+           
+            movementSystem.SetPlayerLinearVelocity(slideVelocity);
         }
         
         public override void Exit()
@@ -128,7 +129,7 @@ namespace PlayerControllers.Refactored.States
             
             velocity.x = horizontalVelocity.x;
             velocity.z = horizontalVelocity.z;
-            movementSystem.Rigidbody.linearVelocity = velocity;
+            movementSystem.SetPlayerLinearVelocity(velocity);
         }
         
        

@@ -52,7 +52,7 @@ namespace PlayerControllers.Refactored.Systems
         
 
         public bool IsEnabled { get; set; } = true;
-        public bool IsInitialized { get; set; } = false;
+        [ShowInInspector]public bool IsInitialized { get; set; } = false;
         public Transform CameraTransform => playerCamera.transform;
         public Camera Camera => playerCamera;
         
@@ -68,10 +68,20 @@ namespace PlayerControllers.Refactored.Systems
             if (playerBody == null)
                 playerBody = playerController.transform;// 默认使用玩家物体作为身体
 
-            RefreshEventSubscription(); // 订阅事件
+            // 订阅事件
+            RefreshEventSubscription(); 
+            
+            // 初始化旋转值
+            Vector3 initialEuler = playerBody.eulerAngles;
+            _yRotation = initialEuler.y;
+            _xRotation = playerCamera.transform.localEulerAngles.x;
+            
+            
             // 锁定光标
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            
+            
             IsInitialized = true;
         }
 
@@ -89,13 +99,20 @@ namespace PlayerControllers.Refactored.Systems
 
         public void Update()
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+            {
+                return;
+            }
             
             HandleMouseLook();
         }
 
         private void LateUpdate()
         {
+            if (!IsEnabled)
+            {
+                return;
+            }
             HandleCameraTilt();
         }
 

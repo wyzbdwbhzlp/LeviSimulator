@@ -5,6 +5,7 @@ using ExternPropertyAttributes;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
+using Sirenix.OdinInspector;
 using Utilities;
 
 namespace PlayerControllers.Refactored.Systems
@@ -31,7 +32,7 @@ namespace PlayerControllers.Refactored.Systems
      
 
         public bool IsEnabled { get; set; } = true;
-        public bool IsInitialized { get; set; }
+        [ShowInInspector]public bool IsInitialized { get; set; }
         public Rigidbody Rigidbody => playerRigidbody;
         public CapsuleCollider PlayerCollider => playerCollider;
         public PlayerMovementConfig Config => config;
@@ -56,6 +57,8 @@ namespace PlayerControllers.Refactored.Systems
             // 应用配置
             this.config = playerConfig as PlayerMovementConfig;
             RefreshEventSubscription();
+            
+            IsInitialized = true;
         }
 
         private void RefreshEventSubscription()
@@ -72,14 +75,22 @@ namespace PlayerControllers.Refactored.Systems
 
         public void Update()
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+            {
+                return;
+            }
+
 
             UpdateMovementDirection();
         }
 
         public void FixedUpdate()
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+            {
+                return;
+            }
+
 
             UpdateGroundDetection();
             _runtimeData.SetVelocity(playerRigidbody.linearVelocity);
@@ -107,7 +118,6 @@ namespace PlayerControllers.Refactored.Systems
         private void UpdateGroundDetection()
         {
             if (playerCollider == null || config == null) return;
-
             // 计算检测球体位置（脚底位置）
             Vector3 playerBottom = transform.position - new Vector3(0, playerCollider.height * 0.5f, 0);
             Vector3 spherePosition = playerBottom + new Vector3(0, config.GroundCheckRadius, 0);
@@ -187,7 +197,7 @@ namespace PlayerControllers.Refactored.Systems
             velocityChange.y = 0; // 不影响垂直速度
 
             Vector3 force = velocityChange * acceleration;
-            playerRigidbody.AddForce(force, ForceMode.Acceleration);
+            AddPlayerRigidbodyForce(force, ForceMode.Acceleration);
         }
 
         /// <summary>
@@ -197,16 +207,16 @@ namespace PlayerControllers.Refactored.Systems
         {
             Vector3 jumpVelocity = playerRigidbody.linearVelocity;
             jumpVelocity.y = jumpForce;
-            playerRigidbody.linearVelocity = jumpVelocity;
+            SetPlayerLinearVelocity(jumpVelocity);
             _runtimeData.SetJumpTime();
         }
 
         public void ApplyDash(Vector3 dashVelocity)
         {
-            if (!_runtimeData.CanDash) return;
+            // if (!_runtimeData.CanDash) return;
             
             // 应用冲刺速度
-            playerRigidbody.linearVelocity = new Vector3(dashVelocity.x,dashVelocity.y, dashVelocity.z);
+            SetPlayerLinearVelocity(dashVelocity);
             _runtimeData.SetVelocity(playerRigidbody.linearVelocity);
             _runtimeData.SetGrappling(false); // 取消抓钩状态
             _runtimeData.SetJumping(false); // 取消跳跃状态
@@ -309,6 +319,28 @@ namespace PlayerControllers.Refactored.Systems
             Gizmos.color = Color.white;
             Gizmos.DrawWireCube(transform.position + playerCollider.center, 
                 new Vector3(playerCollider.radius * 2, playerCollider.height, playerCollider.radius * 2));
+        }
+        public void SetPlayerLinearVelocity(Vector3 velocity)
+        {
+            if (playerRigidbody != null)
+            {
+                playerRigidbody.linearVelocity = velocity;
+            }
+            else
+            {
+                LogUtil.LogWarning("PlayerMovementSystem: Rigidbody 组件未设置，无法设置线性速度");
+            }
+        }
+        public void AddPlayerRigidbodyForce(Vector3 force, ForceMode mode)
+        {
+            if (playerRigidbody != null)
+            {
+                playerRigidbody.AddForce(force, mode);
+            }
+            else
+            {
+                LogUtil.LogWarning("PlayerMovementSystem: Rigidbody 组件未设置，无法添加力");
+            }
         }
 
         #endif

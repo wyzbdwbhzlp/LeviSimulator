@@ -65,7 +65,7 @@ namespace PlayerControllers.Refactored.States
             // 应用重力
             Vector3 velocity = movementSystem.Rigidbody.linearVelocity;
             velocity.y -= config.Gravity * Time.fixedDeltaTime;
-            movementSystem.Rigidbody.linearVelocity = velocity;
+            movementSystem.SetPlayerLinearVelocity(velocity);
         }
     }
 }

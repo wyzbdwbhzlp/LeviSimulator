@@ -52,6 +52,11 @@ namespace PlayerControllers.Refactored.Systems
         
         public void Update()
         {
+            if (!IsEnabled)
+            {
+                return;
+            }
+
             if (_grappleHook != null && _grappleHook.GrappleState != GrappleState.Idle)
             {
                 _grappleHook.UpdateGrapple();
@@ -61,6 +66,11 @@ namespace PlayerControllers.Refactored.Systems
 
         public void FixedUpdate()
         {
+            if (!IsEnabled)
+            {
+                return;
+            }
+
             if (_grappleHook != null && _grappleHook.GrappleState == GrappleState.Grappling)
             {
                 _grappleHook.ApplyGrappleForce();
@@ -252,19 +262,19 @@ namespace PlayerControllers.Refactored.Systems
             Vector3 grappleForce = CalculateGrappleForce(grappleDirection, grappleDistance);
             
             // 应用力到玩家刚体
-            var playerRigidbody = _playerController.MovementSystem.Rigidbody;
-            if (playerRigidbody != null&&!IsPlayerSpeeding())
+            var playerMovementSystem = _playerController.MovementSystem;
+            if (!IsPlayerSpeeding())
             {
                 var forceMagnitude = grappleForce.magnitude;
                 bool isOverMaxForce = forceMagnitude > _grappleConfig.MaxGrappleForce;
                 if (!isOverMaxForce)
                 {
-                    playerRigidbody.AddForce(grappleForce, ForceMode.Acceleration);
+                    playerMovementSystem.AddPlayerRigidbodyForce(grappleForce, ForceMode.Acceleration);
                 }
                 else
                 {
                     Vector3 limitedForce = grappleForce.normalized * _grappleConfig.MaxGrappleForce;
-                    playerRigidbody.AddForce(limitedForce, ForceMode.Acceleration);
+                    playerMovementSystem.AddPlayerRigidbodyForce(limitedForce, ForceMode.Acceleration);
                 }
             }
         }
