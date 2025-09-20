@@ -30,6 +30,9 @@ namespace PlayerControllers.Refactored
         [SerializeField, ReadOnly] private Vector3 velocity;
         [SerializeField, ReadOnly] private Vector2 moveInput;
         [SerializeField,ReadOnly] private string currentPhysicsMaterial;
+        [SerializeField, ReadOnly] private bool isOnSlope;
+        [SerializeField, ReadOnly] private float slopeRotationZ;
+        [SerializeField, ReadOnly] private Vector3 slopeDirection;
     
         
         // 系统组件
@@ -300,6 +303,9 @@ namespace PlayerControllers.Refactored
             isGrounded = _runtimeData.IsGrounded;
             velocity = _runtimeData.Velocity;
             moveInput = _runtimeData.MoveInput;
+            isOnSlope = _runtimeData.IsOnSlope;
+            slopeRotationZ = _runtimeData.SlopeRotationZ;
+            slopeDirection = _runtimeData.SlopeDirection;
         }
         
         /// <summary>

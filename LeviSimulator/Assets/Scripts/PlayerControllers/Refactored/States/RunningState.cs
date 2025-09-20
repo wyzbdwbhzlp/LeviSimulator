@@ -39,7 +39,7 @@ namespace PlayerControllers.Refactored.States
             }
             
             // 检查是否蹲伏（跑步时蹲伏转为滑铲）
-            if (runtimeData.IsCrouching && runtimeData.HorizontalSpeed > config.MinSlideSpeed)
+            if (runtimeData.IsCrouching && runtimeData.HorizontalSpeed > config.MinSlideActivationSpeed)
             {
                 ChangeState(PlayerState.Sliding);
                 return;

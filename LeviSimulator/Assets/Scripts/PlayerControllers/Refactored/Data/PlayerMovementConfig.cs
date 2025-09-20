@@ -12,6 +12,7 @@ namespace PlayerControllers.Refactored.Data
     {
 
 
+
         [BoxGroup("镜头控制")]
         [LabelText("鼠标灵敏度")]
         [SerializeField] private float mouseSensitivity = 100f; // 提高默认灵敏度适合FPS
@@ -55,14 +56,23 @@ namespace PlayerControllers.Refactored.Data
         [SerializeField] private float gravity = 20f;
         
         [BoxGroup("滑铲")]
-        [LabelText("滑铲速度")]
-        [SerializeField] private float slideSpeed = 12f;
+        [LabelText("启动滑铲时候的额外奖励速度")]
+        [SerializeField] private float slideStartBonusSpeed = 12f;
+        [LabelText("滑铲最高可达速度")]
+        [SerializeField]private float maxSlideSpeed = 15f;
         [LabelText("滑铲减速度")]
         [SerializeField] private float slideDeceleration = 5f;
-        [LabelText("最小滑铲速度")]
-        [SerializeField] private float minSlideSpeed = 3f;
-        [LabelText("滑铲持续时间")]
-        [SerializeField]private float slideDuration = 1f;
+        [LabelText("滑铲恰好不加速也不减速的角度")]
+        [SerializeField][Range(0f,90f)]private float neutralSlopeAngle=25f;
+        [LabelText("是否在过陡坡(超过neutralSlopeAngle)时继续加速")]
+        [SerializeField] private bool accelerateOnSteepSlope = false;
+        [LabelText("坡度角度加速因子")]
+        [SerializeField] private float slopeAngleBoostFactor=0.5f;
+        [LabelText("坡度角度减速因子")]
+        [SerializeField] private float slopeAngleDecelerationFactor=0.5f;
+        [LabelText("最小启动滑铲速度")]
+        [SerializeField] private float minSlideActivationSpeed = 3f;
+      
         
         [BoxGroup("滑墙")]
         [LabelText("滑墙检测距离")]
@@ -91,6 +101,8 @@ namespace PlayerControllers.Refactored.Data
         [SerializeField] private float groundCheckRadius;
         [LabelText("地面层级")]
         [SerializeField] private LayerMask groundLayerMask;
+        [LabelText("滑坡层级")]
+        [SerializeField] private LayerMask slopeLayerMask;
         
         [BoxGroup("碰撞体")]
         [LabelText("蹲伏高度")] 
@@ -111,10 +123,9 @@ namespace PlayerControllers.Refactored.Data
         public float MaxAirSpeed => maxAirSpeed;
         public float JumpForce => jumpForce;
         public float Gravity => gravity;
-        public float SlideSpeed => slideSpeed;
+        public float SlideStartBonusSpeed => slideStartBonusSpeed;
         public float SlideDeceleration => slideDeceleration;
-        public float MinSlideSpeed => minSlideSpeed;
-        public float SlideDuration => slideDuration;
+        public float MinSlideActivationSpeed => minSlideActivationSpeed;
         public float WallMaxDistance => wallMaxDistance;
         public LayerMask WallLayerMask => wallLayerMask;
         public float WallSpeedMultiplier => wallSpeedMultiplier;
@@ -136,6 +147,17 @@ namespace PlayerControllers.Refactored.Data
         public float DefaultAssistStrength => defaultAssistStrength;
         public float DefaultAssistDuration => defaultAssistDuration;
         public float AssistResponseSpeed => assistResponseSpeed;
+        public LayerMask SlopeLayerMask => slopeLayerMask;
 
+        public float MaxSlideSpeed => maxSlideSpeed;
+        
+        public float NeutralSlopeAngle => neutralSlopeAngle;
+
+        public bool AccelerateOnSteepSlope => accelerateOnSteepSlope;
+
+        public float SlopeAngleBoostFactor => slopeAngleBoostFactor;
+
+        public float SlopeAngleDecelerationFactor => slopeAngleDecelerationFactor;
+        
     }
 }

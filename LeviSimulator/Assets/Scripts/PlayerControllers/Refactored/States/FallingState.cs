@@ -37,7 +37,7 @@ namespace PlayerControllers.Refactored.States
             if (runtimeData.IsGrounded)
             {
                 // 根据着地时的速度和输入决定下一个状态
-                if (runtimeData.IsCrouching && runtimeData.HorizontalSpeed > config.MinSlideSpeed)
+                if (runtimeData.IsCrouching && runtimeData.HorizontalSpeed > config.MinSlideActivationSpeed)
                 {
                     ChangeState(PlayerState.Sliding);
                     return;

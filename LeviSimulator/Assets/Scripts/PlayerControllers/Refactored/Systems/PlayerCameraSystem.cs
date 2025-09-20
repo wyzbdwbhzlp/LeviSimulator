@@ -109,7 +109,7 @@ namespace PlayerControllers.Refactored.Systems
 
         private void LateUpdate()
         {
-            if (!IsEnabled)
+            if (!IsEnabled||!IsInitialized)
             {
                 return;
             }

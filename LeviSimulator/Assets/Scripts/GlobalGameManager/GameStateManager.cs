@@ -29,7 +29,8 @@ public class GameStateManager : MonoBehaviour
     public void SubscribeToEvents(GlobalManager globalManager)
     {
         _globalManager = globalManager;
-        globalManager.playerSpawnManager.OnPlayerRebirth+=HandlePlayerRebirth;
+        
+        _globalManager.playerSpawnManager.OnPlayerRebirth+=HandlePlayerRebirth;
     }
     private void UnsubscribeFromEvents()
     {

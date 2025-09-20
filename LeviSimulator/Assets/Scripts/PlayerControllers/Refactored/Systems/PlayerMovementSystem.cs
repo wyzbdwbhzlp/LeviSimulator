@@ -147,6 +147,9 @@ namespace PlayerControllers.Refactored.Systems
                     Vector3 groundNormal = hit.normal;
                     float groundAngle = Vector3.Angle(groundNormal, Vector3.up);
                     _runtimeData.SetGroundInfo(hit, groundNormal, groundAngle);
+                    
+                    // 检测斜坡
+                    DetectSlope(hit);
                 }
                 else
                 {
@@ -157,8 +160,68 @@ namespace PlayerControllers.Refactored.Systems
                         Vector3 groundNormal = hit.normal;
                         float groundAngle = Vector3.Angle(groundNormal, Vector3.up);
                         _runtimeData.SetGroundInfo(hit, groundNormal, groundAngle);
+                        
+                        // 检测斜坡
+                        DetectSlope(hit);
                     }
                 }
+            }
+            else
+            {
+            }
+        }
+
+        /// <summary>
+        /// 检测斜坡信息
+        /// </summary>
+        private void DetectSlope(RaycastHit groundHit)
+        {
+            // 检查是否在斜坡层级上
+            bool isOnSlopeLayer = ((1 << groundHit.collider.gameObject.layer) & config.SlopeLayerMask) != 0;
+            
+            if (isOnSlopeLayer)
+            {
+                // 获取斜坡的Transform
+                Transform slopeTransform = groundHit.collider.transform;
+                
+                // 计算斜坡的Z轴旋转值
+                float slopeRotationZ = slopeTransform.eulerAngles.z;
+                // 标准化角度到-180到180度范围
+                if (slopeRotationZ > 180f)
+                    slopeRotationZ -= 360f;
+                
+                // 计算斜坡在世界空间的倾斜方向
+                // 使用斜坡表面法线的投影到水平面来计算倾斜方向
+                Vector3 groundNormal = groundHit.normal;
+                Vector3 slopeDirection = Vector3.zero;
+                Vector3 slopeUpDirection = Vector3.up;
+                
+                // 如果不是完全水平的表面
+                if (Mathf.Abs(Vector3.Dot(groundNormal, Vector3.up)) < 0.999f)
+                {
+                    // 计算真正的斜坡向下方向（沿着斜坡表面）
+                    // 使用重力方向投影到斜坡表面上
+                    slopeDirection = Vector3.ProjectOnPlane(Vector3.down, groundNormal).normalized;
+                    
+                    // 计算斜坡的向上方向（与向下方向相反）
+                    slopeUpDirection = -slopeDirection;
+                    
+                    // 如果计算出的方向不合理，使用备用方法
+                    if (slopeDirection.magnitude < 0.1f)
+                    {
+                        // 备用方法：基于法线的水平投影
+                        Vector3 horizontalNormal = new Vector3(groundNormal.x, 0, groundNormal.z).normalized;
+                        slopeDirection = -horizontalNormal;
+                        slopeUpDirection = horizontalNormal;
+                    }
+                }
+                
+                _runtimeData.SetSlopeInfo(true, slopeRotationZ, slopeDirection, slopeUpDirection, groundHit);
+            }
+            else
+            {
+                // 不在斜坡层级上
+                _runtimeData.SetSlopeInfo(false, 0f, Vector3.zero, Vector3.up, new RaycastHit());
             }
         }
 
@@ -319,6 +382,23 @@ namespace PlayerControllers.Refactored.Systems
             Gizmos.color = Color.white;
             Gizmos.DrawWireCube(transform.position + playerCollider.center, 
                 new Vector3(playerCollider.radius * 2, playerCollider.height, playerCollider.radius * 2));
+            
+            // 绘制斜坡信息
+            if (_runtimeData?.IsOnSlope == true)
+            {
+                // 绘制斜坡向下方向（红色）
+                Gizmos.color = Color.red;
+                Vector3 slopeStart = transform.position;
+                Vector3 slopeEnd = slopeStart + _runtimeData.SlopeDirection * 2f;
+                Gizmos.DrawLine(slopeStart, slopeEnd);
+                Gizmos.DrawSphere(slopeEnd, 0.1f);
+                
+                // 绘制斜坡向上方向（绿色）
+                Gizmos.color = Color.green;
+                Vector3 slopeUpEnd = slopeStart + _runtimeData.SlopeUpDirection * 2f;
+                Gizmos.DrawLine(slopeStart, slopeUpEnd);
+                Gizmos.DrawSphere(slopeUpEnd, 0.1f);
+            }
         }
         public void SetPlayerLinearVelocity(Vector3 velocity)
         {

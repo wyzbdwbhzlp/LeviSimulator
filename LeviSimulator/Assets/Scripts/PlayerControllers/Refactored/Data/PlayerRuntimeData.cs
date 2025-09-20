@@ -53,6 +53,13 @@ namespace PlayerControllers.Refactored.Data
         public Vector3 GroundNormal { get; private set; }
         public float GroundAngle { get; private set; }
         
+        // 斜坡信息
+        public bool IsOnSlope { get; private set; }
+        public float SlopeRotationZ { get; private set; }  // 斜坡的Z轴旋转值
+        public Vector3 SlopeDirection { get; private set; }  // 斜坡在世界空间的倾斜方向（向下）
+        public Vector3 SlopeUpDirection { get; private set; }  // 斜坡的向上方向
+        public RaycastHit SlopeHit { get; private set; }  // 斜坡检测的碰撞信息
+        
         // 时间数据
         public float StateEnterTime { get; private set; }
         public float TimeSinceGrounded { get; private set; }
@@ -86,6 +93,18 @@ namespace PlayerControllers.Refactored.Data
             GroundHit = hit;
             GroundNormal = normal;
             GroundAngle = angle;
+        }
+        
+        /// <summary>
+        /// 设置斜坡信息
+        /// </summary>
+        public void SetSlopeInfo(bool isOnSlope, float slopeRotationZ, Vector3 slopeDirection, Vector3 slopeUpDirection, RaycastHit slopeHit)
+        {
+            IsOnSlope = isOnSlope;
+            SlopeRotationZ = slopeRotationZ;
+            SlopeDirection = slopeDirection;
+            SlopeUpDirection = slopeUpDirection;
+            SlopeHit = slopeHit;
         }
         
         public void UpdateTimers()
@@ -141,6 +160,11 @@ namespace PlayerControllers.Refactored.Data
             GroundHit = new RaycastHit();
             GroundNormal = Vector3.up;
             GroundAngle = 0f;
+            IsOnSlope = false;
+            SlopeRotationZ = 0f;
+            SlopeDirection = Vector3.zero;
+            SlopeUpDirection = Vector3.up;
+            SlopeHit = new RaycastHit();
             StateEnterTime = Time.time;
             TimeSinceGrounded = 0f;
             TimeSinceJump = 0f;

@@ -61,7 +61,7 @@ namespace PlayerControllers.Refactored.States
             }
             
             // 检查是否开始滑铲
-            if (runtimeData.HorizontalSpeed > config.MinSlideSpeed && runtimeData.MoveInput.magnitude > 0.1f)
+            if (runtimeData.HorizontalSpeed > config.MinSlideActivationSpeed && runtimeData.MoveInput.magnitude > 0.1f)
             {
                 ChangeState(PlayerState.Sliding);
                 return;
