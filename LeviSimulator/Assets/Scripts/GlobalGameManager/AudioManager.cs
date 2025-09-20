@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
+[Obsolete("ä½¿ç”¨ AudioHub æ›¿ä»£")]
 public class AudioManager : MonoBehaviour
 {
     [SerializeField] AudioSource BgmAudio;
@@ -11,7 +13,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip BgmClip;
    
 
-    private bool isPlaying = false; // ¿ØÖÆÒôÆµÊÇ·ñÕýÔÚ²¥·Å
+    private bool isPlaying = false; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½
 
     private void Start()
     {
@@ -21,7 +23,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySfx(AudioClip clip)
     {
-        // Èç¹û SfxAudio ²»ÔÚ²¥·ÅÖÐ£¬²Å¿ÉÒÔ²¥·ÅÒôÐ§
+        // ï¿½ï¿½ï¿½ SfxAudio ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½Å¿ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
         if (!isPlaying)
         {
             StartCoroutine(PlaySfxCoroutine(clip));
@@ -30,12 +32,12 @@ public class AudioManager : MonoBehaviour
 
     private IEnumerator PlaySfxCoroutine(AudioClip clip)
     {
-        isPlaying = true; // ÉèÖÃÎªÕýÔÚ²¥·Å
+        isPlaying = true; // ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½
         SfxAudio.PlayOneShot(clip);
 
-        // µÈ´ýÖ±µ½ÒôÐ§²¥·ÅÍê³É
+        // ï¿½È´ï¿½Ö±ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         yield return new WaitForSeconds(clip.length);
 
-        isPlaying = false; // ²¥·ÅÍê³Éºó£¬ÔÊÐíÔÙ´Î²¥·Å
+        isPlaying = false; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Éºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù´Î²ï¿½ï¿½ï¿½
     }
 }
