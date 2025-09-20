@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
+using Sirenix.OdinInspector;
 using Utilities;
 
 namespace PlayerControllers.Refactored.Systems
@@ -28,7 +29,7 @@ namespace PlayerControllers.Refactored.Systems
         
         // 公共访问器
         public bool IsEnabled { get; set; } = true;
-        public bool IsInitialized { get; set; } = false;
+        [ShowInInspector]public bool IsInitialized { get; set; } = false;
         public bool IsWallRunning => isWallRunning;
         public bool CanWallRun => canWallRun;
         public Vector3 WallNormal => wallNormal;
@@ -63,7 +64,11 @@ namespace PlayerControllers.Refactored.Systems
 
         public void Update()
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+            {
+                return;
+            }
+
             
             canWallRun = CheckCanWallRun();
             
@@ -81,7 +86,11 @@ namespace PlayerControllers.Refactored.Systems
         
         public void FixedUpdate()
         {
-            if (!IsEnabled || !isWallRunning) return;
+            if (!IsEnabled||!isWallRunning)
+            {
+                return;
+            }
+            
             
             HandleWallRunPhysics();
         }

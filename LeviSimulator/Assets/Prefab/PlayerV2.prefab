@@ -15,6 +15,11 @@ GameObject:
   - component: {fileID: 1075664451440330959}
   - component: {fileID: 4463709460799355052}
   - component: {fileID: 3875699506924830188}
+  - component: {fileID: 391634398180324885}
+  - component: {fileID: 3505710920065420360}
+  - component: {fileID: 6806654300686669943}
+  - component: {fileID: 6026939918037325999}
+  - component: {fileID: 3473035902945314339}
   m_Layer: 0
   m_Name: PlayerV2
   m_TagString: Player
@@ -194,6 +199,77 @@ MonoBehaviour:
   velocity: {x: 0, y: 0, z: 0}
   moveInput: {x: 0, y: 0}
   currentPhysicsMaterial: 
+--- !u!114 &391634398180324885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4208422305507451784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4924604befb673f44893c2970ae19567, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInput: {fileID: 4463709460799355052}
+--- !u!114 &3505710920065420360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4208422305507451784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 717126a32e1c73348a97f2f8d76c3189, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerRigidbody: {fileID: 1075664451440330959}
+  playerCollider: {fileID: 6822616107303049689}
+  cameraTransform: {fileID: 4528635224637652436}
+  config: {fileID: 11400000, guid: 54a6d35342aba8f4085a2233ef751083, type: 2}
+--- !u!114 &6806654300686669943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4208422305507451784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbafa5008414ddc47ac396f659fbe86c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isWallRunning: 0
+  wallNormal: {x: 0, y: 0, z: 0}
+  wallForward: {x: 0, y: 0, z: 0}
+  wallRunTimer: 0
+  canWallRun: 0
+--- !u!114 &6026939918037325999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4208422305507451784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e0c29d8a00f446fa63025b64eb27403, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3473035902945314339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4208422305507451784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62d6592c115449bfa14bcb516f34e4e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dashCoolDownTimer: 0
 --- !u!1 &7022253813326094777
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,6 +282,7 @@ GameObject:
   - component: {fileID: 8653998026773444873}
   - component: {fileID: 4174684771007908058}
   - component: {fileID: 8676834874171603501}
+  - component: {fileID: 7689183422907142546}
   m_Layer: 0
   m_Name: PlayerCamera
   m_TagString: MainCamera
@@ -332,6 +409,27 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &7689183422907142546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7022253813326094777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a964bb3f1aab1394ea96edf0283610f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerBody: {fileID: 0}
+  playerCamera: {fileID: 0}
+  useRawInput: 1
+  frameRateIndependent: 1
+  movementConfig: {fileID: 0}
+  minVerticalAngle: -90
+  maxVerticalAngle: 90
+  maxTiltAngle: 15
+  tiltSpeed: 5
 --- !u!1001 &5095154885131528934
 PrefabInstance:
   m_ObjectHideFlags: 0

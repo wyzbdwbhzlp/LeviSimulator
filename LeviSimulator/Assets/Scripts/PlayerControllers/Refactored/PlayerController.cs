@@ -71,6 +71,11 @@ namespace PlayerControllers.Refactored
             SubscribeToEvents();
             
             _stateMachine.Initialize(PlayerState.Idle);
+
+            foreach (var system in _systems)
+            {
+                system.IsEnabled=true;
+            }
         }
 
         public bool IsSystemAllInitialized()
@@ -146,12 +151,18 @@ namespace PlayerControllers.Refactored
             // 获取或添加系统组件
             _inputSystem = GetComponent<PlayerInputSystem>();
             if (_inputSystem == null)
+            {
                 _inputSystem = gameObject.AddComponent<PlayerInputSystem>();
-                
+                LogUtil.LogWarning("PlayerInputSystem组件未找到，已自动添加，请确保已正确配置Input Actions");
+            }
+
             _movementSystem = GetComponent<PlayerMovementSystem>();
             if (_movementSystem == null)
+            {
                 _movementSystem = gameObject.AddComponent<PlayerMovementSystem>();
-                
+                LogUtil.LogWarning("PlayerMovementSystem组件未找到，已自动添加");
+            }
+
             _cameraSystem = GetComponentInChildren<PlayerCameraSystem>();
             if (_cameraSystem == null)
             {
@@ -160,22 +171,33 @@ namespace PlayerControllers.Refactored
                 if (playerCamera != null)
                 {
                     _cameraSystem = playerCamera.gameObject.AddComponent<PlayerCameraSystem>();
+                    LogUtil.LogWarning("PlayerCameraSystem组件未找到，已在摄像机对象上自动添加");
                 }
             }
             
             _wallRunSystem = GetComponent<PlayerWallRunSystem>();
             if (_wallRunSystem == null)
+            {
                 _wallRunSystem = gameObject.AddComponent<PlayerWallRunSystem>();
-            
+                LogUtil.LogWarning("PlayerWallRunSystem组件未找到，已自动添加");
+            }
+
             _grapplingSystem = GetComponent<PlayerGrapplingSystem>();
             if (_grapplingSystem == null)
+            {
                 _grapplingSystem = gameObject.AddComponent<PlayerGrapplingSystem>();
+                LogUtil.LogWarning("PlayerGrapplingSystem组件未找到，已自动添加");
+            }
+
             _grapplingSystem.SetGrappleSetting(grapplingConfig,grapplingMuzzle);
             
             _skillSystem = GetComponent<PlayerSkillSystem>();
             if (_skillSystem == null)
+            {
                 _skillSystem = gameObject.AddComponent<PlayerSkillSystem>();
-            
+                LogUtil.LogWarning("PlayerSkillSystem组件未找到，已自动添加");
+            }
+
             // 添加系统到列表
             _systems.Add(_inputSystem);
             _systems.Add(_movementSystem);

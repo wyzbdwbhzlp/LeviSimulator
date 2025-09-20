@@ -52,7 +52,7 @@ namespace PlayerControllers.Refactored.Systems
         
 
         public bool IsEnabled { get; set; } = true;
-        public bool IsInitialized { get; set; } = false;
+        [ShowInInspector]public bool IsInitialized { get; set; } = false;
         public Transform CameraTransform => playerCamera.transform;
         public Camera Camera => playerCamera;
         
@@ -99,13 +99,20 @@ namespace PlayerControllers.Refactored.Systems
 
         public void Update()
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+            {
+                return;
+            }
             
             HandleMouseLook();
         }
 
         private void LateUpdate()
         {
+            if (!IsEnabled)
+            {
+                return;
+            }
             HandleCameraTilt();
         }
 

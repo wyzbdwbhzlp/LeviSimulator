@@ -52,6 +52,11 @@ namespace PlayerControllers.Refactored.Systems
         
         public void Update()
         {
+            if (!IsEnabled)
+            {
+                return;
+            }
+
             if (_grappleHook != null && _grappleHook.GrappleState != GrappleState.Idle)
             {
                 _grappleHook.UpdateGrapple();
@@ -61,6 +66,11 @@ namespace PlayerControllers.Refactored.Systems
 
         public void FixedUpdate()
         {
+            if (!IsEnabled)
+            {
+                return;
+            }
+
             if (_grappleHook != null && _grappleHook.GrappleState == GrappleState.Grappling)
             {
                 _grappleHook.ApplyGrappleForce();

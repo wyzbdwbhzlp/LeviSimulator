@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
+using Sirenix.OdinInspector;
 using UnityEngine.Events;
 
 namespace PlayerControllers.Refactored.Systems
@@ -31,7 +32,7 @@ namespace PlayerControllers.Refactored.Systems
     
 
         public bool IsEnabled { get; set; } = true;
-        public bool IsInitialized { get; set; } = false;
+        [ShowInInspector]public bool IsInitialized { get; set; } = false;
         
         public void Initialize(PlayerController playerController,ScriptableObject playerConfig)
         {

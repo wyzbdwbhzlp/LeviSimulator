@@ -5,6 +5,7 @@ using ExternPropertyAttributes;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
+using Sirenix.OdinInspector;
 using Utilities;
 
 namespace PlayerControllers.Refactored.Systems
@@ -31,7 +32,7 @@ namespace PlayerControllers.Refactored.Systems
      
 
         public bool IsEnabled { get; set; } = true;
-        public bool IsInitialized { get; set; }
+        [ShowInInspector]public bool IsInitialized { get; set; }
         public Rigidbody Rigidbody => playerRigidbody;
         public CapsuleCollider PlayerCollider => playerCollider;
         public PlayerMovementConfig Config => config;
@@ -56,6 +57,8 @@ namespace PlayerControllers.Refactored.Systems
             // 应用配置
             this.config = playerConfig as PlayerMovementConfig;
             RefreshEventSubscription();
+            
+            IsInitialized = true;
         }
 
         private void RefreshEventSubscription()
@@ -72,14 +75,22 @@ namespace PlayerControllers.Refactored.Systems
 
         public void Update()
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+            {
+                return;
+            }
+
 
             UpdateMovementDirection();
         }
 
         public void FixedUpdate()
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+            {
+                return;
+            }
+
 
             UpdateGroundDetection();
             _runtimeData.SetVelocity(playerRigidbody.linearVelocity);
@@ -317,7 +328,7 @@ namespace PlayerControllers.Refactored.Systems
             }
             else
             {
-                Debug.LogWarning("PlayerMovementSystem: Rigidbody 组件未设置，无法设置线性速度");
+                LogUtil.LogWarning("PlayerMovementSystem: Rigidbody 组件未设置，无法设置线性速度");
             }
         }
         public void AddPlayerRigidbodyForce(Vector3 force, ForceMode mode)
@@ -328,7 +339,7 @@ namespace PlayerControllers.Refactored.Systems
             }
             else
             {
-                Debug.LogWarning("PlayerMovementSystem: Rigidbody 组件未设置，无法添加力");
+                LogUtil.LogWarning("PlayerMovementSystem: Rigidbody 组件未设置，无法添加力");
             }
         }
 
