@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7512203930829296528}
   - component: {fileID: 7154450895923574113}
   - component: {fileID: -1748466303285858131}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: ponit1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,13 +27,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 454082404523621761}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.5768185, y: -0.4216732, z: -0.41566247, w: 0.5627582}
+  m_LocalRotation: {x: -0.57681906, y: -0.4216721, z: -0.4156616, w: 0.5627592}
   m_LocalPosition: {x: -36.33013, y: 24.261063, z: 494.44476}
-  m_LocalScale: {x: 68.42271, y: 68.4227, z: 68.4227}
+  m_LocalScale: {x: 68.42271, y: 68.4227, z: 68.42269}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -91.239, y: -13.161011, z: -59.45401}
 --- !u!33 &7512203930829296528
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -66,6 +66,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 501310227833ba1479f19a9df61d5537, type: 2}
+  - {fileID: 2100000, guid: be5c941ebc09ad84faa3b30308943b7b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

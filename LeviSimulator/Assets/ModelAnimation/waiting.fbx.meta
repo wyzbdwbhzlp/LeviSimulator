@@ -8,17 +8,17 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: XIUZI
-    second: {fileID: 2100000, guid: 24ca20459ad73024fb92600c441b4afa, type: 2}
+    second: {fileID: 2100000, guid: 9747a5f5b1d397a4b92f8477f6478e94, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: gouzhua
-    second: {fileID: 2100000, guid: 384a80c40e571134bbf4e2f07e536b3f, type: 2}
+    second: {fileID: 2100000, guid: 5de2b612809300545801274ecec37e3f, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: hands
-    second: {fileID: 2100000, guid: 53f897b30cdd973459dec5a93cb66eff, type: 2}
+    second: {fileID: 2100000, guid: 6ab3ee999ca1eab458a5835f6b66df07, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

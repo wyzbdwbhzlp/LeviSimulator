@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8722901815048731746}
   - component: {fileID: 7799401216796096527}
   - component: {fileID: 6281215090104780051}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: stoneground3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,9 +27,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7285984679995206118}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 145.50497, y: 21.132576, z: 389.0267}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.9740609, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -66,6 +66,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 5682bef2f7fd389419b35c7c81bc8e95, type: 2}
+  - {fileID: 2100000, guid: 6fb22464dc4b67647a6e3a111a1d6e32, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
