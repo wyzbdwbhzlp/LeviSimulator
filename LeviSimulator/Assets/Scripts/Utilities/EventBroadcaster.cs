@@ -5,6 +5,27 @@ namespace Utilities
 {
     public static class EventBroadcaster
     {
+        public static event Action<GameObject> OnPlayerRebirth;
+        public static void CallPlayerRebirth(GameObject player)
+        {
+            OnPlayerRebirth?.Invoke(player);
+        }
+        public static event Action OnGameOver;
+        public static void CallGameOver()
+        {
+            OnGameOver?.Invoke();
+        }
+        public static event Action PlayerEnterCheckPoint;
+        public static void CallPlayerEnterCheckPoint()
+        {
+            PlayerEnterCheckPoint?.Invoke();
+        }
+
+        public static event Action PlayerExitCheckPoint;
+        public static void CallPlayerExitCheckPoint()
+        {
+            PlayerExitCheckPoint?.Invoke();
+        }
         public static event Action RequestStopGrappleEvent;
 
         public static void CallRequestStopGrappleEvent()

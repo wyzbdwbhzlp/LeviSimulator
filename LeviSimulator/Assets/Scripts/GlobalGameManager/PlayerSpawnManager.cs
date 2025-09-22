@@ -122,6 +122,7 @@ namespace GlobalGameManager
             if (isRebirth)
             {
                 OnPlayerRebirth?.Invoke(player);
+                EventBroadcaster.CallPlayerRebirth(player);//广播到全局（让敌人收到）
             }
             else
             {
@@ -132,6 +133,7 @@ namespace GlobalGameManager
         public void PlayerIsDeath()
         {
             _gameStateManager.ChangeState(GameState.GameOver);// 切换到游戏结束状态
+            EventBroadcaster.CallGameOver(); // 广播游戏结束
             //tip 黑屏hud会接受来自GameOver状态的事件，然后监听玩家复活输入
         }
 

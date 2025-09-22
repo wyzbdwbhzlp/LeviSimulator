@@ -38,8 +38,10 @@ namespace SceneInteractionObject
                 _playerInputSystem = _player.GetComponent<PlayerInputSystem>();
                 _playerInputSystem.RegisterInteractCallback(OnInteractButtonPressed);
                 _canInteract = true;
+                EventBroadcaster.CallPlayerEnterCheckPoint();//广播进入存档点
             }
         } 
+
         // private void Update()
         // {
         //     if (_canInteract && Input.GetKeyDown(KeyCode.E))
@@ -62,6 +64,7 @@ namespace SceneInteractionObject
                 _playerInputSystem.UnregisterInteractCallback();
                 _player = null;
                 _canInteract = false;
+                EventBroadcaster.CallPlayerExitCheckPoint();//广播离开存档点
             }
         }
         
