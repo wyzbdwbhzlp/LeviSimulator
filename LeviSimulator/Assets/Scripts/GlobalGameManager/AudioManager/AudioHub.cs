@@ -1,14 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Audio;
+using Utilities;
 
 namespace Game.Audio
 {
     /// <summary>
     /// 音效系统总管：负责对象池、通道管理、配额限制、BGM 淡入淡出。
     /// </summary>
-    public class AudioHub : MonoBehaviour, IAudioPlayer
+    public class AudioHub : Singleton<AudioHub>, IAudioPlayer
     {
         public static AudioHub Instance { get; private set; }
 
@@ -16,6 +18,7 @@ namespace Game.Audio
         [SerializeField] private GameObject audioPrefab;   // 音频对象预制体
         [SerializeField] private int initPoolSize = 16;    // 初始对象池大小
         [SerializeField] private bool dontDestroyOnLoad = true; // 是否在切换场景时保留
+        [SerializeField] private AudioDatabase audioDatabase; // 音频数据库
 
         [Header("混音组")]
         public AudioMixerGroup bgmGroup;  // 背景音乐混音组
@@ -37,12 +40,16 @@ namespace Game.Audio
         private bool bgmAIsActive = true;
         private Coroutine bgmCrossRoutine;
 
-        private void Awake()
+        public void Initialize()
         {
-            if (Instance != null && Instance != this) { Destroy(gameObject); return; }
-            Instance = this;
+            if( audioPrefab == null)
+                LogUtil.LogError(" audioPrefab 未设置，请检查 Inspector 配置");
+            if( audioDatabase == null)
+                LogUtil.LogError(" audioDatabase 未设置，请检查 Inspector 配置");
+            
             if (dontDestroyOnLoad) DontDestroyOnLoad(gameObject);
-
+            
+            
             // 初始化对象池
             for (int i = 0; i < initPoolSize; i++) CreateNew();
 
@@ -116,19 +123,41 @@ namespace Game.Audio
 
         // ----------- IAudioPlayer 实现 -----------
 
-        public void PlayOneShot(AudioClip clip, float volume = 1f, AudioChannel channel = AudioChannel.SFX, float pitch = 1f, float throttleInterval = 0f)
+        //throttleInterval指定节流时间间隔，单位秒，防止同一音效被频繁触发
+        /// <summary>
+        ///  播放一次性音效（不会循环），用于UI音效，无需指定position
+        /// </summary>
+        /// <param name="clip"></param>
+        /// <param name="volume"></param>
+        /// <param name="pitch"></param>
+        /// <param name="throttleInterval"></param>
+        [Button(" 测试UI音效 ")]
+        public void PlayOneShotFor2D(AudioClip clip, float volume = 1f, float pitch = 1f, float throttleInterval = 0f)
         {
             if (!clip) return;
             if (IsThrottled(clip, throttleInterval)) return;
 
             var wrapper = GetFromPool();
-            var group = GetGroup(channel);
+            var group = GetGroup(AudioChannel.UI);
 
-            wrapper.PlayOneShot(clip, volume, pitch, channel, group, null,
-                channel == AudioChannel.UI ? 0f : 1f); // UI=2D, 其他=3D
+            wrapper.PlayOneShot(clip, volume, pitch, AudioChannel.UI, group, null, 0f); 
         }
-
-        public void PlayAtPosition(AudioClip clip, Vector3 pos, float volume = 1f, AudioChannel channel = AudioChannel.SFX, float pitch = 1f, float spatialBlend = 1f, float throttleInterval = 0f)
+       
+        /// <summary>
+        ///   播放一次性音效（不会循环），用于场景实际音效，需要指定position
+        /// </summary>
+        /// <param name="clip"></param>
+        /// <param name="pos"></param>
+        /// <param name="volume"></param>
+        /// <param name="pitch"></param>
+        /// <param name="spatialBlend"></param>
+        /// <param name="throttleInterval"></param>
+        /// <param name="channel"></param>
+        [Button(" 测试3D音效 ")]
+        public void PlayOneShotFor3D(AudioClip clip, Vector3 pos, float volume = 1f,
+            float pitch = 1f, float spatialBlend = 1f,
+            float throttleInterval = 0f,
+            AudioChannel channel = AudioChannel.SFX)
         {
             if (!clip) return;
             if (IsThrottled(clip, throttleInterval)) return;
@@ -138,6 +167,15 @@ namespace Game.Audio
             wrapper.PlayOneShot(clip, volume, pitch, channel, group, pos, spatialBlend);
         }
 
+        /// <summary>
+        ///  播放循环音效，通常用于环境音效或持续性音效
+        /// </summary>
+        /// <param name="clip"></param>
+        /// <param name="channel"></param>
+        /// <param name="volume"></param>
+        /// <param name="pitch"></param>
+        /// <param name="spatialBlend"></param>
+        /// <returns></returns>
         public IAudioHandle PlayLoop(AudioClip clip, AudioChannel channel = AudioChannel.SFX, float volume = 1f, float pitch = 1f, float spatialBlend = 1f)
         {
             if (!clip) return null;
@@ -158,6 +196,7 @@ namespace Game.Audio
 
         // ----------- BGM 淡入淡出 -----------
 
+        [Button("播放Bgm")]
         public void PlayBGM(AudioClip clip, float fadeSeconds = 0.75f, float targetVolume = 1f)
         {
             if (!clip) return;

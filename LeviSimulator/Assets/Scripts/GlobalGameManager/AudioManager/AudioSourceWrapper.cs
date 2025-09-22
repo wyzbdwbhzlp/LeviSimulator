@@ -74,7 +74,7 @@ namespace Game.Audio
         {
             source.outputAudioMixerGroup = group;
             source.volume = Mathf.Clamp01(volume);
-            source.pitch = Mathf.Clamp(pitch, 0.1f, 3f);
+            source.pitch = Mathf.Clamp(pitch, 0.1f, 3f); // 限制音调范围，避免过高或过低
             source.loop = loop;
             source.spatialBlend = Mathf.Clamp01(spatialBlend); // 0=2D, 1=3D
             source.rolloffMode = AudioRolloffMode.Linear;

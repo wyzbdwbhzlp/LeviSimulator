@@ -38,12 +38,14 @@ namespace Game.Audio
         /// <summary>
         /// 播放一次性音效（不会循环）
         /// </summary>
-        void PlayOneShot(AudioClip clip, float volume = 1f, AudioChannel channel = AudioChannel.SFX, float pitch = 1f, float throttleInterval = 0f);
+        void PlayOneShotFor2D(AudioClip clip, float volume = 1f,float pitch = 1f, float throttleInterval = 0f);
 
         /// <summary>
         /// 在指定位置播放音效，可选择 2D / 3D 声效（spatialBlend 控制）
         /// </summary>
-        void PlayAtPosition(AudioClip clip, Vector3 pos, float volume = 1f, AudioChannel channel = AudioChannel.SFX, float pitch = 1f, float spatialBlend = 1f, float throttleInterval = 0f);
+        void PlayOneShotFor3D(AudioClip clip, Vector3 pos, float volume = 1f,
+            float pitch = 1f, float spatialBlend = 1f, float throttleInterval = 0f,
+            AudioChannel channel = AudioChannel.SFX);
 
         /// <summary>
         /// 播放循环音效（返回可控制的句柄）
