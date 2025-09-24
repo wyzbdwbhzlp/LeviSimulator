@@ -29,10 +29,14 @@ MonoBehaviour:
   maxAirSpeed: 20
   jumpForce: 6.5
   gravity: 30
-  slideSpeed: 20
+  slideStartBonusSpeed: 12
+  maxSlideSpeed: 15
   slideDeceleration: 2
-  minSlideSpeed: 3
-  slideDuration: 5
+  neutralSlopeAngle: 25
+  accelerateOnSteepSlope: 0
+  slopeAngleBoostFactor: 0.5
+  slopeAngleDecelerationFactor: 0.5
+  minSlideActivationSpeed: 3
   wallMaxDistance: 2
   wallLayerMask:
     serializedVersion: 2
@@ -48,7 +52,10 @@ MonoBehaviour:
   groundCheckRadius: 0.3
   groundLayerMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 320
+  slopeLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
   crouchingHeight: 1
   playerInAirMaterial: {fileID: 13400000, guid: e7f4ad5e73d3b7444a9b63f6db3f30e5, type: 2}
   playerOnGroundMaterial: {fileID: 13400000, guid: e3257418ac446df4bb15c7d80b249286, type: 2}

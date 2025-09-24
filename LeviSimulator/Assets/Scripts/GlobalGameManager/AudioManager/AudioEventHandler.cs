@@ -75,5 +75,10 @@ namespace Game.Audio
         }
 
 
+        public static event Action<BgmDirectorTriggerPointEnum> BgmDirectorTriggerPointReached;
+        public static void CallBgmDirectorTriggerPointReached(BgmDirectorTriggerPointEnum point)
+        {
+            BgmDirectorTriggerPointReached?.Invoke(point);
+        }
     }
 }
