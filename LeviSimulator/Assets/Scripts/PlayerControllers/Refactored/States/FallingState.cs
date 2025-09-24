@@ -1,3 +1,4 @@
+using Game.Audio;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 
@@ -15,7 +16,14 @@ namespace PlayerControllers.Refactored.States
             base.Enter();
             runtimeData.SetState(PlayerState.Falling);
         }
-        
+
+        public override void Exit()
+        {
+            base.Exit();
+
+            AudioEventHandler.CallPlayOneShotFor2D(AudioNames.落地声);
+        }
+
         protected override void CheckTransitions()
         {
             if (runtimeData.IsDashing)

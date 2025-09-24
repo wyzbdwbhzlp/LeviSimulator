@@ -1,0 +1,269 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad2645d7c6c204247851387a238158df, type: 3}
+  m_Name: AudioDatabase
+  m_EditorClassIdentifier: 
+  audioDataList:
+  - audioName: "\u547C\u5438\u58F0"
+    audioClip: {fileID: 8300000, guid: bc17c9f8b265e2148a0bf7f475f527b5, type: 3}
+    defaultChannel: 1
+    volume: 0.9
+    pitch: 1
+    spatialBlend: 0.5
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: Player
+    tags:
+    - Breath
+  - audioName: "\u6B7B\u4EA15"
+    audioClip: {fileID: 8300000, guid: 48812ca64b811d24a9258f98778d5a5f, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 1
+    defaultFadeDuration: 0.5
+    category: Player
+    tags:
+    - Death
+  - audioName: "\u6B7B\u4EA16"
+    audioClip: {fileID: 8300000, guid: 229e0fb5a845422458b3267a4f7091e7, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0.5
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 1
+    defaultFadeDuration: 0.5
+    category: Player
+    tags:
+    - Death
+  - audioName: "\u6B7B\u4EA17"
+    audioClip: {fileID: 8300000, guid: dfd78415f7f758c45bc2d126123a051e, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0.5
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 1
+    defaultFadeDuration: 0.5
+    category: Player
+    tags:
+    - Death
+  - audioName: "\u6B7B\u4EA18"
+    audioClip: {fileID: 8300000, guid: 9e62d7a43dee52e42aae99d61f232684, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0.5
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 1
+    defaultFadeDuration: 0.5
+    category: Player
+    tags:
+    - Death
+  - audioName: "\u6B7B\u4EA19"
+    audioClip: {fileID: 8300000, guid: 22f0869580c06094c8256636d076f205, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0.5
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 1
+    defaultFadeDuration: 0.5
+    category: Player
+    tags:
+    - Death
+  - audioName: "\u6B7B\u4EA1\u58F0"
+    audioClip: {fileID: 8300000, guid: 5f407b882d5a44f488df864a25f2858d, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0.5
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 1
+    defaultFadeDuration: 0.5
+    category: Player
+    tags:
+    - Death
+  - audioName: "\u6B7B\u4EA1\u58F02"
+    audioClip: {fileID: 8300000, guid: f7dc538e1546c544989bf8ec762fadc0, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0.5
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 1
+    defaultFadeDuration: 0.5
+    category: Player
+    tags:
+    - Death
+  - audioName: "\u6B7B\u4EA1\u58F03"
+    audioClip: {fileID: 8300000, guid: 7b7a431ebc18e994eb644af2751bc168, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0.5
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 1
+    defaultFadeDuration: 0.5
+    category: Player
+    tags:
+    - Death
+  - audioName: "\u6B7B\u4EA1\u58F04"
+    audioClip: {fileID: 8300000, guid: 26f88fae9142e17478284fc1b0d6710b, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0.5
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 1
+    defaultFadeDuration: 0.5
+    category: Player
+    tags:
+    - Death
+  - audioName: "\u6C14\u6D41\u58F0"
+    audioClip: {fileID: 8300000, guid: e6f7b92023f2e07439ea2f77dfae5128, type: 3}
+    defaultChannel: 1
+    volume: 0.8
+    pitch: 1
+    spatialBlend: 1
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: Environment
+    tags:
+    - Wind
+  - audioName: "\u6ED1\u94F2"
+    audioClip: {fileID: 8300000, guid: fac3a0ee293948449a8b45533dd06826, type: 3}
+    defaultChannel: 1
+    volume: 0.9
+    pitch: 1
+    spatialBlend: 0.5
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: Player
+    tags:
+    - Slide
+  - audioName: "\u70B9\u51FB\u58F0"
+    audioClip: {fileID: 8300000, guid: fc711cecf74cba544a368bb31f9011d8, type: 3}
+    defaultChannel: 2
+    volume: 0.8
+    pitch: 1
+    spatialBlend: 0
+    isLoop: 0
+    throttleInterval: 0.1
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: UI
+    tags:
+    - Click
+  - audioName: "\u7834\u788E"
+    audioClip: {fileID: 8300000, guid: b76db0b2dfe25e148b2c174803acf49c, type: 3}
+    defaultChannel: 1
+    volume: 0.8
+    pitch: 1
+    spatialBlend: 1
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: Environment
+    tags:
+    - Break
+  - audioName: "\u843D\u5730\u58F0"
+    audioClip: {fileID: 8300000, guid: eb74bf80b9107624bad3a016e5473ca2, type: 3}
+    defaultChannel: 1
+    volume: 0.8
+    pitch: 1
+    spatialBlend: 1
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: Environment
+    tags:
+    - Land
+  - audioName: "\u8D70\u8DEF\u58F0"
+    audioClip: {fileID: 8300000, guid: d9cde90d6651f2844b295fb15543ec7b, type: 3}
+    defaultChannel: 1
+    volume: 0.9
+    pitch: 1
+    spatialBlend: 0.5
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: Player
+    tags:
+    - Walk
+  - audioName: "\u8DD1\u6B65\u58F0"
+    audioClip: {fileID: 8300000, guid: 2803b95a2fabb6a40896f8b89ffd63a8, type: 3}
+    defaultChannel: 1
+    volume: 0.9
+    pitch: 1
+    spatialBlend: 0.5
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: Player
+    tags:
+    - Run
+  - audioName: "\u8DF3\u8DC31"
+    audioClip: {fileID: 8300000, guid: 45868270522b1094bb00ecb77e117018, type: 3}
+    defaultChannel: 1
+    volume: 0.9
+    pitch: 1
+    spatialBlend: 0.5
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: Player
+    tags:
+    - Jump
+  - audioName: "\u8DF3\u8DC32"
+    audioClip: {fileID: 8300000, guid: 8e06604ffa9b81b40a5b744bfec6af7c, type: 3}
+    defaultChannel: 1
+    volume: 0.9
+    pitch: 1
+    spatialBlend: 0.5
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: Player
+    tags:
+    - Jump
+  categories:
+  - BGM
+  - SFX
+  - UI
+  - Player
+  - Environment
+  databaseVersion: 1.0
