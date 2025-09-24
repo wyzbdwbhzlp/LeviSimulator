@@ -1,3 +1,4 @@
+using Game.Audio;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 
@@ -9,13 +10,20 @@ namespace PlayerControllers.Refactored.States
     public class WalkingState : PlayerStateBase
     {
         public WalkingState(PlayerController controller) : base(controller) { }
+        private AudioSourceWrapper _audioSourceWrapper;
         
         public override void Enter()
         {
             base.Enter();
             runtimeData.SetState(PlayerState.Walking);
+            _audioSourceWrapper=AudioEventHandler.CallPlayOneShotFor2D(AudioNames.走路声);
         }
-        
+        public override void Exit()
+        {
+            base.Exit();
+            _audioSourceWrapper?.Stop();
+        }
+
         protected override void CheckTransitions()
         {
             if (runtimeData.IsDashing)

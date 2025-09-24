@@ -64,6 +64,32 @@ namespace Game.Audio
             bgmA = CreateBgmSource("BGM_A");
             bgmB = CreateBgmSource("BGM_B");
         }
+        private void OnEnable()
+        {
+            SubscribeToGameEvents();
+        }
+        private void OnDisable()
+        {
+            UnsubscribeFromGameEvents();
+        }
+        private void SubscribeToGameEvents()
+        {
+           AudioEventHandler.PlayOneShotFor2D += PlayOneShotFor2D;
+           AudioEventHandler.PlayOneShotFor3D += PlayOneShotFor3D;
+           AudioEventHandler.PlayLoop += PlayLoop;
+           AudioEventHandler.PlayBGM += PlayBGM;
+           AudioEventHandler.StopBGM += StopBGM;
+           AudioEventHandler.StopAllOnChannel += StopAllOnChannel;
+        }
+        private void UnsubscribeFromGameEvents()
+        {
+            AudioEventHandler.PlayOneShotFor2D -= PlayOneShotFor2D;
+            AudioEventHandler.PlayOneShotFor3D -= PlayOneShotFor3D;
+            AudioEventHandler.PlayLoop -= PlayLoop;
+            AudioEventHandler.PlayBGM -= PlayBGM;
+            AudioEventHandler.StopBGM -= StopBGM;
+            AudioEventHandler.StopAllOnChannel -= StopAllOnChannel;
+        }
 
         private AudioSource CreateBgmSource(string name)
         {
@@ -127,44 +153,75 @@ namespace Game.Audio
         /// <summary>
         ///  播放一次性音效（不会循环），用于UI音效，无需指定position
         /// </summary>
+        /// <param name="audioNames"></param>
         /// <param name="clip"></param>
         /// <param name="volume"></param>
         /// <param name="pitch"></param>
         /// <param name="throttleInterval"></param>
         [Button(" 测试UI音效 ")]
-        public void PlayOneShotFor2D(AudioClip clip, float volume = 1f, float pitch = 1f, float throttleInterval = 0f)
+        public AudioSourceWrapper PlayOneShotFor2D(AudioNames audioNames)
         {
-            if (!clip) return;
-            if (IsThrottled(clip, throttleInterval)) return;
+            
+            var data = audioDatabase.GetAudioData(audioNames);
+            if (data == null)
+            {
+                Debug.LogWarning($"AudioHub: 未找到音频数据 {audioNames}");
+                return null;
+            }
+            var clip = data.audioClip;
+            float volume = data.volume;
+            float pitch = data.pitch;
+            float throttleInterval = data.throttleInterval;
+            
+            if (!clip) return null; // 空引用检查
+            if (IsThrottled(clip, throttleInterval)) return null; // 节流
 
             var wrapper = GetFromPool();
             var group = GetGroup(AudioChannel.UI);
-
+            
             wrapper.PlayOneShot(clip, volume, pitch, AudioChannel.UI, group, null, 0f); 
+            return wrapper;
         }
-       
+
         /// <summary>
         ///   播放一次性音效（不会循环），用于场景实际音效，需要指定position
         /// </summary>
-        /// <param name="clip"></param>
+        /// <param name="audioNames"></param>
         /// <param name="pos"></param>
+        /// <param name="clip"></param>
         /// <param name="volume"></param>
         /// <param name="pitch"></param>
         /// <param name="spatialBlend"></param>
         /// <param name="throttleInterval"></param>
         /// <param name="channel"></param>
         [Button(" 测试3D音效 ")]
-        public void PlayOneShotFor3D(AudioClip clip, Vector3 pos, float volume = 1f,
-            float pitch = 1f, float spatialBlend = 1f,
-            float throttleInterval = 0f,
-            AudioChannel channel = AudioChannel.SFX)
+        public AudioSourceWrapper PlayOneShotFor3D(AudioNames audioNames, Vector3 pos
+            // AudioClip clip, Vector3 pos, float volume = 1f,
+            // float pitch = 1f, float spatialBlend = 1f,
+            // float throttleInterval = 0f,
+            // AudioChannel channel = AudioChannel.SFX
+        )
         {
-            if (!clip) return;
-            if (IsThrottled(clip, throttleInterval)) return;
+            var data = audioDatabase.GetAudioData(audioNames); 
+            if (data == null)
+            {
+                Debug.LogWarning($"AudioHub: 未找到音频数据 {audioNames}");
+                return null;
+            }
+            var clip = data.audioClip;
+            float volume = data.volume;
+            float pitch = data.pitch;
+            float spatialBlend = data.spatialBlend;
+            float throttleInterval = data.throttleInterval;
+            AudioChannel channel = data.defaultChannel;
+            
+            if (!clip) return null;
+            if (IsThrottled(clip, throttleInterval)) return null;
 
             var wrapper = GetFromPool();
             var group = GetGroup(channel);
             wrapper.PlayOneShot(clip, volume, pitch, channel, group, pos, spatialBlend);
+            return wrapper;
         }
 
         /// <summary>

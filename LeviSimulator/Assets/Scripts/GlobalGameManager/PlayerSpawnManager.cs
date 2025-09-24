@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Game.Audio;
 using PlayerControllers.Refactored;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Systems;
@@ -131,6 +132,7 @@ namespace GlobalGameManager
 
         public void PlayerIsDeath()
         {
+            AudioEventHandler.CallPlayOneShotFor2D(AudioNames.死亡5);
             _gameStateManager.ChangeState(GameState.GameOver);// 切换到游戏结束状态
             //tip 黑屏hud会接受来自GameOver状态的事件，然后监听玩家复活输入
         }

@@ -100,6 +100,12 @@ namespace Game.Audio
             if (fadeOut <= 0f) { StopAndReturnImmediate(); return; }
             StartCoroutine(FadeOutThenStop(fadeOut));
         }
+        public void DelayStop(float delay, float fadeOut = 0f)
+        {
+            if (!source) return;
+            if (lifeRoutine != null) StopCoroutine(lifeRoutine);
+            Invoke(nameof(Stop), delay);
+        }
 
         /// <summary>
         /// 执行淡出后停止播放

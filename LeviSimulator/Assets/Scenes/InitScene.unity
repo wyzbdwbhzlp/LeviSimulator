@@ -201,6 +201,7 @@ MonoBehaviour:
   gameStateManager: {fileID: 925723587}
   mainUIManager: {fileID: 0}
   timeManager: {fileID: 0}
+  audioHub: {fileID: 1264612356}
 --- !u!114 &925723590
 MonoBehaviour:
   m_ObjectHideFlags: 0
