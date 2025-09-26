@@ -269,6 +269,9 @@ MonoBehaviour:
   initPoolSize: 16
   dontDestroyOnLoad: 1
   audioDatabase: {fileID: 11400000, guid: cde69bc9aeffb8f4193a7b12408c144e, type: 2}
+  bgmDirector: {fileID: 0}
+  bgmClipA: {fileID: 8300000, guid: 63fc490f4e60c1342aecc8c16bbf3a8d, type: 3}
+  bgmClipB: {fileID: 8300000, guid: 4316fcc3360c4644db8e608886da2f66, type: 3}
   bgmGroup: {fileID: -2052244038237832107, guid: 2ac478d7d5f497e4da04e45adc1db04c, type: 2}
   sfxGroup: {fileID: -946329927320939675, guid: 2ac478d7d5f497e4da04e45adc1db04c, type: 2}
   uiGroup: {fileID: 1912813322629572740, guid: 2ac478d7d5f497e4da04e45adc1db04c, type: 2}
