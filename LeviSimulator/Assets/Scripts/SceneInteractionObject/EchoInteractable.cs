@@ -11,8 +11,9 @@ namespace SceneInteractionObject
     public class EchoInteractable : MonoBehaviour
     {
         [SerializeField][LabelText("欲展示的回声ID")] private int echoId;
-        
         [SerializeField][ReadOnly]private bool _playerInRange = false;
+        
+        public event System.Action OnEchoInteracted;
         private PlayerInputSystem _playerInputSystem;
 
         private void OnEnable()
@@ -59,6 +60,7 @@ namespace SceneInteractionObject
         private void InteractWithEcho()
         {
             CollectibleEchoController.Instance.OpenEcho(echoId);
+            OnEchoInteracted?.Invoke();
             HideInteractionPrompt();
         }
 
