@@ -1,3 +1,4 @@
+using Game.Audio;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 
@@ -9,11 +10,18 @@ namespace PlayerControllers.Refactored.States
     public class RunningState : PlayerStateBase
     {
         public RunningState(PlayerController controller) : base(controller) { }
-        
+        private AudioSourceWrapper _audioSourceWrapper;
+     
         public override void Enter()
         {
             base.Enter();
             runtimeData.SetState(PlayerState.Running);
+            _audioSourceWrapper=AudioEventHandler.CallPlayOneShotFor2D(AudioNames.跑步声);
+        }
+        public override void Exit()
+        {
+            base.Exit();
+            _audioSourceWrapper?.Stop();
         }
         
         protected override void CheckTransitions()

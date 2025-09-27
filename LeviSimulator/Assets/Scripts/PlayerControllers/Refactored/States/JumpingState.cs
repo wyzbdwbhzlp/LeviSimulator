@@ -1,3 +1,4 @@
+using Game.Audio;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 
@@ -11,6 +12,7 @@ namespace PlayerControllers.Refactored.States
         private float _jumpStartTime;
         
         public JumpingState(PlayerController controller) : base(controller) { }
+        private AudioSourceWrapper _audioSourceWrapper;
         
         public override void Enter()
         {
@@ -21,11 +23,16 @@ namespace PlayerControllers.Refactored.States
             // 应用跳跃力
             movementSystem.ApplyJump(config.JumpForce);
             _jumpStartTime = Time.time;
+            
+            _audioSourceWrapper=AudioEventHandler.CallPlayOneShotFor2D(AudioNames.跳跃2);
         }
         
         public override void Exit()
         {
             base.Exit();
+
+            _audioSourceWrapper.DelayStop(0.3f); 
+            
             runtimeData.SetJumping(false);
         }
         

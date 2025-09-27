@@ -1,8 +1,10 @@
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using Game.Audio;
 using GlobalGameManager;
 using UIManager;
+using Utilities;
 
 namespace GlobalGameManager
 {
@@ -39,6 +41,7 @@ namespace GlobalGameManager
         public GameStateManager gameStateManager;
         public MainUIManager mainUIManager;
         public TimeManager timeManager;
+        public AudioHub audioHub;
         
 
         private void Awake()
@@ -72,11 +75,16 @@ namespace GlobalGameManager
                 mainUIManager= gameObject.AddComponent<MainUIManager>();
             if (timeManager == null)
                 timeManager = gameObject.AddComponent<TimeManager>();
-            
+            if (audioHub == null)
+            {
+                LogUtil.LogError(" AudioHub 未设置");
+            }
+
             gameStateManager.Initialize();
             playerSpawnManager.Initialize(gameStateManager);
             mainUIManager.Initialize();
             timeManager.Initialize();
+            audioHub.Initialize();
 
             gameStateManager.SubscribeToEvents(this);
         }

@@ -1,4 +1,5 @@
 using System;
+using Game.Audio;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 using Utilities;
@@ -13,6 +14,8 @@ namespace PlayerControllers.Refactored.States
         private float _slideStartTime;
         private Vector3 _slideDirection;
         
+        private AudioSourceWrapper _slidingAudioSource;
+        
         public SlidingState(PlayerController controller) : base(controller) { }
         
         public override void Enter()
@@ -21,6 +24,9 @@ namespace PlayerControllers.Refactored.States
             runtimeData.SetState(PlayerState.Sliding);
             runtimeData.SetSliding(true);
             runtimeData.SetCrouching(true);
+            
+            // 播放滑铲音效
+            _slidingAudioSource=AudioEventHandler.CallPlayOneShotFor2D(AudioNames.滑铲);
             
             // 设置滑铲方向
             _slideDirection = runtimeData.MoveDirection;
@@ -46,6 +52,7 @@ namespace PlayerControllers.Refactored.States
         public override void Exit()
         {
             base.Exit();
+            _slidingAudioSource?.Stop(0.3f); // 停止滑铲音效
             runtimeData.SetSliding(false);
         }
         
