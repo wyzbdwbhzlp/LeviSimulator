@@ -70,10 +70,10 @@ namespace PlayerControllers.Refactored.States
         {
             ApplyAirMovement();
             
-            // 应用重力
-            Vector3 velocity = movementSystem.Rigidbody.linearVelocity;
-            velocity.y -= config.Gravity * Time.fixedDeltaTime;
-            movementSystem.SetPlayerLinearVelocity(velocity);
+            // // 应用重力
+            // Vector3 velocity = movementSystem.Rigidbody.linearVelocity;
+            // velocity.y -= config.Gravity * Time.fixedDeltaTime;
+            // movementSystem.SetPlayerLinearVelocity(velocity);
         }
     }
 }

@@ -50,7 +50,7 @@ namespace PlayerControllers.Refactored.States
 
         public virtual void OnJumpPressed()
         {
-            if (runtimeData.IsGrounded && playerController.StateMachine.CurrentState != PlayerState.Crouching)
+            if (runtimeData.IsGrounded&&runtimeData.CanJump && playerController.StateMachine.CurrentState != PlayerState.Crouching)
             {
                 ChangeState(PlayerState.Jumping);
             }

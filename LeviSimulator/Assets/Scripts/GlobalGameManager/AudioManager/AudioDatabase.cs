@@ -2,6 +2,10 @@ using UnityEngine;
 using System.Collections.Generic;
 using Game.Audio;
 using Sirenix.OdinInspector;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+using System.Linq;
 
 namespace Game.Audio
 {
@@ -45,7 +49,7 @@ namespace Game.Audio
     public class AudioDatabase : ScriptableObject
     {
         [Header("音频数据库")]
-        public List<AudioData> audioDataList = new List<AudioData>();
+        [TableList]public List<AudioData> audioDataList = new List<AudioData>();
         
         [Header("分类配置")]
         public List<string> categories = new List<string>() { "BGM", "SFX", "UI", "Player", "Environment" };
@@ -128,45 +132,57 @@ namespace Game.Audio
         {
             return audioDataList.FindAll(data => data.category == category);
         }
-        
-        /// <summary>
-        /// 添加音频数据
-        /// </summary>
-        public void AddAudioData(AudioData audioData)
+#if UNITY_EDITOR
+        [Button("从Resources加载音频")]
+        public void LoadAudioFromResources(string resourcesPath)
         {
-            if (GetAudioData(audioData.audioName) == null)
+            if (string.IsNullOrWhiteSpace(resourcesPath))
             {
-                audioDataList.Add(audioData);
-                lastUpdated = System.DateTime.Now;
+                resourcesPath = "Audio";
             }
-        }
 
-        /// <summary>
-        /// 移除音频数据
-        /// </summary>
-        public bool RemoveAudioData(string audioName)
-        {
-            AudioData data = GetAudioData(audioName);
-            if (data != null)
+            resourcesPath = resourcesPath.Trim();
+
+            const string resourcesPrefix = "Resources/";
+            if (resourcesPath.StartsWith(resourcesPrefix, System.StringComparison.OrdinalIgnoreCase))
             {
-                audioDataList.Remove(data);
-                lastUpdated = System.DateTime.Now;
-                return true;
+                resourcesPath = resourcesPath.Substring(resourcesPrefix.Length);
             }
-            return false;
-        }
-        
-        /// <summary>
-        /// 获取音频数量统计
-        /// </summary>
-        public Dictionary<string, int> GetCategoryStats()
-        {
-            Dictionary<string, int> stats = new Dictionary<string, int>();
-            foreach (var category in categories)
+
+            var clips = Resources.LoadAll<AudioClip>(resourcesPath);
+            if (clips == null || clips.Length == 0)
             {
-                stats[category] = GetAudioDataByCategory(category).Count;
+                Debug.LogWarning($"在Resources/{resourcesPath}下未找到音频资源。");
+                return;
             }
-            return stats;
+
+            int addedCount = 0;
+            foreach (var clip in clips)
+            {
+                if (clip == null)
+                {
+                    continue;
+                }
+
+                if (audioDataList.Any(data => data.audioClip == clip || data.audioName == clip.name))
+                {
+                    continue;
+                }
+
+                audioDataList.Add(new AudioData
+                {
+                    audioName = clip.name,
+                    audioClip = clip
+                });
+                addedCount++;
+            }
+
+            lastUpdated = System.DateTime.Now;
+            EditorUtility.SetDirty(this);
+
+            Debug.Log($"从Resources/{resourcesPath}加载音频完成，新添加 {addedCount} 条记录，当前总数 {audioDataList.Count}。");
         }
+#endif
     }
+
 }
