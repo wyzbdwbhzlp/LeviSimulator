@@ -56,6 +56,10 @@ namespace SceneInteractionObject
                 ExecuteTriggerAction();
             }
         }
+        private void OnHandleEchoInteraction()
+        {
+            ExecuteTriggerAction();
+        }
 
         private void ExecuteTriggerAction()
         {
@@ -78,11 +82,7 @@ namespace SceneInteractionObject
 
             _isUsed=true;
         }
-
-        private void OnHandleEchoInteraction()
-        {
-            ExecuteTriggerAction();
-        }
+        
 
         private bool BgmStartTimeSecondsShow()
         {

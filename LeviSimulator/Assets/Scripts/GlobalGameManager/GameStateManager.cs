@@ -34,6 +34,7 @@ public class GameStateManager : MonoBehaviour
     }
     private void UnsubscribeFromEvents()
     {
+        if (_globalManager == null) return;
         _globalManager.playerSpawnManager.OnPlayerRebirth-=HandlePlayerRebirth;
     }
 
