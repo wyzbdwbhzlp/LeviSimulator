@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CollectibleEcho;
 using HUD;
 using Manager;
@@ -25,6 +26,9 @@ namespace UIManager
         private Transform uiRoot; // 用于放置按特性实例化出来的UI
         
         private UIAssetLoader _uiAssetLoader;
+        
+        private static List<Type> _cachedViewComponentTypes;
+
 
         protected override void Awake()
         {
@@ -35,7 +39,10 @@ namespace UIManager
 
         public void Initialize()
         {
-            InitUiComponentsDic();
+            EnsureCachedViewComponentTypes<ViewComponentAttribute>();
+            //InitUiComponentsDic();
+            
+            InitUiComponentsFromTypes();
             InitHUDComponentsDic();
             // 订阅游戏状态变化（若可用）
             var gm = GlobalManager.Instance;
@@ -83,56 +90,178 @@ namespace UIManager
             }
         }
 
-        private void InitUiComponentsDic()
+        /// <summary>
+        /// 扫描所有已加载程序集，找到标记了 ViewComponentAttribute 的类型并缓存。
+        /// </summary>
+        private static void EnsureCachedViewComponentTypes<T>() where T : Attribute
         {
-            var UIfields = GetType()
-                .GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            foreach (var field in UIfields)
-            {
-                var componentType = field.FieldType;
-                var viewAttr = componentType.GetCustomAttribute(typeof(ViewComponentAttribute), false) as ViewComponentAttribute;
-                if (viewAttr == null) continue; // 该字段类型未标记 ViewComponentAttribute，跳过
+            if (_cachedViewComponentTypes != null) return;
 
-                if (!typeof(IViewComponent).IsAssignableFrom(componentType))
+            var types = new List<Type>();
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            foreach (var asm in assemblies)
+            {
+                Type[] asmTypes;
+                try
                 {
-                    LogUtil.LogError($"字段 {field.Name} 的类型 {componentType.Name} 标记了 ViewComponentAttribute 但未实现 IViewComponent 接口", true);
+                    asmTypes = asm.GetTypes();
+                }
+                catch (ReflectionTypeLoadException ex)
+                {
+                    // 部分程序集可能加载失败，尽量使用能加载的类型
+                    asmTypes = ex.Types.Where(t => t != null).ToArray();
+                }
+                catch
+                {
+                    // 忽略无法读取的程序集
                     continue;
                 }
 
-                (IViewComponent, GameObject, bool) value = (null, null, false);
-                var uiComponent = field.GetValue(this) as IViewComponent;
+                foreach (var t in asmTypes)
+                {
+                    if (t.IsAbstract) continue; // 排除抽象类
+                    // 仅类/引用类型（排除接口/枚举/值类型）
+                    if (!t.IsClass) continue;
 
-                // 若字段尚未被手动赋值，则尝试按类特性实例化
-                if (uiComponent == null)
-                {
-                    uiComponent = TryLoadUIComponentByAttribute(viewAttr, out var go, GetParent(viewAttr));
-                    if (uiComponent != null)
+                    var viewAttr = t.GetCustomAttribute<T>(false); 
+                    if (viewAttr != null)
                     {
-                        field.SetValue(this, uiComponent); // 回写字段
+                        types.Add(t);
                     }
-                }
-
-                if (uiComponent != null)
-                {
-                    value.Item1 = uiComponent;
-                    if (uiComponent is MonoBehaviour monoBehaviour)
-                    {
-                        value.Item2 = monoBehaviour.gameObject;
-                        value.Item2.SetActive(false);
-                        value.Item3 = false;
-                        _uiComponentsDic.Add(componentType, value);
-                    }
-                    else
-                    {
-                        LogUtil.LogError($"UI组件 {uiComponent} 不是 MonoBehaviour，无法获取 GameObject", true);
-                    }
-                }
-                else
-                {
-                    LogUtil.LogError($"UI组件字段 {field.Name} (类型 {componentType.Name}) 实例化失败", true);
                 }
             }
+
+            _cachedViewComponentTypes = types;
         }
+           /// <summary>
+    /// 根据缓存的类型列表实例化并注册 UI 组件。
+    /// </summary>
+    private void InitUiComponentsFromTypes()
+    {
+        foreach (var componentType in _cachedViewComponentTypes)
+        {
+            // 忽略未实现 IViewComponent 的类型
+            if (!typeof(IViewComponent).IsAssignableFrom(componentType))
+            {
+                Debug.LogError($"类型 {componentType.FullName} 标记了 ViewComponentAttribute，但未实现 IViewComponent。");
+                continue;
+            }
+
+            // 如果已经存在于字典中则跳过（避免重复初始化）
+            if (_uiComponentsDic.ContainsKey(componentType)) continue;
+
+            // 尝试先通过已存在的字段注入（如果当前类声明了对应字段），回写字段是可选的：
+            // 找到 this 类型中声明的字段，其 FieldType 是 componentType 或其基类/接口
+            FieldInfo matchedField = null;
+            var allFields = this.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            foreach (var f in allFields)
+            {
+                var ft = f.FieldType;
+                // 如果字段类型与 componentType 相同，或者字段类型为接口/基类且 componentType 可赋值给字段类型
+                if (ft == componentType || ft.IsAssignableFrom(componentType))
+                {
+                    matchedField = f;
+                    break;
+                }
+            }
+
+            // 读取特性实例（类型级特性）
+            var viewAttr = componentType.GetCustomAttribute<ViewComponentAttribute>(false) as ViewComponentAttribute;
+
+            // 通过特性或其他路径实例化组件（你原来的 TryLoadUIComponentByAttribute）
+            IViewComponent uiComponent = null;
+            GameObject go = null;
+            try
+            {
+                uiComponent = TryLoadUIComponentByAttribute(componentType, viewAttr, out go, GetParent(viewAttr));
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"实例化 UI 组件 {componentType.FullName} 时抛出异常：{ex}");
+                continue;
+            }
+
+            if (uiComponent == null)
+            {
+                Debug.LogError($"UI组件类型 {componentType.FullName} 实例化失败（TryLoadUIComponentByAttribute 返回 null）。");
+                continue;
+            }
+
+            // 回写到匹配到的字段（如果有且字段为空）
+            if (matchedField != null)
+            {
+                var existing = matchedField.GetValue(this) as IViewComponent;
+                if (existing == null)
+                {
+                    // 如果字段类型比真实类型更抽象，也应该能赋值（注意可能需要装箱/转换）
+                    matchedField.SetValue(this, uiComponent);
+                }
+            }
+
+            // 如果是 MonoBehaviour，获取 GameObject 并执行初始化
+            if (uiComponent is MonoBehaviour mb)
+            {
+                go = go ?? mb.gameObject;
+                go.SetActive(false); // 按原逻辑默认隐藏
+                _uiComponentsDic[componentType] = (uiComponent, go, false);
+            }
+            else
+            {
+                Debug.LogError($"UI组件 {uiComponent} 不是 MonoBehaviour，无法获取 GameObject（类型：{componentType.FullName}）。");
+            }
+        }
+    }
+        // private void InitUiComponentsDic()
+        // {
+        //     var UIfields = GetType()
+        //         .GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        //     foreach (var field in UIfields)
+        //     {
+        //         var componentType = field.FieldType;
+        //         var viewAttr = componentType.GetCustomAttribute(typeof(ViewComponentAttribute), false) as ViewComponentAttribute;
+        //         if (viewAttr == null) continue; // 该字段类型未标记 ViewComponentAttribute，跳过
+        //
+        //         if (!typeof(IViewComponent).IsAssignableFrom(componentType))
+        //         {
+        //             LogUtil.LogError($"字段 {field.Name} 的类型 {componentType.Name} 标记了 ViewComponentAttribute 但未实现 IViewComponent 接口", true);
+        //             continue;
+        //         }
+        //
+        //         (IViewComponent, GameObject, bool) value = (null, null, false);
+        //         var uiComponent = field.GetValue(this) as IViewComponent;
+        //
+        //         // 若字段尚未被手动赋值，则尝试按类特性实例化
+        //         if (uiComponent == null)
+        //         {
+        //             uiComponent = TryLoadUIComponentByAttribute(viewAttr, out var go, GetParent(viewAttr));
+        //             if (uiComponent != null)
+        //             {
+        //                 field.SetValue(this, uiComponent); // 回写字段
+        //             }
+        //         }
+        //
+        //         if (uiComponent != null)
+        //         {
+        //             value.Item1 = uiComponent;
+        //             if (uiComponent is MonoBehaviour monoBehaviour)
+        //             {
+        //                 value.Item2 = monoBehaviour.gameObject;
+        //                 value.Item2.SetActive(false);
+        //                 value.Item3 = false;
+        //                 _uiComponentsDic.Add(componentType, value);
+        //             }
+        //             else
+        //             {
+        //                 LogUtil.LogError($"UI组件 {uiComponent} 不是 MonoBehaviour，无法获取 GameObject", true);
+        //             }
+        //         }
+        //         else
+        //         {
+        //             LogUtil.LogError($"UI组件字段 {field.Name} (类型 {componentType.Name}) 实例化失败", true);
+        //         }
+        //     }
+        // }
 
         private void InitHUDComponentsDic()
         {
@@ -153,7 +282,7 @@ namespace UIManager
                 var hudComponent = field.GetValue(this) as IHUDComponent;
                 if (hudComponent == null)
                 {
-                    hudComponent = TryLoadHUDComponentByAttribute(hudAttr, out var go, GetParent(hudAttr));
+                    hudComponent = TryLoadHUDComponentByAttribute(componentType, hudAttr, out var go, GetParent(hudAttr));
                     if (hudComponent != null)
                     {
                         field.SetValue(this, hudComponent);
@@ -228,35 +357,121 @@ namespace UIManager
 //         }
 
       
-        private IViewComponent TryLoadUIComponentByAttribute(ViewComponentAttribute attr, out GameObject go,
-            Transform parent) //尝试按特性加载UI组件
+        private IViewComponent TryLoadUIComponentByAttribute(Type componentType, ViewComponentAttribute attr,
+            out GameObject go, Transform parent) //尝试按特性加载UI组件
         {
             go = null;
             if (attr == null) return null;
+            if (componentType == null)
+            {
+                LogUtil.LogError("TryLoadUIComponentByAttribute 调用时 componentType 为空", true);
+                return null;
+            }
+
+            if (!typeof(Component).IsAssignableFrom(componentType))
+            {
+                LogUtil.LogError(
+                    $"类型 {componentType.FullName} 未继承自 UnityEngine.Component，无法作为 UI 组件实例化。", true);
+                return null;
+            }
+
             var prefab = _uiAssetLoader.LoadUIPrefab(attr.PrefabPath, attr.PrefabName);
-            var comp = InstantiateAndBind<MonoBehaviour>(prefab, parent);
-            go = comp != null ? comp.gameObject : null;
-            return comp as IViewComponent;
+            var instantiated = InstantiateAndBind(prefab, parent, componentType, out go);
+            if (instantiated == null)
+            {
+                if (go != null) Destroy(go);
+                go = null;
+                return null;
+            }
+
+            if (instantiated is IViewComponent viewComponent)
+            {
+                return viewComponent;
+            }
+
+            var fallback = go != null ? go.GetComponentInChildren<IViewComponent>(true) : null;
+            if (fallback != null)
+            {
+                return fallback;
+            }
+
+            LogUtil.LogError(
+                $"实例 {go?.name ?? prefab?.name ?? "<unknown>"} 上未找到 IViewComponent 实现（类型：{componentType.FullName}）。", true);
+            return null;
         }
 
-        private IHUDComponent TryLoadHUDComponentByAttribute(HUDAttribute attr, out GameObject go, Transform parent)
-        { //尝试按特性加载HUD组件
+        private IHUDComponent TryLoadHUDComponentByAttribute(Type componentType, HUDAttribute attr, out GameObject go,
+            Transform parent) //尝试按特性加载HUD组件
+        {
             go = null;
             if (attr == null) return null;
+            if (componentType == null)
+            {
+                LogUtil.LogError("TryLoadHUDComponentByAttribute 调用时 componentType 为空", true);
+                return null;
+            }
+
+            if (!typeof(Component).IsAssignableFrom(componentType))
+            {
+                LogUtil.LogError(
+                    $"类型 {componentType.FullName} 未继承自 UnityEngine.Component，无法作为 HUD 组件实例化。", true);
+                return null;
+            }
+
             var prefab = _uiAssetLoader.LoadUIPrefab(attr.PrefabPath, attr.PrefabName);
-            var comp = InstantiateAndBind<MonoBehaviour>(prefab, parent);
-            go = comp != null ? comp.gameObject : null;
-            return comp as IHUDComponent;
+            var instantiated = InstantiateAndBind(prefab, parent, componentType, out go);
+            if (instantiated == null)
+            {
+                if (go != null) Destroy(go);
+                go = null;
+                return null;
+            }
+
+            if (instantiated is IHUDComponent hudComponent)
+            {
+                return hudComponent;
+            }
+
+            var fallback = go != null ? go.GetComponentInChildren<IHUDComponent>(true) : null;
+            if (fallback != null)
+            {
+                return fallback;
+            }
+
+            LogUtil.LogError(
+                $"实例 {go?.name ?? prefab?.name ?? "<unknown>"} 上未找到 IHUDComponent 实现（类型：{componentType.FullName}）。", true);
+            return null;
         }
-        private static T InstantiateAndBind<T>(GameObject prefab, Transform parent) where T : Component
+        private static Component InstantiateAndBind(GameObject prefab, Transform parent, Type requiredType,
+            out GameObject instance)
         {
+            instance = null;
             if (prefab == null) return null;
-            var go = Instantiate(prefab, parent, false);
-            go.name = prefab.name;
-            go.SetActive(false); // 与现有流程一致，初始化时先隐藏
-            var comp = go.GetComponent<T>();
+
+            instance = Instantiate(prefab, parent, false);
+            instance.name = prefab.name;
+            instance.SetActive(false); // 与现有流程一致，初始化时先隐藏
+
+            Component comp = null;
+            if (requiredType != null)
+            {
+                comp = instance.GetComponent(requiredType);
+                if (comp == null)
+                {
+                    comp = instance.GetComponentInChildren(requiredType, true);
+                }
+            }
+            else
+            {
+                comp = instance.GetComponent<MonoBehaviour>();
+            }
+
             if (comp == null)
-                LogUtil.LogError($"实例 {go.name} 上未找到组件 {typeof(T).Name}", true);
+            {
+                LogUtil.LogError(
+                    $"实例 {instance.name} 上未找到组件 {requiredType?.Name ?? nameof(MonoBehaviour)}", true);
+            }
+
             return comp;
         }
         protected IViewComponent ShowUIComponent(Type componentType)
