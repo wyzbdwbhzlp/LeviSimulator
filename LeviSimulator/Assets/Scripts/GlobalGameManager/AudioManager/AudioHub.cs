@@ -20,6 +20,10 @@ namespace Game.Audio
         [SerializeField] private bool dontDestroyOnLoad = true; // 是否在切换场景时保留
         [SerializeField] private AudioDatabase audioDatabase; // 音频数据库
         [SerializeField]private BgmDirectorScriptableObject bgmDirector;// BGM导演
+        
+        [Header("bgmClip")] //tip 不推荐直接在这里设置BGM，这里是为了省事
+        [SerializeField] private AudioClip bgmClipA;
+        [SerializeField] private AudioClip bgmClipB;
 
         [Header("混音组")]
         public AudioMixerGroup bgmGroup;  // 背景音乐混音组
@@ -82,7 +86,8 @@ namespace Game.Audio
            AudioEventHandler.StopBGM += StopBGM;
            AudioEventHandler.StopAllOnChannel += StopAllOnChannel;
            
-            AudioEventHandler.BgmDirectorTriggerPointReached += HandleBgmDirectorTrigger;
+           AudioEventHandler.BgmDirectorTriggerPointReached += HandleBgmDirectorTrigger;
+           AudioEventHandler.BgmDirectorActionTriggered += HandleBgmDirectorAction;
         }
         private void UnsubscribeFromGameEvents()
         {
@@ -94,6 +99,7 @@ namespace Game.Audio
             AudioEventHandler.StopAllOnChannel -= StopAllOnChannel;
             
             AudioEventHandler.BgmDirectorTriggerPointReached -= HandleBgmDirectorTrigger;
+            AudioEventHandler.BgmDirectorActionTriggered -= HandleBgmDirectorAction;
         }
 
         private AudioSource CreateBgmSource(string name)
@@ -281,7 +287,7 @@ namespace Game.Audio
         /// <param name="startTime"></param>
         /// <param name="fadeSeconds"></param>
         /// <param name="targetVolume"></param>
-        public void PlayBgmWithStartTime(AudioClip clip, float startTime, float fadeSeconds = 0.75f, float targetVolume = 1f)
+        public void PlayBgmWithStartTime(AudioClip clip, float startTime=0f, float fadeSeconds = 0.75f, float targetVolume = 1f)
         {
             if (!clip) return;
 
@@ -361,6 +367,37 @@ namespace Game.Audio
             if (bgmDirector == null) return;
             var action = bgmDirector.GetBgmDirectorActionByPoint(triggerPoint);
             //todo 执行action
+        }
+        private void HandleBgmDirectorAction(BgmDirectorTriggerActionEnum action, ActionAdditionalInfoEnum additionalInfo, object additionalInfoinfoValue)
+        {
+            if (bgmDirector == null) return;  if (bgmDirector == null) return;
+            AudioClip bgmClip = null;
+            switch (action)
+            {
+                case BgmDirectorTriggerActionEnum.PlayBgmA:
+                    bgmClip = bgmClipA;
+                    break;
+                case BgmDirectorTriggerActionEnum.PlayBgmB:
+                    bgmClip = bgmClipB;
+                    break;
+                case BgmDirectorTriggerActionEnum.StopBgm:
+                    StopBGM();
+                    break;
+                default:
+                    break;
+            }
+
+            switch (additionalInfo)
+            {
+                case ActionAdditionalInfoEnum.NoInfo:
+                    if (bgmClip != null)
+                        PlayBGM(bgmClip);
+                    break;
+                case ActionAdditionalInfoEnum.BgmStartTimeSeconds:
+                    if (bgmClip != null)
+                        PlayBgmWithStartTime(bgmClip, additionalInfoinfoValue is float value ? value : 0);
+                    break;
+            }
         }
     }
 }
