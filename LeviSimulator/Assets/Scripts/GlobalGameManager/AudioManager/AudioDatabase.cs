@@ -49,7 +49,7 @@ namespace Game.Audio
     public class AudioDatabase : ScriptableObject
     {
         [Header("音频数据库")]
-        public List<AudioData> audioDataList = new List<AudioData>();
+        [TableList]public List<AudioData> audioDataList = new List<AudioData>();
         
         [Header("分类配置")]
         public List<string> categories = new List<string>() { "BGM", "SFX", "UI", "Player", "Environment" };

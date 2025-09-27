@@ -210,7 +210,9 @@ namespace PlayerControllers.Refactored.Systems
             
             _inputDirectionTween?.Kill();
             _inputDirectionTween = null;
+            
             _GrapplingaudioSourceWrapper?.Stop();
+            _GrapplingaudioSourceWrapper=null;
             
             EventBroadcaster.CallPlayerEndGrappleEvent();
             _isInvalidGrapple = false;
@@ -233,12 +235,15 @@ namespace PlayerControllers.Refactored.Systems
                 if (grapplePrefab != null)
                 {
                     grapplePrefabInstance = Object.Instantiate(grapplePrefab, _grapplePoint, Quaternion.identity);
+                    AudioEventHandler.CallPlayOneShotFor2D(AudioNames.钩索命中声);
                     LogUtil.Log($"钩爪实例化成功，位置: {_grapplePoint}");
                 }
-                AudioEventHandler.CallPlayOneShotFor2D(AudioNames.钩索命中声);
                 grappleState = GrappleState.Grappling;
-                _GrapplingaudioSourceWrapper=AudioEventHandler.CallPlayOneShotFor2D(AudioNames.钩索拉动声);//todo 需要loop
-                
+                if (_GrapplingaudioSourceWrapper==null)
+                {
+                    _GrapplingaudioSourceWrapper =
+                        AudioEventHandler.CallPlayOneShotFor2D(AudioNames.钩索拉动声); //todo 需要loop
+                }
                 // 切换到钩爪状态 - 这里需要根据您的状态机系统进行调整
                 //todo  _playerController.ChangeParentStatus<GrapplingStatusStrategy>();
                 
