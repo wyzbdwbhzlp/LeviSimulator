@@ -29,6 +29,7 @@ namespace PlayerControllers.Refactored.Systems
         private float _originalColliderHeight;
         private Queue<IEnumerator> _dashCoolDownQueue = new Queue<IEnumerator>();
 
+        
      
 
         public bool IsEnabled { get; set; } = true;
@@ -268,10 +269,21 @@ namespace PlayerControllers.Refactored.Systems
         /// </summary>
         public void ApplyJump(float jumpForce)
         {
+            if (!_runtimeData.CanJump)
+            {
+                return;
+            }
+            _runtimeData.SetCanJump(false);
+            StartCoroutine(JumpCoolDownCoroutine());
             Vector3 jumpVelocity = playerRigidbody.linearVelocity;
             jumpVelocity.y = jumpForce;
             SetPlayerLinearVelocity(jumpVelocity);
             _runtimeData.SetJumpTime();
+        }
+        private IEnumerator JumpCoolDownCoroutine(float delay=0.3f)
+        {
+            yield return new WaitForSeconds(delay);
+            _runtimeData.SetCanJump(true);
         }
 
         public void ApplyDash(Vector3 dashVelocity)

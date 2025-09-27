@@ -18,10 +18,12 @@ namespace PlayerControllers.Refactored.States
         {
             base.Enter();
             runtimeData.SetState(PlayerState.Jumping);
-            runtimeData.SetJumping(true);
             
             // 应用跳跃力
             movementSystem.ApplyJump(config.JumpForce);
+            
+            runtimeData.SetJumping(true);
+            
             _jumpStartTime = Time.time;
             
             _audioSourceWrapper=AudioEventHandler.CallPlayOneShotFor2D(AudioNames.女人跳跃A);
