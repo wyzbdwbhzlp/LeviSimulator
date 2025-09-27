@@ -132,7 +132,7 @@ namespace GlobalGameManager
 
         public void PlayerIsDeath()
         {
-            AudioEventHandler.CallPlayOneShotFor2D(AudioNames.死亡5);
+            AudioEventHandler.CallPlayOneShotFor2D(AudioNames.女人死亡);
             _gameStateManager.ChangeState(GameState.GameOver);// 切换到游戏结束状态
             //tip 黑屏hud会接受来自GameOver状态的事件，然后监听玩家复活输入
         }

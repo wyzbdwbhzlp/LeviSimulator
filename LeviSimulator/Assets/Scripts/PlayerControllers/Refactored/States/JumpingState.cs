@@ -24,7 +24,7 @@ namespace PlayerControllers.Refactored.States
             movementSystem.ApplyJump(config.JumpForce);
             _jumpStartTime = Time.time;
             
-            _audioSourceWrapper=AudioEventHandler.CallPlayOneShotFor2D(AudioNames.跳跃2);
+            _audioSourceWrapper=AudioEventHandler.CallPlayOneShotFor2D(AudioNames.女人跳跃A);
         }
         
         public override void Exit()
