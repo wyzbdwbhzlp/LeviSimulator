@@ -1,4 +1,5 @@
 using System;
+using Game.Audio;
 using GlobalGameManager;
 using HUD;
 using PlayerControllers.Refactored.Systems;
@@ -52,6 +53,7 @@ namespace SceneInteractionObject
 
         private void OnInteractButtonPressed()
         {
+            AudioEventHandler.CallPlayOneShotFor2D(AudioNames.存档);
             EventBroadcaster.CallUpdatePlayerCheckPoint(_player.transform.position, _player.transform.rotation);
             LogUtil.Log("游戏进度已保存");
         }

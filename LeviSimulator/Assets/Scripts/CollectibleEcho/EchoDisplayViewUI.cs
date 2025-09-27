@@ -4,10 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using Utilities;
 using Sirenix.OdinInspector;
+using UIManager;
 
 
 namespace CollectibleEcho
 {
+    [ViewComponent("CollectibleEchoCanvs")]
     public class EchoDisplayViewUI:Singleton<EchoDisplayViewUI>,IViewComponent
     {
         [SerializeField] private TextMeshProUGUI titleText;
