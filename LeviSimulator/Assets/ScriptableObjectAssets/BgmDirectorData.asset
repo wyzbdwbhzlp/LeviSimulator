@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80d4fe42a6284f2fbac769feeedcff68, type: 3}
   m_Name: BgmDirectorData
   m_EditorClassIdentifier: 
-  bgmDirectorDataList: []
+  bgmDirectorDataList:
+  - _triggerPoint: 0
+    _triggerAction: 1
+    BgmStartTimeSeconds: 0
+  - _triggerPoint: 0
+    _triggerAction: 2
+    BgmStartTimeSeconds: 0
