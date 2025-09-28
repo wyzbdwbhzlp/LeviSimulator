@@ -149,6 +149,7 @@ namespace GlobalGameManager
                 if (isRebirth)
                 {
                     OnPlayerRebirth?.Invoke(player);
+                    EventBroadcaster.CallPlayerRebirth(player);
                 }
                 else
                 {

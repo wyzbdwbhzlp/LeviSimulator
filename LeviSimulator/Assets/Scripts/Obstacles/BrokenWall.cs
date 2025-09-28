@@ -1,22 +1,52 @@
 using System.Collections.Generic;
-using System.Drawing;
-using Unity.VisualScripting;
 using UnityEngine;
+using Utilities;
 
 public class BrokenWall : MonoBehaviour
 {
     [SerializeField] private Animator anim;
-    [SerializeField] private Transform boneRoot;
-    [SerializeField] private List<GameObject> flashPoints=null;
-    private bool broken = false;
+    [SerializeField] private List<GameObject> flashPoints = null;
 
-    void Start()
+    private bool broken = false;
+    private Vector3 rootStartPos;
+    private Quaternion rootStartRot;
+    private Rigidbody rb;
+
+    private void Awake()
+    {
+        rootStartPos = transform.position;
+        rootStartRot = transform.rotation;
+
+        // 确保有 Rigidbody
+        rb = GetComponent<Rigidbody>();
+        if (rb == null)
+            rb = gameObject.AddComponent<Rigidbody>();
+
+        rb.useGravity = false;
+        rb.isKinematic = true;
+    }
+
+    private void Start()
     {
         if (anim == null) anim = GetComponent<Animator>();
-        foreach (GameObject point in flashPoints)
+
+        if (flashPoints != null)
         {
-            point.SetActive(false);
+            foreach (GameObject point in flashPoints)
+                point.SetActive(false);
         }
+    }
+
+    private void OnEnable()
+    {
+        EventBroadcaster.OnPlayerRebirth += ResetWallOnRebirth;
+        EventBroadcaster.OnGameOver += ResetWallOnGameOver;
+    }
+
+    private void OnDisable()
+    {
+        EventBroadcaster.OnPlayerRebirth -= ResetWallOnRebirth;
+        EventBroadcaster.OnGameOver -= ResetWallOnGameOver;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -26,51 +56,53 @@ public class BrokenWall : MonoBehaviour
             broken = true;
             anim.SetBool("Crushed", true);
 
-            // 延迟到动画碎裂瞬间
-            Invoke(nameof(DetachFragments), 0.5f);
+            // 开启整体重力
+            rb.isKinematic = false;
+            rb.useGravity = true;
+
             if (flashPoints != null)
             {
                 foreach (GameObject point in flashPoints)
-                { 
-                   point.SetActive(true);
-                }
+                    point.SetActive(true);
             }
         }
     }
 
-    void DetachFragments()
+    private void ResetWallOnRebirth(GameObject player)
     {
-        anim.enabled = false;
-
-        foreach (Transform piece in boneRoot)
-        {
-            piece.parent = null;
-            piece.AddComponent<Rigidbody>();
-            Rigidbody rb = piece.GetComponent<Rigidbody>();
-            if (rb == null) rb = piece.gameObject.AddComponent<Rigidbody>();
-
-            rb.constraints = RigidbodyConstraints.None;
-            rb.useGravity = true;
-            rb.WakeUp();
-
-            Collider col = piece.GetComponent<Collider>();
-            if (col == null)
-            {
-                // BoxCollider 更稳定，MeshCollider 用 convex 会吃性能
-                BoxCollider box = piece.gameObject.AddComponent<BoxCollider>();
-                box.size *= 0.9f; // 稍微缩小避免互相卡住
-            }
-
-            // 微调初始位置避免重叠
-            piece.position += Random.insideUnitSphere * 0.01f;
-
-            // 爆炸力 (更强 + 冲击)
-            boneRoot.gameObject.AddComponent<Rigidbody>();
-            boneRoot.gameObject.GetComponent<Rigidbody>().AddExplosionForce(50f, boneRoot.transform.position, 5f, 0.5f);
-            rb.AddExplosionForce(50f, piece.position, 5f, 0.5f);
-        }
+        ResetWall();
+        Debug.Log($"{name} 玩家复活时重置");
     }
 
+    private void ResetWallOnGameOver()
+    {
+        ResetWall();
+        Debug.Log($"{name} 游戏结束时重置");
+    }
 
+    private void ResetWall()
+    {
+        broken = false;
 
+        // 关闭重力 & 恢复位置
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.useGravity = false;
+        rb.isKinematic = true;
+
+        transform.position = rootStartPos;
+        transform.rotation = rootStartRot;
+
+        if (flashPoints != null)
+        {
+            foreach (GameObject point in flashPoints)
+                point.SetActive(false);
+        }
+
+        // 重启 Animator 回到完整状态
+        anim.enabled = true;
+        anim.Rebind();
+        anim.Update(0f);
+        anim.SetBool("Crushed", false);
+    }
 }
