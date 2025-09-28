@@ -47,7 +47,9 @@ namespace PlayerControllers.Refactored.Data
         public bool IsSliding { get; private set; }
         public bool IsGrappling { get; private set; }
         public bool IsWallRunning { get; private set; }
-        
+        // 允许状态
+        public bool CanJump { get; set; } = true;
+
         // 地面信息
         public RaycastHit GroundHit { get; private set; }
         public Vector3 GroundNormal { get; private set; }
@@ -87,7 +89,7 @@ namespace PlayerControllers.Refactored.Data
         public void SetSliding(bool sliding) => IsSliding = sliding;
         public void SetGrappling(bool grappling) => IsGrappling = grappling;
         public void SetWallRunning(bool wallRunning) => IsWallRunning = wallRunning;
-        
+        public void SetCanJump(bool canJump) => CanJump = canJump;
         public void SetGroundInfo(RaycastHit hit, Vector3 normal, float angle)
         {
             GroundHit = hit;

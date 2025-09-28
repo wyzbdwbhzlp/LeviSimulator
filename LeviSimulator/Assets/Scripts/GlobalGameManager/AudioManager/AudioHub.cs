@@ -353,11 +353,17 @@ namespace Game.Audio
             }
         }
 
+        /// <summary>
+        ///  检查音效是否在节流时间内已被播放, 是则返回 true 并阻止播放
+        /// </summary>
+        /// <param name="clip"></param>
+        /// <param name="interval"></param>
+        /// <returns></returns>
         private bool IsThrottled(AudioClip clip, float interval)
         {
             if (interval <= 0f) return false;
             float now = Time.unscaledTime;
-            if (lastPlayedTime.TryGetValue(clip, out var last) && now - last < interval) return true;
+            if (lastPlayedTime.TryGetValue(clip, out var last) && now - last < interval) return true; // 在节流时间内
             lastPlayedTime[clip] = now;
             return false;
         }

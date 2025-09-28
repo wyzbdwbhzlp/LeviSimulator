@@ -36,6 +36,11 @@ namespace GlobalGameManager
         [ShowInInspector] private PlayerSpawnInfo _rebirthSpawnInfo;
         
         private GameStateManager _gameStateManager;//用于改变游戏状态
+        
+        // 状态追踪
+        private bool _isSpawning = false;
+        private Coroutine _currentSpawnCoroutine;
+        private bool _isInitialized = false;
 
         /// <summary>
         ///  当玩家准备生成时触发，提供生成位置
@@ -55,26 +60,36 @@ namespace GlobalGameManager
 
         public void Initialize(GameStateManager gameStateManager)
         {
-            if (autoSpawnOnSceneLoad)
+            if (_isInitialized)
             {
-                // 监听场景加载完成事件
-                GlobalManager.Instance.sceneLoadManager.OnSceneLoadCompleted += OnSceneLoaded;
-                EventBroadcaster.OnPlayerReadySpawn += SetInitialSpawnInfoWhenSceneReady;
-                EventBroadcaster.OnUpdatePlayerCheckPoint += SetRebirthSpawnInfo;
+                LogUtil.LogWarning("PlayerSpawnManager 已经初始化过了");
+                return;
+            }
+            
+            if (!ValidateConfiguration())
+            {
+                return;
             }
 
             _gameStateManager = gameStateManager;
-            Debug.Log("PlayerSpawnManager 初始化完成");
+            
+            // 统一订阅事件
+            SubscribeToEvents();
+            
+            _isInitialized = true;
+            LogUtil.Log("PlayerSpawnManager 初始化完成");
         }
 
         private void OnDisable()
         {
-            if (GlobalManager.Instance != null && GlobalManager.Instance.sceneLoadManager != null)
+            UnsubscribeFromEvents();
+            
+            // 停止所有正在运行的协程
+            if (_currentSpawnCoroutine != null)
             {
-                GlobalManager.Instance.sceneLoadManager.OnSceneLoadCompleted -= OnSceneLoaded;
+                StopCoroutine(_currentSpawnCoroutine);
+                _currentSpawnCoroutine = null;
             }
-            EventBroadcaster.OnPlayerReadySpawn -= SetInitialSpawnInfoWhenSceneReady;
-            EventBroadcaster.OnUpdatePlayerCheckPoint -= SetRebirthSpawnInfo;
         }
 
         private void OnSceneLoaded(SceneEnum sceneEnum)
@@ -95,39 +110,55 @@ namespace GlobalGameManager
         /// <summary>
         ///  场景加载完毕后生成玩家
         /// </summary>
-        /// <returns></returns>
         private void SpawnPlayer()
         {
-            if (_initialSpawnInfo.Position == Vector3.zero)
+            if (_isSpawning)
             {
-                LogUtil.LogWarning("玩家生成点未设置，请通过EventBroadcaster.OnPlayerReadySpawn事件设置生成点");
+                LogUtil.LogWarning("玩家正在生成中，忽略重复请求");
+                return;
             }
-            StartCoroutine(CreatePlayerBySpawnInfo(_initialSpawnInfo));
-        }
-        private IEnumerator CreatePlayerBySpawnInfo(PlayerSpawnInfo spawnInfo,bool isRebirth=false)
-        {
-            if (playerPrefab == null)
-            {
-                Debug.LogError("玩家预制体未设置！");
-                yield  break;
-            }
-            var spawnPosition = spawnInfo.Position;
-            var spawnRotation = spawnInfo.Rotation;
-            GameObject player = Instantiate(playerPrefab, spawnPosition, spawnRotation);
-            player.name = "Player";
             
-            _currentPlayer = player;
-            _spawnedPlayers.Add(player);
-            Debug.Log($"玩家已生成在位置: {spawnPosition}");
-            yield return StartCoroutine(DelayedInputSetup(player));
-            if (isRebirth)
+            if (!ValidateSpawnInfo(_initialSpawnInfo, "初始"))
             {
-                OnPlayerRebirth?.Invoke(player);
-                EventBroadcaster.CallPlayerRebirth(player);//广播到全局（让敌人收到）
+                return;
             }
-            else
+            
+            StartPlayerSpawn(_initialSpawnInfo, false);
+        }
+        private IEnumerator CreatePlayerBySpawnInfo(PlayerSpawnInfo spawnInfo, bool isRebirth = false)
+        {
+            _isSpawning = true;
+      
+            try
             {
-                OnPlayerSpawned?.Invoke(player);
+                var spawnPosition = spawnInfo.Position;
+                var spawnRotation = spawnInfo.Rotation;
+                
+                GameObject player = Instantiate(playerPrefab, spawnPosition, spawnRotation);
+                player.name = isRebirth ? "Player (Reborn)" : "Player";
+                
+                _currentPlayer = player;
+                _spawnedPlayers.Add(player);
+                
+                LogUtil.Log($"玩家{(isRebirth ? "复活" : "生成")}在位置: {spawnPosition}");
+                
+                // 初始化玩家
+                yield return StartCoroutine(InitializePlayer(player));
+                
+                // 触发相应事件
+                if (isRebirth)
+                {
+                    OnPlayerRebirth?.Invoke(player);
+                }
+                else
+                {
+                    OnPlayerSpawned?.Invoke(player);
+                }
+            }
+            finally
+            {
+                _isSpawning = false;
+                _currentSpawnCoroutine = null;
             }
         }
 
@@ -135,43 +166,66 @@ namespace GlobalGameManager
         {
             AudioEventHandler.CallPlayOneShotFor2D(AudioNames.女人死亡);
             _gameStateManager.ChangeState(GameState.GameOver);// 切换到游戏结束状态
-            EventBroadcaster.CallGameOver(); // 广播游戏结束
             //tip 黑屏hud会接受来自GameOver状态的事件，然后监听玩家复活输入
         }
 
         /// <summary>
         ///  复活玩家
         /// </summary>
-        /// <returns></returns>
         public void RebirthPlayer()
         {
-            var spawnInfo = _rebirthSpawnInfo;
+            if (_isSpawning)
+            {
+                LogUtil.LogWarning("玩家正在生成中，无法执行复活");
+                return;
+            }
+            
+            // 清理当前玩家
             if (_currentPlayer != null)
+            {
                 DespawnPlayer(_currentPlayer);
-            if (spawnInfo.Position == Vector3.zero)
+            }
+            
+            // 确定复活点
+            var spawnInfo = _rebirthSpawnInfo;
+            if (!ValidateSpawnInfo(spawnInfo, "复活"))
             {
                 LogUtil.Log("玩家存档点未设置，使用初始生成点");
                 spawnInfo = _initialSpawnInfo;
+                if (!ValidateSpawnInfo(spawnInfo, "初始"))
+                {
+                    LogUtil.LogError("无法找到有效的生成点，复活失败");
+                    return;
+                }
             }
-            StartCoroutine(CreatePlayerBySpawnInfo(spawnInfo,true));
             
+            StartPlayerSpawn(spawnInfo, true);
         }
-        private IEnumerator DelayedInputSetup(GameObject player)
+        private IEnumerator InitializePlayer(GameObject player)
         {
+            if (player == null)
+            {
+                LogUtil.LogError("InitializePlayer: 玩家对象为null");
+                yield break;
+            }
+            
             yield return new WaitForEndOfFrame();
 
             var playerController = player.GetComponent<PlayerController>();
-            if (playerController != null)
+            if (playerController == null)
             {
+                LogUtil.LogError($"玩家对象 {player.name} 缺少 PlayerController 组件");
+                yield break;
+            }
+            
                 // 重新初始化玩家控制器
                 playerController.Initialize();
 
                 // 确保状态机正确启动
                 yield return new WaitForEndOfFrame();
 
-                LogUtil.Log("玩家完全重新初始化完成");
-            }
-            
+                LogUtil.Log($"玩家 {player.name} 初始化完成");
+       
         }
         /// <summary>
         ///  销毁玩家
@@ -208,5 +262,84 @@ namespace GlobalGameManager
         {
             return new List<GameObject>(_spawnedPlayers);
         }
+        
+        #region 私有辅助方法
+        
+        /// <summary>
+        /// 验证配置有效性
+        /// </summary>
+        private bool ValidateConfiguration()
+        {
+            if (playerPrefab == null)
+            {
+                LogUtil.LogError("PlayerSpawnManager: 玩家预制体未设置！请在Inspector中分配playerPrefab", true);
+                return false;
+            }
+            return true;
+        }
+        
+        /// <summary>
+        /// 验证生成点信息有效性
+        /// </summary>
+        private bool ValidateSpawnInfo(PlayerSpawnInfo spawnInfo, string spawnType)
+        {
+            if (spawnInfo.Position == Vector3.zero)
+            {
+                LogUtil.LogWarning($"PlayerSpawnManager: {spawnType}生成点未设置，请通过相应事件设置生成点");
+                return false;
+            }
+            return true;
+        }
+        
+        /// <summary>
+        /// 统一订阅事件
+        /// </summary>
+        private void SubscribeToEvents()
+        {
+            if (autoSpawnOnSceneLoad)
+            {
+                if (GlobalManager.Instance?.sceneLoadManager != null)
+                {
+                    GlobalManager.Instance.sceneLoadManager.OnSceneLoadCompleted += OnSceneLoaded;
+                }
+                else
+                {
+                    LogUtil.LogWarning("GlobalManager.sceneLoadManager 不可用，无法订阅场景加载事件");
+                }
+                
+                EventBroadcaster.OnPlayerReadySpawn += SetInitialSpawnInfoWhenSceneReady;
+                EventBroadcaster.OnUpdatePlayerCheckPoint += SetRebirthSpawnInfo;
+            }
+        }
+        
+        /// <summary>
+        /// 统一取消订阅事件
+        /// </summary>
+        private void UnsubscribeFromEvents()
+        {
+            if (GlobalManager.Instance?.sceneLoadManager != null)
+            {
+                GlobalManager.Instance.sceneLoadManager.OnSceneLoadCompleted -= OnSceneLoaded;
+            }
+            
+            EventBroadcaster.OnPlayerReadySpawn -= SetInitialSpawnInfoWhenSceneReady;
+            EventBroadcaster.OnUpdatePlayerCheckPoint -= SetRebirthSpawnInfo;
+        }
+        
+        /// <summary>
+        /// 开始玩家生成流程
+        /// </summary>
+        private void StartPlayerSpawn(PlayerSpawnInfo spawnInfo, bool isRebirth)
+        {
+            // 取消之前的生成协程
+            if (_currentSpawnCoroutine != null)
+            {
+                StopCoroutine(_currentSpawnCoroutine);
+            }
+            
+            _currentSpawnCoroutine = StartCoroutine(CreatePlayerBySpawnInfo(spawnInfo, isRebirth));
+        }
+        
+        #endregion
     }
 }
