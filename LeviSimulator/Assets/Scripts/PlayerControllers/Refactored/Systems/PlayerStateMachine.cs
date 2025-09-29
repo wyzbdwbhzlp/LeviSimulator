@@ -172,6 +172,9 @@ namespace PlayerControllers.Refactored.Systems
                 case PlayerState.Grappling:
                     _playerAnimator.SetBool("IsGrappling", true);
                     break;
+                case PlayerState.Dashing:
+                    _playerAnimator.SetTrigger("Dash");
+                    break;
             }
         }
                 
