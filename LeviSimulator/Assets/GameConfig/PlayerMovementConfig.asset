@@ -27,7 +27,7 @@ MonoBehaviour:
   deceleration: 20
   airAcceleration: 10
   maxAirSpeed: 20
-  jumpForce: 6.5
+  jumpForce: 21.49
   gravity: 30
   slideStartBonusSpeed: 12
   maxSlideSpeed: 15

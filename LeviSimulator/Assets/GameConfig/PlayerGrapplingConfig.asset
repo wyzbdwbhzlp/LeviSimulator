@@ -17,7 +17,7 @@ MonoBehaviour:
   grappleLayer:
     serializedVersion: 2
     m_Bits: 128
-  springStrength: 50
+  springStrength: 20
   damping: 10
   maxGrappleForce: 1000
   maxPlayerVelocityOnGrapple: 50
