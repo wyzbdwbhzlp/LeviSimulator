@@ -20,27 +20,27 @@ MonoBehaviour:
   defaultAssistStrength: 0.103
   defaultAssistDuration: -1
   assistResponseSpeed: 2
-  walkSpeed: 8
-  runSpeed: 12
+  walkSpeed: 10
+  runSpeed: 16
   crouchSpeed: 3
   acceleration: 10
   deceleration: 20
-  airAcceleration: 10
-  maxAirSpeed: 20
-  jumpForce: 21.49
+  airAcceleration: 15
+  maxAirSpeed: 26
+  jumpForce: 16.5
   gravity: 30
-  slideStartBonusSpeed: 12
-  maxSlideSpeed: 15
+  slideStartBonusSpeed: 30
+  maxSlideSpeed: 50
   slideDeceleration: 2
-  neutralSlopeAngle: 25
-  accelerateOnSteepSlope: 0
-  slopeAngleBoostFactor: 0.5
+  neutralSlopeAngle: 30.2
+  accelerateOnSteepSlope: 1
+  slopeAngleBoostFactor: 1
   slopeAngleDecelerationFactor: 0.5
   minSlideActivationSpeed: 3
   wallMaxDistance: 2
   wallLayerMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 128
   wallSpeedMultiplier: 1.2
   minimumHeightForWallRun: 1.2
   wallRunThresholdSpeed: 3
