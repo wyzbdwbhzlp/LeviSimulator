@@ -195,7 +195,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fb681439143c2e4ba2e447742889639, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialScene: 3
+  initialScene: 1
   sceneLoadManager: {fileID: 0}
   playerSpawnManager: {fileID: 925723588}
   gameStateManager: {fileID: 925723587}
@@ -231,6 +231,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1264612355}
   - component: {fileID: 1264612356}
+  - component: {fileID: 1264612357}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -269,14 +270,25 @@ MonoBehaviour:
   initPoolSize: 16
   dontDestroyOnLoad: 1
   audioDatabase: {fileID: 11400000, guid: cde69bc9aeffb8f4193a7b12408c144e, type: 2}
-  bgmDirector: {fileID: 0}
-  bgmClipA: {fileID: 8300000, guid: 63fc490f4e60c1342aecc8c16bbf3a8d, type: 3}
-  bgmClipB: {fileID: 8300000, guid: 4316fcc3360c4644db8e608886da2f66, type: 3}
+  bgmDirectorManager: {fileID: 1264612357}
   bgmGroup: {fileID: -2052244038237832107, guid: 2ac478d7d5f497e4da04e45adc1db04c, type: 2}
   sfxGroup: {fileID: -946329927320939675, guid: 2ac478d7d5f497e4da04e45adc1db04c, type: 2}
   uiGroup: {fileID: 1912813322629572740, guid: 2ac478d7d5f497e4da04e45adc1db04c, type: 2}
   sfxVoices: 16
   uiVoices: 8
+--- !u!114 &1264612357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1264612353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1b2c3d4e5f6789012345678901234ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bgmDirector: {fileID: 11400000, guid: b6ed2672b58f4e145936916d1bf1452c, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

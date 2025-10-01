@@ -69,7 +69,7 @@ namespace SceneInteractionObject
             MainUIManager.ShowHUDComponent<InteractionHUD>();
         }
 
-        private void HideInteractionPrompt()
+        private void HideInteractionPrompt(int id=0)
         {
             MainUIManager.HideHUDComponent<InteractionHUD>();
         }

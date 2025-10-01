@@ -58,10 +58,10 @@ namespace Utilities
             DisablePlayerRbGravity?.Invoke();
         }
         
-        public static event Action EchoViewUIOpened;
-        public static void CallEchoViewUIOpened()
+        public static event Action<int> EchoViewUIOpened;
+        public static void CallEchoViewUIOpened(int echoID)
         {
-            EchoViewUIOpened?.Invoke();
+            EchoViewUIOpened?.Invoke(echoID);
         }
         public static event Action EchoViewUIClosed;
         public static void CallEchoViewUIClosed()

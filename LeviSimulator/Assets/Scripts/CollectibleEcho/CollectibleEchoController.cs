@@ -1,4 +1,5 @@
-﻿using Manager;
+﻿using GlobalGameManager;
+using Manager;
 using Sirenix.OdinInspector;
 using UIManager;
 using UnityEngine;
@@ -38,7 +39,7 @@ namespace CollectibleEcho
             if (echoDisplayViewUI != null)
             {
                 echoDisplayViewUI.ShowUIPanel(echoData);
-                EventBroadcaster.CallEchoViewUIOpened();
+                EventBroadcaster.CallEchoViewUIOpened(echoId);
             }
         }
         [Button("关闭回声UI")]

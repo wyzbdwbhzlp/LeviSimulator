@@ -81,11 +81,11 @@ namespace Game.Audio
             BgmDirectorTriggerPointReached?.Invoke(point);
         }
 
-        public static event Action<BgmDirectorTriggerActionEnum,ActionAdditionalInfoEnum,object> BgmDirectorActionTriggered;
-        public static void CallBgmDirectorActionTriggered(BgmDirectorTriggerActionEnum action,
-            ActionAdditionalInfoEnum additionalInfo,object additionalValue = null)
+        public static event Action<BgmDirectorEnum,BgmDirectorContext> BgmDirectorActionTriggered;
+        public static void CallBgmDirectorActionTriggered(BgmDirectorEnum action,
+             BgmDirectorContext bgmDirectorContext = null)
         {
-            BgmDirectorActionTriggered?.Invoke(action,additionalInfo,additionalValue);
+            BgmDirectorActionTriggered?.Invoke(action,bgmDirectorContext);
         }
     }
 }

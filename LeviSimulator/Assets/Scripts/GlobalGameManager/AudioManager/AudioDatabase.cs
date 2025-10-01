@@ -51,8 +51,6 @@ namespace Game.Audio
         [Header("音频数据库")]
         [TableList]public List<AudioData> audioDataList = new List<AudioData>();
         
-        [Header("分类配置")]
-        public List<string> categories = new List<string>() { "BGM", "SFX", "UI", "Player", "Environment" };
         
         [Header("数据库信息")]
         public string databaseVersion = "1.0";
