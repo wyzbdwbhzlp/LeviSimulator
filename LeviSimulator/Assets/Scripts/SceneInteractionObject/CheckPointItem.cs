@@ -55,6 +55,7 @@ namespace SceneInteractionObject
         {
             AudioEventHandler.CallPlayOneShotFor2D(AudioNames.存档);
             EventBroadcaster.CallUpdatePlayerCheckPoint(_player.transform.position, _player.transform.rotation);
+            EventBroadcaster.CallPlayerSaved(_player.transform.position, _player.transform.rotation);
             LogUtil.Log("游戏进度已保存");
         }
 

@@ -3,8 +3,22 @@ using UnityEngine;
 
 namespace Utilities
 {
+
     public static class EventBroadcaster
     {
+        public static event Action<Transform> OnUpdateEnemySpawnPoint;
+
+        public static void CallUpdateEnemySpawnPoint(Transform spawnPoint)
+        {
+            OnUpdateEnemySpawnPoint?.Invoke(spawnPoint);
+        }
+        public static Action<Vector3, Quaternion> OnPlayerSaved;
+
+        public static void CallPlayerSaved(Vector3 pos, Quaternion rot)
+        {
+            OnPlayerSaved?.Invoke(pos, rot);
+        }
+
         public static event Action<GameObject> OnPlayerRebirth;
         public static void CallPlayerRebirth(GameObject player)
         {
