@@ -7,6 +7,7 @@ namespace Game.Audio
     public class BgmDirectorContext
     {
         public string bgmName;
+        public float bgmFadeDuration=3f;
         public float bgmStartTimeSeconds;
         public UnityEvent onBgmStart;
     }

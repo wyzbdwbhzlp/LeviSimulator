@@ -280,7 +280,7 @@ namespace Game.Audio
             to.Play();
 
             if (bgmCrossRoutine != null) StopCoroutine(bgmCrossRoutine);
-            bgmCrossRoutine = StartCoroutine(CrossFade(from, to, fadeSeconds, targetVolume));
+            bgmCrossRoutine = StartCoroutine(BgmCrossFade(from, to, fadeSeconds, targetVolume));
         }
         /// <summary>
         ///  播放BGM并从指定时间点开始播放
@@ -303,7 +303,7 @@ namespace Game.Audio
             to.Play();
 
             if (bgmCrossRoutine != null) StopCoroutine(bgmCrossRoutine);
-            bgmCrossRoutine = StartCoroutine(CrossFade(from, to, fadeSeconds, targetVolume));
+            bgmCrossRoutine = StartCoroutine(BgmCrossFade(from, to, fadeSeconds, targetVolume));
         }
 
         public void StopBGM(float fadeSeconds = 0.5f)
@@ -313,7 +313,7 @@ namespace Game.Audio
             StartCoroutine(FadeOutAndStop(active, fadeSeconds));
         }
 
-        private IEnumerator CrossFade(AudioSource from, AudioSource to, float dur, float targetVol)
+        private IEnumerator BgmCrossFade(AudioSource from, AudioSource to, float dur, float targetVol)
         {
             float t = 0f;
             float fromStart = from ? from.volume : 0f;

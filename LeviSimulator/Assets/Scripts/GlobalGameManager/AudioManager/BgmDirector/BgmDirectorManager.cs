@@ -1,4 +1,5 @@
 using GlobalGameManager;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 
@@ -210,7 +211,7 @@ namespace Game.Audio
             
             // 检查是否指定了起始时间
             float startTime = context.bgmStartTimeSeconds;
-            float fadeSeconds = 0.75f; // 可以从 context 中获取,或使用默认值
+            float fadeSeconds = context.bgmFadeDuration;
             float targetVolume = 1f;   // 可以从 context 中获取,或使用默认值
             
             if (startTime > 0f)
@@ -231,9 +232,8 @@ namespace Game.Audio
         /// <summary>
         /// 处理停止 BGM 动作
         /// </summary>
-        private void HandleStopBgmAction()
+        private void HandleStopBgmAction(float fadeSeconds = 1f)
         {
-            float fadeSeconds = 0.5f; // 可以作为参数传入
             audioPlayer.StopBGM(fadeSeconds);
             LogUtil.Log("BGM导演停止BGM");
         }
@@ -256,7 +256,9 @@ namespace Game.Audio
         }
 
         #region 临时方法,不推荐长期使用
+        
 
+        [Button(" 测试因Echo改变Bgm")]
         public void ModifyBgmClipBecauseLevel5Echo(int echoId)
         {
             if(echoId!=14)return;

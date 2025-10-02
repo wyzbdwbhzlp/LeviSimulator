@@ -28,6 +28,7 @@ MonoBehaviour:
     _triggerAction: 0
     _context:
       bgmName: "TZC \u8854\u63A5\u7B2C\u4E00\u7AE0"
+      bgmFadeDuration: 3
       bgmStartTimeSeconds: 0
       onBgmStart:
         m_PersistentCalls:
@@ -36,6 +37,7 @@ MonoBehaviour:
     _triggerAction: 1
     _context:
       bgmName: TZC_MAIN
+      bgmFadeDuration: 3
       bgmStartTimeSeconds: 0
       onBgmStart:
         m_PersistentCalls:
@@ -43,7 +45,8 @@ MonoBehaviour:
   - _triggerPoint: 2
     _triggerAction: 1
     _context:
-      bgmName: "TZC_\u6211\u53EF\u662F\u4E16\u754C\u51A0\u519B "
+      bgmName: "TZC_\u6211\u53EF\u662F\u4E16\u754C\u51A0\u519B"
+      bgmFadeDuration: 3
       bgmStartTimeSeconds: 0
       onBgmStart:
         m_PersistentCalls:
@@ -52,6 +55,7 @@ MonoBehaviour:
     _triggerAction: 1
     _context:
       bgmName: TZC3
+      bgmFadeDuration: 3
       bgmStartTimeSeconds: 0
       onBgmStart:
         m_PersistentCalls:
@@ -60,6 +64,7 @@ MonoBehaviour:
     _triggerAction: 1
     _context:
       bgmName: "TZC_\u533B\u9662"
+      bgmFadeDuration: 3
       bgmStartTimeSeconds: 0
       onBgmStart:
         m_PersistentCalls:
@@ -68,6 +73,7 @@ MonoBehaviour:
     _triggerAction: 1
     _context:
       bgmName: TZC3
+      bgmFadeDuration: 3
       bgmStartTimeSeconds: 0
       onBgmStart:
         m_PersistentCalls:
@@ -75,7 +81,8 @@ MonoBehaviour:
   - _triggerPoint: 6
     _triggerAction: 1
     _context:
-      bgmName: "TZC_\u8854\u63A5\u7B2C\u4E00\u7AE0"
+      bgmName: "TZC_\u6211\u53EF\u662F\u4E16\u754C\u51A0\u519B"
+      bgmFadeDuration: 3
       bgmStartTimeSeconds: 0
       onBgmStart:
         m_PersistentCalls:
