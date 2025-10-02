@@ -1341,7 +1341,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -10648,7 +10648,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6aea3007945460e82c6b4cba7ec2361, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextScene: 9
+  nextScene: 2
 --- !u!1 &2043605915 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7037556225350230095, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
