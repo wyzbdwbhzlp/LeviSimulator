@@ -152,6 +152,7 @@ namespace PlayerControllers.Refactored.Systems
                     _playerAnimator.SetBool("IsRunning", false);
                     _playerAnimator.SetBool("IsSliding", false);
                     _playerAnimator.SetBool("IsJumping", false);
+                    SetWallRunningAnimation(false);
                     break;
                     
                 case PlayerState.Sliding:
