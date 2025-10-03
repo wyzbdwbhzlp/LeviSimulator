@@ -15,8 +15,9 @@ namespace CollectibleEcho
         [SerializeField] private TextMeshProUGUI titleText;
         [SerializeField] private TextMeshProUGUI contentText;
         [SerializeField] private Image illustrationImage;
+        [SerializeField] private Button closeButton;
         private bool _isUIComponentActive = true;
-        
+        public Button CloseButton => closeButton;
         protected void Awake()
         {
             base.Awake();

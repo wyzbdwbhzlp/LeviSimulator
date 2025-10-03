@@ -79,6 +79,55 @@ namespace Game.Audio
             #endif
             Debug.Log($"音频名称枚举已生成，路径：{enumPath}");
         }
+        [Button("验证音频数据")]
+        private void ValidateAudioData()
+        {
+            var namesSet = new HashSet<string>();
+            var clipsSet = new HashSet<AudioClip>();
+            var duplicates = new List<string>();
+            var missingClips = new List<string>();
+
+            foreach (var data in audioDataList)
+            {
+                if (string.IsNullOrWhiteSpace(data.audioName))
+                {
+                    Debug.LogWarning("存在未命名的音频数据项，请检查。");
+                    continue;
+                }
+
+                if (!namesSet.Add(data.audioName))
+                {
+                    duplicates.Add(data.audioName);
+                }
+
+                if (data.audioClip == null)
+                {
+                    missingClips.Add(data.audioName);
+                }
+                else if (!clipsSet.Add(data.audioClip))
+                {
+                    duplicates.Add(data.audioName + " (重复的剪辑)");
+                }
+            }
+
+            if (duplicates.Count > 0)
+            {
+                Debug.LogWarning("发现重复的音频名称或剪辑: " + string.Join(", ", duplicates));
+            }
+            else
+            {
+                Debug.Log("未发现重复的音频名称或剪辑。");
+            }
+
+            if (missingClips.Count > 0)
+            {
+                Debug.LogWarning("以下音频数据缺少音频剪辑: " + string.Join(", ", missingClips));
+            }
+            else
+            {
+                Debug.Log("所有音频数据均包含有效的音频剪辑。");
+            }
+        }
 
         /// <summary>
         /// 根据名称获取音频数据
@@ -102,6 +151,10 @@ namespace Game.Audio
             int index=(int)audioName;
             if (index >= 0 && index < audioDataList.Count)
             {
+                if(audioDataList[index].audioName!=audioName.ToString())
+                {
+                    Debug.LogWarning($" Audio '{audioName}'的索引与名称不匹配");
+                }
                 return audioDataList[index];
             }
             else
