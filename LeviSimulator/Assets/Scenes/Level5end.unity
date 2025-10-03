@@ -9158,7 +9158,7 @@ MonoBehaviour:
   points:
   - {fileID: 1363411153}
   - {fileID: 1665806693}
-  speed: 2
+  speed: 6
 --- !u!1 &1084572633
 GameObject:
   m_ObjectHideFlags: 0
@@ -12996,7 +12996,7 @@ MonoBehaviour:
   points:
   - {fileID: 1309089446}
   - {fileID: 1060426521}
-  speed: 2
+  speed: 6
 --- !u!1 &1595881583
 GameObject:
   m_ObjectHideFlags: 0
@@ -13112,7 +13112,7 @@ MonoBehaviour:
   points:
   - {fileID: 231148253}
   - {fileID: 1349871918}
-  speed: 2
+  speed: 6
 --- !u!1001 &1600873455
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14986,7 +14986,7 @@ MonoBehaviour:
   points:
   - {fileID: 521686763}
   - {fileID: 1177088772}
-  speed: 2
+  speed: 6
 --- !u!1 &1861900445
 GameObject:
   m_ObjectHideFlags: 0
@@ -15579,7 +15579,7 @@ MonoBehaviour:
   points:
   - {fileID: 14960582}
   - {fileID: 893399633}
-  speed: 2
+  speed: 6
 --- !u!1001 &1957492452
 PrefabInstance:
   m_ObjectHideFlags: 0
