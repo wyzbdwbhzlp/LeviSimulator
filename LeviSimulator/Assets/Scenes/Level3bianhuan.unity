@@ -382,12 +382,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDuration: 3
-  hiddenDuration: 2
-  smokeHiddenDuration: 2
-  smokeVisibleDuration: 1
+  hiddenDuration: 1
+  smokeHiddenDuration: 0.5
+  smokeVisibleDuration: 0.5
   flashWall: {fileID: 418847558}
   smoke: {fileID: 1570338665}
-  startDelay: 0
+  startDelay: 3
 --- !u!1 &67935513
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,12 +435,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDuration: 3
-  hiddenDuration: 2
-  smokeHiddenDuration: 2
-  smokeVisibleDuration: 1
+  hiddenDuration: 1
+  smokeHiddenDuration: 0.5
+  smokeVisibleDuration: 0.5
   flashWall: {fileID: 1946057266}
   smoke: {fileID: 353828777}
-  startDelay: 0
+  startDelay: 3
 --- !u!1 &80065527
 GameObject:
   m_ObjectHideFlags: 0
@@ -487,13 +487,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e50b73730a98dc4e94ac5af42399d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibleDuration: 3
-  hiddenDuration: 2
+  visibleDuration: 4
+  hiddenDuration: 1
   smokeHiddenDuration: 2
   smokeVisibleDuration: 1
   flashWall: {fileID: 1507067276}
   smoke: {fileID: 2107700994}
-  startDelay: 0
+  startDelay: 2
 --- !u!1001 &99611850
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -755,12 +755,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDuration: 3
-  hiddenDuration: 2
-  smokeHiddenDuration: 2
-  smokeVisibleDuration: 1
+  hiddenDuration: 1
+  smokeHiddenDuration: 0.5
+  smokeVisibleDuration: 0.5
   flashWall: {fileID: 974255785}
   smoke: {fileID: 985543740}
-  startDelay: 0
+  startDelay: 3
 --- !u!1 &128882574
 GameObject:
   m_ObjectHideFlags: 0
@@ -1114,9 +1114,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDuration: 3
-  hiddenDuration: 2
-  smokeHiddenDuration: 2
-  smokeVisibleDuration: 1
+  hiddenDuration: 1
+  smokeHiddenDuration: 0.5
+  smokeVisibleDuration: 0.5
   flashWall: {fileID: 5793652344330473175}
   smoke: {fileID: 5793652342649709436}
   startDelay: 0
@@ -1323,12 +1323,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDuration: 3
-  hiddenDuration: 2
-  smokeHiddenDuration: 2
-  smokeVisibleDuration: 1
+  hiddenDuration: 1
+  smokeHiddenDuration: 0.5
+  smokeVisibleDuration: 0.5
   flashWall: {fileID: 776720664}
   smoke: {fileID: 1159520527}
-  startDelay: 0
+  startDelay: 3
 --- !u!1001 &224808694
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1578,7 +1578,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1531637554700455815, guid: 6c4dfd61f64d4b240b306ee2b3760532, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10.236805
+      value: 17.2
       objectReference: {fileID: 0}
     - target: {fileID: 1531637554700455815, guid: 6c4dfd61f64d4b240b306ee2b3760532, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1586,7 +1586,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1531637554700455815, guid: 6c4dfd61f64d4b240b306ee2b3760532, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 192.62212
+      value: 172.8
       objectReference: {fileID: 0}
     - target: {fileID: 1531637554700455815, guid: 6c4dfd61f64d4b240b306ee2b3760532, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1997,8 +1997,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e50b73730a98dc4e94ac5af42399d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibleDuration: 3
-  hiddenDuration: 2
+  visibleDuration: 4
+  hiddenDuration: 1
   smokeHiddenDuration: 2
   smokeVisibleDuration: 1
   flashWall: {fileID: 1157371287}
@@ -3015,9 +3015,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDuration: 3
-  hiddenDuration: 2
-  smokeHiddenDuration: 2
-  smokeVisibleDuration: 1
+  hiddenDuration: 1
+  smokeHiddenDuration: 0.5
+  smokeVisibleDuration: 0.5
   flashWall: {fileID: 2213667625713011967}
   smoke: {fileID: 2213667627271554607}
   startDelay: 0
@@ -3204,12 +3204,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDuration: 3
-  hiddenDuration: 2
-  smokeHiddenDuration: 2
-  smokeVisibleDuration: 1
+  hiddenDuration: 1
+  smokeHiddenDuration: 0.5
+  smokeVisibleDuration: 0.5
   flashWall: {fileID: 676179166}
   smoke: {fileID: 2090490468}
-  startDelay: 0
+  startDelay: 3
 --- !u!1 &519559641
 GameObject:
   m_ObjectHideFlags: 0
@@ -3569,9 +3569,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDuration: 3
-  hiddenDuration: 2
-  smokeHiddenDuration: 2
-  smokeVisibleDuration: 1
+  hiddenDuration: 1
+  smokeHiddenDuration: 0.5
+  smokeVisibleDuration: 0.5
   flashWall: {fileID: 454082405696819286}
   smoke: {fileID: 454082405476234181}
   startDelay: 0
@@ -3882,12 +3882,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDuration: 3
-  hiddenDuration: 2
-  smokeHiddenDuration: 2
-  smokeVisibleDuration: 1
+  hiddenDuration: 1
+  smokeHiddenDuration: 0.5
+  smokeVisibleDuration: 0.5
   flashWall: {fileID: 384276986}
   smoke: {fileID: 46641148}
-  startDelay: 0
+  startDelay: 3
 --- !u!4 &672881549 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1866899436234391626, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
@@ -4775,9 +4775,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDuration: 3
-  hiddenDuration: 2
-  smokeHiddenDuration: 2
-  smokeVisibleDuration: 1
+  hiddenDuration: 1
+  smokeHiddenDuration: 0.5
+  smokeVisibleDuration: 0.5
   flashWall: {fileID: 5793652343659313468}
   smoke: {fileID: 5793652343958077331}
   startDelay: 0
@@ -5950,12 +5950,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDuration: 3
-  hiddenDuration: 2
-  smokeHiddenDuration: 2
-  smokeVisibleDuration: 1
+  hiddenDuration: 1
+  smokeHiddenDuration: 0.5
+  smokeVisibleDuration: 0.5
   flashWall: {fileID: 203988776}
   smoke: {fileID: 749051087}
-  startDelay: 0
+  startDelay: 3
 --- !u!1001 &974255783
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6744,12 +6744,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDuration: 3
-  hiddenDuration: 2
-  smokeHiddenDuration: 2
-  smokeVisibleDuration: 1
+  hiddenDuration: 1
+  smokeHiddenDuration: 0.5
+  smokeVisibleDuration: 0.5
   flashWall: {fileID: 1987617608}
   smoke: {fileID: 1839171691}
-  startDelay: 0
+  startDelay: 3
 --- !u!1 &1060212149
 GameObject:
   m_ObjectHideFlags: 0
@@ -7679,8 +7679,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e50b73730a98dc4e94ac5af42399d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibleDuration: 3
-  hiddenDuration: 2
+  visibleDuration: 4
+  hiddenDuration: 1
   smokeHiddenDuration: 2
   smokeVisibleDuration: 1
   flashWall: {fileID: 1974766493}
@@ -7815,9 +7815,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDuration: 3
-  hiddenDuration: 2
-  smokeHiddenDuration: 2
-  smokeVisibleDuration: 1
+  hiddenDuration: 1
+  smokeHiddenDuration: 0.5
+  smokeVisibleDuration: 0.5
   flashWall: {fileID: 2213667625188546321}
   smoke: {fileID: 2213667626745310776}
   startDelay: 0
@@ -8674,7 +8674,7 @@ Transform:
   m_GameObject: {fileID: 1435206200}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.88, z: -0.64}
+  m_LocalPosition: {x: 0, y: -1.56, z: -0.64}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8694,8 +8694,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e50b73730a98dc4e94ac5af42399d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibleDuration: 3
-  hiddenDuration: 2
+  visibleDuration: 4
+  hiddenDuration: 1
   smokeHiddenDuration: 2
   smokeVisibleDuration: 1
   flashWall: {fileID: 1487418828}
@@ -8963,8 +8963,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e50b73730a98dc4e94ac5af42399d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibleDuration: 3
-  hiddenDuration: 2
+  visibleDuration: 4
+  hiddenDuration: 1
   smokeHiddenDuration: 2
   smokeVisibleDuration: 1
   flashWall: {fileID: 1540053132}
@@ -9687,9 +9687,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDuration: 3
-  hiddenDuration: 2
-  smokeHiddenDuration: 2
-  smokeVisibleDuration: 1
+  hiddenDuration: 1
+  smokeHiddenDuration: 0.5
+  smokeVisibleDuration: 0.5
   flashWall: {fileID: 2213667625871914430}
   smoke: {fileID: 2213667627294196667}
   startDelay: 0
@@ -10059,9 +10059,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDuration: 3
-  hiddenDuration: 2
-  smokeHiddenDuration: 2
-  smokeVisibleDuration: 1
+  hiddenDuration: 1
+  smokeHiddenDuration: 0.5
+  smokeVisibleDuration: 0.5
   flashWall: {fileID: 5793652343646363434}
   smoke: {fileID: 5793652342595928090}
   startDelay: 0
@@ -11635,14 +11635,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1838852678}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.6903893, z: -0, w: 0.72343814}
-  m_LocalPosition: {x: 91.95287, y: 17.839464, z: 265.731}
+  m_LocalRotation: {x: -0, y: 0.077770635, z: -0, w: 0.9969713}
+  m_LocalPosition: {x: 134.86383, y: 17.839464, z: 237.96283}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 549488546}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 87.322, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 8.921, z: 0}
 --- !u!1001 &1839171689
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12807,13 +12807,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e50b73730a98dc4e94ac5af42399d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibleDuration: 3
-  hiddenDuration: 2
+  visibleDuration: 4
+  hiddenDuration: 1
   smokeHiddenDuration: 2
   smokeVisibleDuration: 1
   flashWall: {fileID: 1493779005}
   smoke: {fileID: 688324701}
-  startDelay: 0
+  startDelay: 2
 --- !u!4 &1987071961 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1866899436234391626, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
@@ -12937,9 +12937,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDuration: 3
-  hiddenDuration: 2
-  smokeHiddenDuration: 2
-  smokeVisibleDuration: 1
+  hiddenDuration: 1
+  smokeHiddenDuration: 0.5
+  smokeVisibleDuration: 0.5
   flashWall: {fileID: 2213667626660450711}
   smoke: {fileID: 2213667626318354700}
   startDelay: 0
@@ -13066,13 +13066,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e50b73730a98dc4e94ac5af42399d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibleDuration: 3
-  hiddenDuration: 2
+  visibleDuration: 4
+  hiddenDuration: 1
   smokeHiddenDuration: 2
   smokeVisibleDuration: 1
   flashWall: {fileID: 642553028}
   smoke: {fileID: 1668764131}
-  startDelay: 0
+  startDelay: 2
 --- !u!1 &2021623688
 GameObject:
   m_ObjectHideFlags: 0
@@ -13243,13 +13243,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e50b73730a98dc4e94ac5af42399d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibleDuration: 3
-  hiddenDuration: 2
+  visibleDuration: 4
+  hiddenDuration: 1
   smokeHiddenDuration: 2
   smokeVisibleDuration: 1
   flashWall: {fileID: 1609953657}
   smoke: {fileID: 239889230}
-  startDelay: 0
+  startDelay: 2
 --- !u!1 &2051801300
 GameObject:
   m_ObjectHideFlags: 0
