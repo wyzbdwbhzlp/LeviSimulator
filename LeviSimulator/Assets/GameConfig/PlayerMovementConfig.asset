@@ -20,8 +20,8 @@ MonoBehaviour:
   defaultAssistStrength: 0.103
   defaultAssistDuration: -1
   assistResponseSpeed: 2
-  walkSpeed: 10
-  runSpeed: 16
+  walkSpeed: 12
+  runSpeed: 18
   crouchSpeed: 3
   acceleration: 10
   deceleration: 20

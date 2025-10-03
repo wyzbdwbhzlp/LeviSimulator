@@ -8002,7 +8002,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4454b739f6f27a14e8a40c8a3a398d57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
+  speed: 8
   stopDistance: 0
 --- !u!1001 &1509060263
 PrefabInstance:
