@@ -567,6 +567,72 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 575499535a62fd64ba9045d8672526ce, type: 3}
+--- !u!1 &1002471110
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1002471111}
+  - component: {fileID: 1002471113}
+  - component: {fileID: 1002471112}
+  m_Layer: 0
+  m_Name: Boundary
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1002471111
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002471110}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 35.659946, y: 27.325981, z: 388.95038}
+  m_LocalScale: {x: 34.257263, y: 34.257263, z: 36.48056}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1002471112
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002471110}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1002471113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002471110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2cc08b252177d44c9247f073c0db209, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1020344031
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1317,9 +1383,7 @@ MonoBehaviour:
   initPoolSize: 16
   dontDestroyOnLoad: 1
   audioDatabase: {fileID: 0}
-  bgmDirector: {fileID: 0}
-  bgmClipA: {fileID: 0}
-  bgmClipB: {fileID: 0}
+  bgmDirectorManager: {fileID: 0}
   bgmGroup: {fileID: -2052244038237832107, guid: 2ac478d7d5f497e4da04e45adc1db04c, type: 2}
   sfxGroup: {fileID: -946329927320939675, guid: 2ac478d7d5f497e4da04e45adc1db04c, type: 2}
   uiGroup: {fileID: 1912813322629572740, guid: 2ac478d7d5f497e4da04e45adc1db04c, type: 2}
@@ -1469,3 +1533,4 @@ SceneRoots:
   - {fileID: 1462498620}
   - {fileID: 1050114748}
   - {fileID: 231499139}
+  - {fileID: 1002471111}
