@@ -3,6 +3,7 @@ using Game.Audio;
 using GlobalGameManager;
 using HUD;
 using PlayerControllers.Refactored.Systems;
+using Sirenix.OdinInspector;
 using UIManager;
 using UnityEngine;
 using Utilities;
@@ -51,8 +52,10 @@ namespace SceneInteractionObject
         //     }
         // }
 
+        [Button("测试存档点交互")]
         private void OnInteractButtonPressed()
         {
+            MainUIManager.ShowHUDComponent<FeedbackBannerHUD>().UpdateHUDData("游戏进度已保存");
             AudioEventHandler.CallPlayOneShotFor2D(AudioNames.存档);
             EventBroadcaster.CallUpdatePlayerCheckPoint(_player.transform.position, _player.transform.rotation);
             EventBroadcaster.CallPlayerSaved(_player.transform.position, _player.transform.rotation);
