@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f23170573208b854aa4f202ab779edae, type: 3}
   m_Name: PlayerMovementConfig
   m_EditorClassIdentifier: 
-  mouseSensitivity: 50
+  fov: 40
+  mouseSensitivity: 0.05
   smoothness: 1
   cameraTiltSpeed: 5
   maxCameraTiltAngle: 15

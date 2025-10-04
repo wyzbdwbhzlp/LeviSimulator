@@ -412,6 +412,7 @@ namespace PlayerControllers.Refactored.Systems
                 Gizmos.DrawSphere(slopeUpEnd, 0.1f);
             }
         }
+#endif
         public void SetPlayerLinearVelocity(Vector3 velocity)
         {
             if (playerRigidbody != null)
@@ -434,7 +435,5 @@ namespace PlayerControllers.Refactored.Systems
                 LogUtil.LogWarning("PlayerMovementSystem: Rigidbody 组件未设置，无法添加力");
             }
         }
-
-        #endif
     }
 }

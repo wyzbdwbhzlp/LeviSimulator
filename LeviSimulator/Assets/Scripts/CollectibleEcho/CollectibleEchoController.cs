@@ -1,5 +1,7 @@
 ﻿using GlobalGameManager;
 using Manager;
+using PlayerControllers.Refactored;
+using PlayerControllers.Refactored.Systems;
 using Sirenix.OdinInspector;
 using UIManager;
 using UnityEngine;
@@ -38,13 +40,18 @@ namespace CollectibleEcho
             
             if (echoDisplayViewUI != null)
             {
+                echoDisplayViewUI.CloseButton.onClick.RemoveAllListeners();
+                echoDisplayViewUI.CloseButton.onClick.AddListener(CloseEcho);
+                
                 echoDisplayViewUI.ShowUIPanel(echoData);
+                PlayerController.UnlockAndShowCursor(); //锁定并隐藏鼠标
                 EventBroadcaster.CallEchoViewUIOpened(echoId);
             }
         }
         [Button("关闭回声UI")]
         public void CloseEcho()
         {
+            PlayerController.LockAndHideCursor(); //解锁并显示鼠标
             MainUIManager.HideUIComponent<EchoDisplayViewUI>();
             EventBroadcaster.CallEchoViewUIClosed();
         }

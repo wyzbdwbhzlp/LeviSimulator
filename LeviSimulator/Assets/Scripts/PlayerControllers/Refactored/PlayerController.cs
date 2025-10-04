@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using GlobalGameManager;
+using HUD;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
 using PlayerControllers.Refactored.Systems;
 using PlayerControllers.Refactored.States;
+using SettingPanel;
+using UIManager;
 using Utilities;
 
 namespace PlayerControllers.Refactored
@@ -33,6 +36,7 @@ namespace PlayerControllers.Refactored
         [SerializeField, ReadOnly] private bool isOnSlope;
         [SerializeField, ReadOnly] private float slopeRotationZ;
         [SerializeField, ReadOnly] private Vector3 slopeDirection;
+        private static bool _isCursorLocked = true;
     
         
         // 系统组件
@@ -63,6 +67,10 @@ namespace PlayerControllers.Refactored
         public PlayerWallRunSystem WallRunSystem => _wallRunSystem;
         public Animator PlayerAnimator => playerAnimator;
         public Transform GrapplingMuzzle => grapplingMuzzle;
+        /// <summary>
+        /// 获取当前光标是否被锁定
+        /// </summary>
+        public bool IsCursorLocked => _isCursorLocked;
 
         
         public void Initialize()
@@ -147,8 +155,20 @@ namespace PlayerControllers.Refactored
             
             // 初始化状态机
             _stateMachine = new PlayerStateMachine(this);
+            
+            //重赋值Config
+            LoadSettingFromPrefs();
+            
         }
-        
+
+        private void LoadSettingFromPrefs()
+        {
+            if(movementConfig==null)
+                return;
+            movementConfig.SetMouseSensitivity=PlayerPrefs.GetFloat(SettingPreferenceKeys.MouseSensitivity,1f);
+           
+        }
+
         private void InitializeSystems()
         {
             // 获取或添加系统组件
@@ -249,6 +269,28 @@ namespace PlayerControllers.Refactored
             PlayerInputEvents.OnRestartFromCheckpointReleased += HandleRestartFromCheckpointReleased;
             
             //订阅场景事件（如有）
+        }
+        /// <summary>
+        /// 锁定并隐藏光标（启用摄像机输入）
+        /// </summary>
+        public static void LockAndHideCursor()
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            MainUIManager.ShowHUDComponent<CrosshairHUD>();
+            GlobalManager.Instance.playerSpawnManager.GetCurrentPlayer().GetComponent<PlayerController>().GetSystem<PlayerInputSystem>().IsEnabled=true;
+            _isCursorLocked = true;
+        }
+        /// <summary>
+        /// 解锁并显示光标（禁用摄像机输入）
+        /// </summary>
+        public static void UnlockAndShowCursor()
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            MainUIManager.HideHUDComponent<CrosshairHUD>();
+            GlobalManager.Instance.playerSpawnManager.GetCurrentPlayer().GetComponent<PlayerController>().GetSystem<PlayerInputSystem>().IsEnabled=false;
+            _isCursorLocked = false;
         }
 
         private void HandleRestartFromCheckpointReleased()

@@ -368,10 +368,76 @@ MonoBehaviour:
     defaultFadeDuration: 0.5
     category: 
     tags: []
-  categories:
-  - BGM
-  - SFX
-  - UI
-  - Player
-  - Environment
+  - audioName: "\u94A9\u7D22\u67AA"
+    audioClip: {fileID: 8300000, guid: 2611307a1fc716e4d99859a47e2eeaf1, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: 
+    tags: []
+  - audioName: "\u5973\u51B2\u523A"
+    audioClip: {fileID: 8300000, guid: 51680509c0c2f5e43b08c7b88f691ac8, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: 
+    tags: []
+  - audioName: "\u5973\u53D7\u4F24\u65B0\u7248"
+    audioClip: {fileID: 8300000, guid: d1d35c62a7162a94f84dccae52bf9b78, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: 
+    tags: []
+  - audioName: "\u5973\u8DF3\u8DC3A\u65B0\u7248"
+    audioClip: {fileID: 8300000, guid: f4a04c0347fd19e4bab897f7044a8c0a, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: 
+    tags: []
+  - audioName: "\u5973\u8DF3\u8DC3A\u65B0\u7248WithFoot"
+    audioClip: {fileID: 8300000, guid: 30e51add03e9efe4ab9fba17edcbfaf0, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: 
+    tags: []
+  - audioName: "\u722C\u5899"
+    audioClip: {fileID: 8300000, guid: 61ad68be782a3424597ba0c72a0f9a22, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    isLoop: 1
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: 
+    tags: []
   databaseVersion: 1.0

@@ -1,4 +1,5 @@
-﻿using Manager;
+﻿using System;
+using Manager;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,18 +10,26 @@ using UIManager;
 
 namespace CollectibleEcho
 {
-    [ViewComponent("CollectibleEchoCanvs")]
+    [ViewComponent("CollectibleEchoCanvas")]
     public class EchoDisplayViewUI:Singleton<EchoDisplayViewUI>,IViewComponent
     {
         [SerializeField] private TextMeshProUGUI titleText;
         [SerializeField] private TextMeshProUGUI contentText;
         [SerializeField] private Image illustrationImage;
+        [SerializeField] private Button closeButton;
         private bool _isUIComponentActive = true;
-        
-        protected void Awake()
+        public Button CloseButton => closeButton;
+        protected override void Awake()
         {
             base.Awake();
         }
+
+        protected void Start()
+        {
+            MainUIManager.Instance.RegisterViewComponent(this);
+            
+        }
+
         /// <summary>
         ///  显示Echo
         /// </summary>

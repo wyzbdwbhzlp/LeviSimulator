@@ -78,22 +78,6 @@ namespace GlobalGameManager
       
         
         
-        // private void HandleInput()
-        // {
-        //     // // 暂停/恢复 (P键)
-        //     // if (Input.GetKeyDown(KeyCode.P) && canPause)
-        //     // {
-        //     //     TogglePause();
-        //     // }
-        //     //
-        //     // // 子弹时间 (T键)
-        //     // if (Input.GetKeyDown(KeyCode.T) && CanUseBulletTime && !isPaused)
-        //     // {
-        //     //     StartBulletTime();
-        //     // }
-        // }
-        
-        
         /// <summary>
         /// 暂停游戏
         /// </summary>

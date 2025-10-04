@@ -8,7 +8,10 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 using GlobalGameManager;
-using System.Reflection; // 新增
+using System.Reflection;
+using PlayerControllers.Refactored;
+using PlayerControllers.Refactored.Systems;
+using SettingPanel; 
 
 namespace UIManager
 {
@@ -518,6 +521,10 @@ namespace UIManager
             {
                 var componentType = _uiComponentStack.Pop();
                 HideUIComponent(componentType);
+                if (_uiComponentStack.Count == 0)
+                {
+                    PlayerController.LockAndHideCursor(); //关闭最后一个UI时锁定并隐藏鼠标
+                }
             }
             else
             {
@@ -639,6 +646,23 @@ namespace UIManager
             while (temp.Count > 0)
             {
                 _uiComponentStack.Push(temp.Pop());
+            }
+        }
+
+        public void RegisterViewComponent(EchoDisplayViewUI echoDisplayViewUI)
+        {
+            var type = typeof(EchoDisplayViewUI);
+            if (echoDisplayViewUI == null)
+            {
+                LogUtil.LogError($"注册 UI 失败：{type.FullName} 实例为 null", true);
+                return;
+            }
+
+            if (!_uiComponentsDic.ContainsKey(type))
+            {
+                var go = echoDisplayViewUI.gameObject;
+                go.SetActive(false);
+                _uiComponentsDic.Add(type, (echoDisplayViewUI, go, false));
             }
         }
     }

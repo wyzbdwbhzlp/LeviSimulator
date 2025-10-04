@@ -1,5 +1,8 @@
+using System;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using UnityEngine.Serialization;
 
 namespace PlayerControllers.Refactored.Data
@@ -14,6 +17,8 @@ namespace PlayerControllers.Refactored.Data
 
 
         [BoxGroup("镜头控制")]
+        [LabelText("FOV")]
+        [SerializeField] private float fov = 60f;
         [LabelText("鼠标灵敏度")]
         [SerializeField] private float mouseSensitivity = 100f; // 提高默认灵敏度适合FPS
         [LabelText("平滑系数")]
@@ -148,6 +153,7 @@ namespace PlayerControllers.Refactored.Data
         public float DefaultAssistDuration => defaultAssistDuration;
         public float AssistResponseSpeed => assistResponseSpeed;
         public LayerMask SlopeLayerMask => slopeLayerMask;
+        public float Fov => fov;
 
         public float MaxSlideSpeed => maxSlideSpeed;
         
@@ -158,6 +164,11 @@ namespace PlayerControllers.Refactored.Data
         public float SlopeAngleBoostFactor => slopeAngleBoostFactor;
 
         public float SlopeAngleDecelerationFactor => slopeAngleDecelerationFactor;
-        
+        public float SetMouseSensitivity {
+            set => mouseSensitivity=value;
+        }
+        public float SetFOV {
+            set => fov=value;
+        }
     }
 }

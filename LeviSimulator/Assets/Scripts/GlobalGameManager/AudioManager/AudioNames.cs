@@ -30,5 +30,11 @@ namespace Game.Audio
         女人跳跃B,
         存档,
         女人死亡,
+        钩索枪,
+        女冲刺,
+        女受伤新版,
+        女跳跃A新版,
+        女跳跃A新版WithFoot,
+        爬墙,
     }
 }

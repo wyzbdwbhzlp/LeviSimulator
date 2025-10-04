@@ -131,19 +131,4 @@ public class GameStateManager : MonoBehaviour
         return currentState == GameState.Paused;
     }
 
-    private void Update()
-    {
-        // ESC键暂停/恢复游戏
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (currentState == GameState.InGame)
-            {
-                PauseGame();
-            }
-            else if (currentState == GameState.Paused)
-            {
-                ResumeGame();
-            }
-        }
-    }
 }
