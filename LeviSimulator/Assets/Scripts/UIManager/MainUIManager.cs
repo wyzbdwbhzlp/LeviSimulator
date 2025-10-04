@@ -11,7 +11,7 @@ using GlobalGameManager;
 using System.Reflection;
 using PlayerControllers.Refactored;
 using PlayerControllers.Refactored.Systems;
-using SettingPanel; // 新增
+using SettingPanel; 
 
 namespace UIManager
 {
@@ -523,27 +523,12 @@ namespace UIManager
                 HideUIComponent(componentType);
                 if (_uiComponentStack.Count == 0)
                 {
-                    PlayerController.LockAndHideCursor(); //关闭最后一个UI时锁定并隐藏鼠标
+                    PlayerCameraSystem.LockAndHideCursor(); //关闭最后一个UI时锁定并隐藏鼠标
                 }
             }
             else
             {
-                var hasController = SettingController.HasInstance;
-                var controller = hasController ? SettingController.Instance : null;
-                if (controller == null)
-                {
-                    LogUtil.LogWarning("UI组件栈为空，未找到 SettingController，无法切换设置面板。");
-                    return;
-                }
-
-                if (controller.IsSettingsVisible)
-                {
-                    controller.HideSettings();
-                }
-                else
-                {
-                    controller.ShowSettings();
-                }
+                LogUtil.LogWarning("UI组件栈为空，无法弹出组件。");
             }
         }
 
