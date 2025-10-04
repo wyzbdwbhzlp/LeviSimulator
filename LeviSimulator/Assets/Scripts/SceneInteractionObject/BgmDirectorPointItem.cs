@@ -18,12 +18,10 @@ namespace SceneInteractionObject
         [SerializeField]private BgmDirectorTriggerTypeEnum triggerType=BgmDirectorTriggerTypeEnum.TriggerEnter;
         
         [LabelText("触发动作")]
-        [SerializeField]private BgmDirectorTriggerActionEnum triggerAction=BgmDirectorTriggerActionEnum.NoAction;
+        [SerializeField]private BgmDirectorEnum triggerAction=BgmDirectorEnum.NoAction;
 
-        [LabelText("附加信息")] [SerializeField]
-        private ActionAdditionalInfoEnum additionalInfo = ActionAdditionalInfoEnum.NoInfo;
-        [LabelText("BGM开始时间(秒)")]
-        [ShowIf("BgmStartTimeSecondsShow")][SerializeField]private float bgmStartTimeSeconds;
+        [LabelText("附加信息")]
+        [SerializeField] private BgmDirectorContext additionalInfo;
         
         private EchoInteractable _echoInteractable;
         private bool _isUsed=false;
@@ -50,7 +48,7 @@ namespace SceneInteractionObject
         private void OnTriggerEnter(Collider other)
         {
             if(triggerType!=BgmDirectorTriggerTypeEnum.TriggerEnter) return;
-            if(triggerAction== BgmDirectorTriggerActionEnum.NoAction) return;
+            if(triggerAction== BgmDirectorEnum.NoAction) return;
             if (other.CompareTag("Player"))
             {
                 ExecuteTriggerAction();
@@ -63,31 +61,13 @@ namespace SceneInteractionObject
 
         private void ExecuteTriggerAction()
         {
-            if (additionalInfo == ActionAdditionalInfoEnum.NoInfo)
-            {
-                AudioEventHandler.CallBgmDirectorActionTriggered(triggerAction, additionalInfo);
-            }
-            else
-            {
-                switch (additionalInfo)
-                {
-                    case ActionAdditionalInfoEnum.BgmStartTimeSeconds:
-                        AudioEventHandler.CallBgmDirectorActionTriggered(triggerAction, additionalInfo, bgmStartTimeSeconds);
-                        break;
-                    default:
-                        AudioEventHandler.CallBgmDirectorActionTriggered(triggerAction, additionalInfo);
-                        break;
-                }
-            }
-
+            if(_isUsed) return;
+            AudioEventHandler.CallBgmDirectorActionTriggered(triggerAction,additionalInfo);
+            
             _isUsed=true;
         }
         
-
-        private bool BgmStartTimeSecondsShow()
-        {
-            return triggerAction == BgmDirectorTriggerActionEnum.PlayBgmA|| triggerAction == BgmDirectorTriggerActionEnum.PlayBgmB;
-        }
+        
 
     }
 }

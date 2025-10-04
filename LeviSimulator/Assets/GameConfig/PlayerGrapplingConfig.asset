@@ -16,10 +16,10 @@ MonoBehaviour:
   maxGrappleDistance: 50
   grappleLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 512
   springStrength: 20
   damping: 10
-  maxGrappleForce: 1000
+  maxGrappleForce: 1500
   maxPlayerVelocityOnGrapple: 50
   stableZone: 3
   usePlayerViewAngleCheck: 1

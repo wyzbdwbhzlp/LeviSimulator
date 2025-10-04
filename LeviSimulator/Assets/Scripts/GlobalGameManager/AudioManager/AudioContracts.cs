@@ -56,6 +56,11 @@ namespace Game.Audio
         void PlayBGM(AudioClip clip, float fadeSeconds = 0.75f, float targetVolume = 1f);
 
         /// <summary>
+        /// 播放背景音乐并从指定时间点开始播放
+        /// </summary>
+        void PlayBgmWithStartTime(AudioClip clip, float startTime = 0f, float fadeSeconds = 0.75f, float targetVolume = 1f);
+
+        /// <summary>
         /// 停止背景音乐（支持淡出）
         /// </summary>
         void StopBGM(float fadeSeconds = 0.5f);

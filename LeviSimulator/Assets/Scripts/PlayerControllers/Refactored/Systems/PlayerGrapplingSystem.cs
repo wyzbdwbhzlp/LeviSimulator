@@ -105,7 +105,7 @@ namespace PlayerControllers.Refactored.Systems
         // 公开方法供外部调用
         public void StartGrapple()
         {
-            AudioEventHandler.CallPlayOneShotFor2D(AudioNames.钩索发射声音A);
+            AudioEventHandler.CallPlayOneShotFor2D(AudioNames.钩索枪);
             _grappleHook?.StartGrapple();
         }
 

@@ -1,6 +1,10 @@
 ﻿using System.Collections.Generic;
 using Sirenix.OdinInspector;
+
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
+
 using UnityEngine;
 
 namespace CollectibleEcho.SO
@@ -18,6 +22,8 @@ namespace CollectibleEcho.SO
             newEcho.echoID = collectibleEchoes.Count + 1; // 自动分配ID
             collectibleEchoes.Add(newEcho);
         }
+#if UNITY_EDITOR
+        
         [Button("保存所有回声插图路径")]
         private void SaveAllEchoIllustratiosnsPath()
         {
@@ -26,6 +32,7 @@ namespace CollectibleEcho.SO
                 echo.SaveEchoIllustratiosnsPath();
             }
         }
+#endif
         public CollectibleEcho GetCollectibleEchoByID(int id)
         {
             return collectibleEchoes.Find(echo => echo.echoID == id);
@@ -50,7 +57,8 @@ namespace CollectibleEcho.SO
             }
             return echoIllustrationsSprite;
         }
-
+#if UNITY_EDITOR
+        
         [Button]
         public void SaveEchoIllustratiosnsPath()
         {
@@ -59,5 +67,6 @@ namespace CollectibleEcho.SO
                 echoIllustrationsPath = AssetDatabase.GetAssetPath(echoIllustrationsSprite);
             }
         }
+#endif
     }
 }

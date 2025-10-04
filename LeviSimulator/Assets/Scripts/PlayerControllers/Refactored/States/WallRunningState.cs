@@ -1,3 +1,4 @@
+using Game.Audio;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Systems;
@@ -10,6 +11,7 @@ namespace PlayerControllers.Refactored.States
     public class WallRunningState : PlayerStateBase
     {
         private PlayerWallRunSystem _wallRunSystem;
+        private AudioSourceWrapper _audioSourceWrapper;
         
         public WallRunningState(PlayerController controller) : base(controller) 
         {
@@ -26,12 +28,15 @@ namespace PlayerControllers.Refactored.States
             {
                 _wallRunSystem.StartWallRun();
             }
+            _audioSourceWrapper=AudioEventHandler.CallPlayOneShotFor2D(AudioNames.爬墙);
+            
         }
         
         public override void Exit()
         {
             base.Exit();
             runtimeData.SetWallRunning(false);
+            _audioSourceWrapper?.Stop();
             
             if (_wallRunSystem != null)
             {

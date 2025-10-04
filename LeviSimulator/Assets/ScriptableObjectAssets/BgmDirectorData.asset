@@ -12,10 +12,78 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80d4fe42a6284f2fbac769feeedcff68, type: 3}
   m_Name: BgmDirectorData
   m_EditorClassIdentifier: 
+  bgmDataList:
+  - bgmName: TZC_MAIN
+    clip: {fileID: 8300000, guid: 32f4d7f3ad81d40419229abab740c6b0, type: 3}
+  - bgmName: TZC3
+    clip: {fileID: 8300000, guid: 95f3d528be3a53a4f83178ed2c54eb18, type: 3}
+  - bgmName: "TZC_\u533B\u9662"
+    clip: {fileID: 8300000, guid: 541e92e737b78444da13db131469bb8a, type: 3}
+  - bgmName: "TZC_\u6211\u53EF\u662F\u4E16\u754C\u51A0\u519B"
+    clip: {fileID: 8300000, guid: 757d9c7259e4c40469ba1e9d18fab3de, type: 3}
+  - bgmName: "TZC_\u8854\u63A5\u7B2C\u4E00\u7AE0"
+    clip: {fileID: 8300000, guid: d69619afa148fd846ad10738642839aa, type: 3}
   bgmDirectorDataList:
   - _triggerPoint: 0
+    _triggerAction: 0
+    _context:
+      bgmName: "TZC \u8854\u63A5\u7B2C\u4E00\u7AE0"
+      bgmFadeDuration: 3
+      bgmStartTimeSeconds: 0
+      onBgmStart:
+        m_PersistentCalls:
+          m_Calls: []
+  - _triggerPoint: 1
     _triggerAction: 1
-    BgmStartTimeSeconds: 0
-  - _triggerPoint: 0
-    _triggerAction: 2
-    BgmStartTimeSeconds: 0
+    _context:
+      bgmName: TZC_MAIN
+      bgmFadeDuration: 3
+      bgmStartTimeSeconds: 0
+      onBgmStart:
+        m_PersistentCalls:
+          m_Calls: []
+  - _triggerPoint: 2
+    _triggerAction: 1
+    _context:
+      bgmName: "TZC_\u6211\u53EF\u662F\u4E16\u754C\u51A0\u519B"
+      bgmFadeDuration: 3
+      bgmStartTimeSeconds: 0
+      onBgmStart:
+        m_PersistentCalls:
+          m_Calls: []
+  - _triggerPoint: 3
+    _triggerAction: 1
+    _context:
+      bgmName: TZC3
+      bgmFadeDuration: 3
+      bgmStartTimeSeconds: 0
+      onBgmStart:
+        m_PersistentCalls:
+          m_Calls: []
+  - _triggerPoint: 4
+    _triggerAction: 1
+    _context:
+      bgmName: "TZC_\u533B\u9662"
+      bgmFadeDuration: 3
+      bgmStartTimeSeconds: 0
+      onBgmStart:
+        m_PersistentCalls:
+          m_Calls: []
+  - _triggerPoint: 5
+    _triggerAction: 1
+    _context:
+      bgmName: TZC3
+      bgmFadeDuration: 3
+      bgmStartTimeSeconds: 0
+      onBgmStart:
+        m_PersistentCalls:
+          m_Calls: []
+  - _triggerPoint: 6
+    _triggerAction: 1
+    _context:
+      bgmName: "TZC_\u6211\u53EF\u662F\u4E16\u754C\u51A0\u519B"
+      bgmFadeDuration: 3
+      bgmStartTimeSeconds: 0
+      onBgmStart:
+        m_PersistentCalls:
+          m_Calls: []

@@ -9,17 +9,12 @@ namespace Game.Audio
         [LabelText("触发点")]
         [SerializeField]private BgmDirectorTriggerPointEnum  _triggerPoint;
         [LabelText("触发动作")]
-        [SerializeField]private BgmDirectorTriggerActionEnum _triggerAction;
-        [LabelText("BGM开始时间(秒)")]
-        [SerializeField][ShowIf("BgmStartTimeSecondsShow")]private float BgmStartTimeSeconds;
+        [SerializeField]private BgmDirectorEnum _triggerAction;
+        [LabelText("追加上下文")]
+        [SerializeField]private BgmDirectorContext _context;
 
-        public BgmDirectorTriggerActionEnum TriggerAction => _triggerAction;
+        public BgmDirectorEnum TriggerAction => _triggerAction;
         public BgmDirectorTriggerPointEnum TriggerPoint => _triggerPoint;
-        public float BgmStartTime => BgmStartTimeSeconds;
-
-        public bool BgmStartTimeSecondsShow()
-        {
-            return _triggerAction == BgmDirectorTriggerActionEnum.PlayBgmA|| _triggerAction == BgmDirectorTriggerActionEnum.PlayBgmB;
-        }
+        public BgmDirectorContext Context => _context;
     }
 }

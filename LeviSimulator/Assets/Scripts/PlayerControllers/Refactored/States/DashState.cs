@@ -1,3 +1,4 @@
+using Game.Audio;
 using PlayerControllers.Refactored.Core;
 
 namespace PlayerControllers.Refactored.States
@@ -12,6 +13,7 @@ namespace PlayerControllers.Refactored.States
             runtimeData.SetState(PlayerState.Dashing);
             playerController.MovementSystem.DisablePlayerGravity();
             // 启动冲刺逻辑，例如设置速度、播放动画等
+            AudioEventHandler.CallPlayOneShotFor2D(AudioNames.女冲刺);
         }
 
         public override void Exit()

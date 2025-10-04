@@ -8,7 +8,8 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Utilities;
 using GlobalGameManager;
-using System.Reflection; // 新增
+using System.Reflection;
+using PlayerControllers.Refactored.Systems; // 新增
 
 namespace UIManager
 {
@@ -518,6 +519,10 @@ namespace UIManager
             {
                 var componentType = _uiComponentStack.Pop();
                 HideUIComponent(componentType);
+                if (_uiComponentStack.Count == 0)
+                {
+                    PlayerCameraSystem.LockAndHideCursor(); //关闭最后一个UI时锁定并隐藏鼠标
+                }
             }
             else
             {

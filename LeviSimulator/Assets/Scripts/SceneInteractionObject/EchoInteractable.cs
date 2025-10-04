@@ -19,12 +19,12 @@ namespace SceneInteractionObject
         private void OnEnable()
         {
             EventBroadcaster.EchoViewUIOpened+= HideInteractionPrompt;
-            EventBroadcaster.EchoViewUIClosed += ShowInteractionPrompt;
+            // EventBroadcaster.EchoViewUIClosed += ShowInteractionPrompt;
         }
         private void OnDisable()
         {
             EventBroadcaster.EchoViewUIOpened -= HideInteractionPrompt;
-            EventBroadcaster.EchoViewUIClosed -= ShowInteractionPrompt;
+            // EventBroadcaster.EchoViewUIClosed -= ShowInteractionPrompt;
             HideInteractionPrompt();
         }
 
@@ -42,6 +42,7 @@ namespace SceneInteractionObject
             {
                 _playerInRange = true;
                 ShowInteractionPrompt();
+                
                 _playerInputSystem= other.GetComponent<PlayerInputSystem>();
                 _playerInputSystem.RegisterInteractCallback(InteractWithEcho);
             }
@@ -59,6 +60,7 @@ namespace SceneInteractionObject
 
         private void InteractWithEcho()
         {
+            LogUtil.Log($"Interacting with Echo ID: {echoId}");
             CollectibleEchoController.Instance.OpenEcho(echoId);
             OnEchoInteracted?.Invoke();
             HideInteractionPrompt();
@@ -69,7 +71,7 @@ namespace SceneInteractionObject
             MainUIManager.ShowHUDComponent<InteractionHUD>();
         }
 
-        private void HideInteractionPrompt()
+        private void HideInteractionPrompt(int id=0)
         {
             MainUIManager.HideHUDComponent<InteractionHUD>();
         }
