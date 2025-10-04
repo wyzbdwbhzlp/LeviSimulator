@@ -1,8 +1,10 @@
 using System;
+using HUD;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
 using Sirenix.OdinInspector;
+using UIManager;
 using Utilities;
 using Random = UnityEngine.Random;
 
@@ -99,6 +101,7 @@ namespace PlayerControllers.Refactored.Systems
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            MainUIManager.ShowHUDComponent<CrosshairHUD>();
             _isCursorLocked = true;
         }
         /// <summary>
@@ -108,6 +111,7 @@ namespace PlayerControllers.Refactored.Systems
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            MainUIManager.HideHUDComponent<CrosshairHUD>();
             _isCursorLocked = false;
         }
 
