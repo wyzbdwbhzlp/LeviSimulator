@@ -523,7 +523,7 @@ namespace UIManager
                 HideUIComponent(componentType);
                 if (_uiComponentStack.Count == 0)
                 {
-                    PlayerCameraSystem.LockAndHideCursor(); //关闭最后一个UI时锁定并隐藏鼠标
+                    PlayerController.LockAndHideCursor(); //关闭最后一个UI时锁定并隐藏鼠标
                 }
             }
             else
