@@ -46,6 +46,7 @@ namespace CollectibleEcho
                 echoDisplayViewUI.ShowUIPanel(echoData);
                 PlayerController.UnlockAndShowCursor(); //锁定并隐藏鼠标
                 EventBroadcaster.CallEchoViewUIOpened(echoId);
+                GlobalManager.Instance.gameStateManager.PauseGame();
             }
         }
         [Button("关闭回声UI")]
@@ -54,6 +55,7 @@ namespace CollectibleEcho
             PlayerController.LockAndHideCursor(); //解锁并显示鼠标
             MainUIManager.HideUIComponent<EchoDisplayViewUI>();
             EventBroadcaster.CallEchoViewUIClosed();
+            GlobalManager.Instance.gameStateManager.ResumeGame();
         }
     }
 }
