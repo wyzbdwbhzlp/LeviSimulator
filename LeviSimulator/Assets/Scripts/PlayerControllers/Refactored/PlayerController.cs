@@ -157,16 +157,17 @@ namespace PlayerControllers.Refactored
             _stateMachine = new PlayerStateMachine(this);
             
             //重赋值Config
-            LoadSettingFromPrefs();
+            LoadSettingFromSetting();
             
         }
 
-        private void LoadSettingFromPrefs()
+        private void LoadSettingFromSetting()
         {
             if(movementConfig==null)
                 return;
-            movementConfig.SetMouseSensitivity=PlayerPrefs.GetFloat(SettingPreferenceKeys.MouseSensitivity,1f);
-           
+            movementConfig.SetMouseSensitivity = SettingController.Instance.CurrentSettings.MouseSensitivity;
+            movementConfig.SetFOV = SettingController.Instance.CurrentSettings.FieldOfView;
+
         }
 
         private void InitializeSystems()
