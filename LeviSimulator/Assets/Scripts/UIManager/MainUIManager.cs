@@ -10,7 +10,8 @@ using Utilities;
 using GlobalGameManager;
 using System.Reflection;
 using PlayerControllers.Refactored;
-using PlayerControllers.Refactored.Systems; // 新增
+using PlayerControllers.Refactored.Systems;
+using SettingPanel; // 新增
 
 namespace UIManager
 {
@@ -527,7 +528,22 @@ namespace UIManager
             }
             else
             {
-                LogUtil.LogWarning("UI组件栈为空，无法弹出组件。");
+                var hasController = SettingController.HasInstance;
+                var controller = hasController ? SettingController.Instance : null;
+                if (controller == null)
+                {
+                    LogUtil.LogWarning("UI组件栈为空，未找到 SettingController，无法切换设置面板。");
+                    return;
+                }
+
+                if (controller.IsSettingsVisible)
+                {
+                    controller.HideSettings();
+                }
+                else
+                {
+                    controller.ShowSettings();
+                }
             }
         }
 
@@ -645,6 +661,23 @@ namespace UIManager
             while (temp.Count > 0)
             {
                 _uiComponentStack.Push(temp.Pop());
+            }
+        }
+
+        public void RegisterViewComponent(EchoDisplayViewUI echoDisplayViewUI)
+        {
+            var type = typeof(EchoDisplayViewUI);
+            if (echoDisplayViewUI == null)
+            {
+                LogUtil.LogError($"注册 UI 失败：{type.FullName} 实例为 null", true);
+                return;
+            }
+
+            if (!_uiComponentsDic.ContainsKey(type))
+            {
+                var go = echoDisplayViewUI.gameObject;
+                go.SetActive(false);
+                _uiComponentsDic.Add(type, (echoDisplayViewUI, go, false));
             }
         }
     }

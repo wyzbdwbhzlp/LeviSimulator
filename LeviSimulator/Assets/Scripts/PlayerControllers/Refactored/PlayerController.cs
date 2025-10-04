@@ -7,6 +7,7 @@ using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
 using PlayerControllers.Refactored.Systems;
 using PlayerControllers.Refactored.States;
+using SettingPanel;
 using UIManager;
 using Utilities;
 
@@ -154,8 +155,20 @@ namespace PlayerControllers.Refactored
             
             // 初始化状态机
             _stateMachine = new PlayerStateMachine(this);
+            
+            //重赋值Config
+            LoadSettingFromPrefs();
+            
         }
-        
+
+        private void LoadSettingFromPrefs()
+        {
+            if(movementConfig==null)
+                return;
+            movementConfig.SetMouseSensitivity=PlayerPrefs.GetFloat(SettingPreferenceKeys.MouseSensitivity,1f);
+           
+        }
+
         private void InitializeSystems()
         {
             // 获取或添加系统组件

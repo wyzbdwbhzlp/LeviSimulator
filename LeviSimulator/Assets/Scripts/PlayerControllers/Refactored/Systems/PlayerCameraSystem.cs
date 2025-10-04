@@ -3,6 +3,7 @@ using HUD;
 using UnityEngine;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
+using SettingPanel;
 using Sirenix.OdinInspector;
 using UIManager;
 using Utilities;
@@ -37,7 +38,9 @@ namespace PlayerControllers.Refactored.Systems
         
         private PlayerController _playerController;
         private PlayerRuntimeData _runtimeData;
-        
+
+        private SettingController _settingsController;
+
         private Coroutine _lookAssistCoroutine; // 视角辅助协程引用
         private float _targetXRotation = 0f; // 目标X旋转角度（用于视角辅助）
         private float _targetYRotation = 0f; // 目标Y旋转角度（用于视角辅助）
@@ -74,6 +77,22 @@ namespace PlayerControllers.Refactored.Systems
             if (playerBody == null)
                 playerBody = playerController.transform;// 默认使用玩家物体作为身体
 
+            _settingsController = SettingController.Instance;
+            if (_settingsController == null)
+            {
+                Debug.LogWarning("SettingController 实例未找到，摄像机设置将无法立即响应配置变更。");
+            }
+            else if (movementConfig != null)
+            {
+                var currentSettings = _settingsController.CurrentSettings;
+                movementConfig.SetMouseSensitivity = currentSettings.MouseSensitivity;
+                movementConfig.SetFOV = currentSettings.FieldOfView;
+                if (playerCamera != null)
+                {
+                    playerCamera.fieldOfView = currentSettings.FieldOfView;
+                }
+            }
+
             // 订阅事件
             RefreshEventSubscription(); 
             
@@ -82,7 +101,12 @@ namespace PlayerControllers.Refactored.Systems
             _yRotation = initialEuler.y;
             _xRotation = playerCamera.transform.localEulerAngles.x;
             
-            
+            // 应用初始FOV设置
+            if (_settingsController == null && movementConfig != null && playerCamera != null)
+            {
+                playerCamera.fieldOfView = movementConfig.Fov;
+            }
+
             // 锁定光标
             PlayerController.LockAndHideCursor();
 
@@ -102,6 +126,31 @@ namespace PlayerControllers.Refactored.Systems
         private void SubscribeToEvents()
         {
             PlayerInputEvents.OnLookInput += HandleLookInput;
+            if (_settingsController != null)
+            {
+                _settingsController.FieldOfViewChanged += OnFieldOfViewChanged;
+                _settingsController.MouseSensitivityChanged += OnMouseSensitivityChanged;
+            }
+        }
+
+        private void OnMouseSensitivityChanged(float obj)
+        {
+            if (movementConfig != null)
+            {
+                movementConfig.SetMouseSensitivity = obj;
+            }
+        }
+
+        private void OnFieldOfViewChanged(float obj)
+        {
+            if (movementConfig != null)
+            {
+                movementConfig.SetFOV = obj;
+            }
+            if (playerCamera != null)
+            {
+                playerCamera.fieldOfView = obj;
+            }
         }
 
         public void Update()
@@ -362,6 +411,11 @@ namespace PlayerControllers.Refactored.Systems
         public void UnsubscribeToEvents()
         {
             PlayerInputEvents.OnLookInput -= HandleLookInput;
+            if (_settingsController != null)
+            {
+                _settingsController.FieldOfViewChanged -= OnFieldOfViewChanged;
+                _settingsController.MouseSensitivityChanged -= OnMouseSensitivityChanged;
+            }
         }
         public void CleanUp()
         {
