@@ -9,6 +9,7 @@ using UnityEngine;
 using Utilities;
 using GlobalGameManager;
 using System.Reflection;
+using PlayerControllers.Refactored;
 using PlayerControllers.Refactored.Systems; // 新增
 
 namespace UIManager
@@ -521,7 +522,7 @@ namespace UIManager
                 HideUIComponent(componentType);
                 if (_uiComponentStack.Count == 0)
                 {
-                    PlayerCameraSystem.LockAndHideCursor(); //关闭最后一个UI时锁定并隐藏鼠标
+                    PlayerController.LockAndHideCursor(); //关闭最后一个UI时锁定并隐藏鼠标
                 }
             }
             else

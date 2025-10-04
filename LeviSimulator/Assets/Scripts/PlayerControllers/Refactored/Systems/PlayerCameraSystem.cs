@@ -52,7 +52,6 @@ namespace PlayerControllers.Refactored.Systems
         private Vector2 _currentLookInput;
         
         // 静态光标锁定状态（用于全局控制摄像机输入）
-        private static bool _isCursorLocked = true;
 
         
 
@@ -61,10 +60,7 @@ namespace PlayerControllers.Refactored.Systems
         public Transform CameraTransform => playerCamera.transform;
         public Camera Camera => playerCamera;
         
-        /// <summary>
-        /// 获取当前光标是否被锁定
-        /// </summary>
-        public static bool IsCursorLocked => _isCursorLocked;
+
         
         public void Initialize(PlayerController playerController,ScriptableObject playerConfig)
         {
@@ -88,32 +84,13 @@ namespace PlayerControllers.Refactored.Systems
             
             
             // 锁定光标
-            LockAndHideCursor();
+            PlayerController.LockAndHideCursor();
 
 
             IsInitialized = true;
         }
 
-        /// <summary>
-        /// 锁定并隐藏光标（启用摄像机输入）
-        /// </summary>
-        public static void LockAndHideCursor()
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            MainUIManager.ShowHUDComponent<CrosshairHUD>();
-            _isCursorLocked = true;
-        }
-        /// <summary>
-        /// 解锁并显示光标（禁用摄像机输入）
-        /// </summary>
-        public static void UnlockAndShowCursor()
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            MainUIManager.HideHUDComponent<CrosshairHUD>();
-            _isCursorLocked = false;
-        }
+
 
 
         private void RefreshEventSubscription()
@@ -158,7 +135,7 @@ namespace PlayerControllers.Refactored.Systems
         private void HandleMouseLook()
         {
             // 如果光标未锁定,不处理摄像机输入
-            if (!_isCursorLocked)
+            if (!_playerController.IsCursorLocked)
             {
                 return;
             }
