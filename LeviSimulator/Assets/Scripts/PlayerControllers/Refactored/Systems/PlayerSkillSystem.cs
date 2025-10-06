@@ -36,6 +36,7 @@ namespace PlayerControllers.Refactored.Systems
         private PlayerRuntimeData _playerRuntimeData;
         [ShowInInspector]public bool IsInitialized { get; set; } = false;
         private TimeManager timeManager=>GlobalManager.Instance?.timeManager;
+        private IHUDComponent dashCoolDownHUD;
 
         public void Initialize(PlayerController playerController, ScriptableObject playerConfig)
         {
@@ -52,6 +53,9 @@ namespace PlayerControllers.Refactored.Systems
             _playerRuntimeData.DashCount = _skillConfig.MaxDashCount;
             _playerRuntimeData.BulletTimeEnergy = _skillConfig.MaxBulletTimeEnergy;
             RefreshEventSubscription();
+            
+            dashCoolDownHUD= MainUIManager.ShowHUDComponent<SkillCooldownHUD>();
+            
             IsInitialized = true;
         }
 
@@ -135,6 +139,8 @@ namespace PlayerControllers.Refactored.Systems
                 _playerController.RuntimeData.IsDashing= true;
                 StartCoroutine(DashTimerCoroutine(_skillConfig.DashDuration));
                 MainUIManager.ShowHUDComponent<CameraSpeedLineHUD>();
+                if(dashCoolDownHUD!=null&&dashCoolDownHUD is SkillCooldownHUD skillCooldownHUD)
+                    skillCooldownHUD.BeginCooldown();
                 LogUtil.Log($"使用冲刺成功，目前剩余次数:{currentDashCount}");
             }
             else
