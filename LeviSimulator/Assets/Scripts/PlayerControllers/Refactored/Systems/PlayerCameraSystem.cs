@@ -6,6 +6,7 @@ using PlayerControllers.Refactored.Data;
 using SettingPanel;
 using Sirenix.OdinInspector;
 using UIManager;
+using UnityEngine.Serialization;
 using Utilities;
 using Random = UnityEngine.Random;
 
@@ -19,8 +20,6 @@ namespace PlayerControllers.Refactored.Systems
         [Header("摄像机设置")]
         [SerializeField] private Transform playerBody;
         [SerializeField] private Camera playerCamera;
-        [ShowInInspector] private float MouseSensitivity =>movementConfig.MouseSensitivity;
-        [ShowInInspector] private float Smoothness =>movementConfig.Smoothness;
         
         [Header("FPS优化")]
         [SerializeField] private bool useRawInput = true; // 是否使用原始输入（更适合FPS）
@@ -35,6 +34,9 @@ namespace PlayerControllers.Refactored.Systems
         [Header("特效")]
         [SerializeField] private float maxTiltAngle = 15f;
         [SerializeField] private float tiltSpeed = 5f;
+        [FormerlySerializedAs("speedLineController")]
+        [Header("模组")]
+        [SerializeField]private CameraSpeedLineHUD speedLineHUD;
         
         private PlayerController _playerController;
         private PlayerRuntimeData _runtimeData;
@@ -62,7 +64,8 @@ namespace PlayerControllers.Refactored.Systems
         [ShowInInspector]public bool IsInitialized { get; set; } = false;
         public Transform CameraTransform => playerCamera.transform;
         public Camera Camera => playerCamera;
-        
+        private float MouseSensitivity =>movementConfig.MouseSensitivity;
+        private float Smoothness =>movementConfig.Smoothness;
 
         
         public void Initialize(PlayerController playerController,ScriptableObject playerConfig)
@@ -92,6 +95,7 @@ namespace PlayerControllers.Refactored.Systems
                     playerCamera.fieldOfView = currentSettings.FieldOfView;
                 }
             }
+            
 
             // 订阅事件
             RefreshEventSubscription(); 

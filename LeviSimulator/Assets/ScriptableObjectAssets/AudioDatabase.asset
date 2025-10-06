@@ -440,4 +440,100 @@ MonoBehaviour:
     defaultFadeDuration: 0.5
     category: 
     tags: []
+  - audioName: TZC 3
+    audioClip: {fileID: 8300000, guid: 95f3d528be3a53a4f83178ed2c54eb18, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: 
+    tags: []
+  - audioName: TZC MAIN
+    audioClip: {fileID: 8300000, guid: 32f4d7f3ad81d40419229abab740c6b0, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: 
+    tags: []
+  - audioName: "TZC \u533B\u9662 V"
+    audioClip: {fileID: 8300000, guid: 541e92e737b78444da13db131469bb8a, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: 
+    tags: []
+  - audioName: "TZC \u6211\u53EF\u662F\u4E16\u754C\u51A0\u519B"
+    audioClip: {fileID: 8300000, guid: 757d9c7259e4c40469ba1e9d18fab3de, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: 
+    tags: []
+  - audioName: "TZC \u8854\u63A5\u7B2C\u4E00\u7AE0"
+    audioClip: {fileID: 8300000, guid: d69619afa148fd846ad10738642839aa, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: 
+    tags: []
+  - audioName: "\u6280\u80FD\u51B7\u5374\u5B8C\u6BD5"
+    audioClip: {fileID: 8300000, guid: 9e1b320e826c17644807daa2e722db73, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: 
+    tags: []
+  - audioName: "\u5B58\u6863\u63D0\u793A\u97F3\u6548"
+    audioClip: {fileID: 8300000, guid: 88bdb540be9c89946bdd3e275ac1fca0, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: 
+    tags: []
+  - audioName: "\u649E\u788E\u6728\u5899"
+    audioClip: {fileID: 8300000, guid: d7414a3802dca6a4bbd9f646223ac917, type: 3}
+    defaultChannel: 1
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    isLoop: 0
+    throttleInterval: 0
+    supportsFade: 0
+    defaultFadeDuration: 0.5
+    category: 
+    tags: []
   databaseVersion: 1.0

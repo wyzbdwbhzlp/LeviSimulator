@@ -30,8 +30,8 @@ namespace SettingPanel
 
         private void Awake()
         {
-            InitializeUIBindings();
             ConfigureSliderRanges();
+            InitializeUIBindings();
         }
 
         private void OnDisable()

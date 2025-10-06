@@ -517,19 +517,36 @@ namespace UIManager
 
         protected void PopOneUIComponent()
         {
+            var controller = SettingController.HasInstance ? SettingController.Instance : null;
+
             if (_uiComponentStack.Count > 0)
             {
+                var topType = _uiComponentStack.Peek();
+
+                if (controller != null && topType == typeof(SettingsView))
+                {
+                    controller.HideSettings();
+                    return;
+                }
+
                 var componentType = _uiComponentStack.Pop();
                 HideUIComponent(componentType);
+
                 if (_uiComponentStack.Count == 0)
                 {
                     PlayerController.LockAndHideCursor(); //关闭最后一个UI时锁定并隐藏鼠标
+                    GlobalManager.Instance?.gameStateManager?.ResumeGame(); // 恢复游戏
                 }
+                return;
             }
-            else
+
+            if (controller != null)
             {
-                LogUtil.LogWarning("UI组件栈为空，无法弹出组件。");
+                controller.ToggleSettings();
+                return;
             }
+
+            LogUtil.LogWarning("UI组件栈为空，未找到 SettingController，无法处理弹出操作。");
         }
 
         protected IHUDComponent ShowHUDComponent(Type componentType)

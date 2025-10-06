@@ -36,5 +36,13 @@ namespace Game.Audio
         女跳跃A新版,
         女跳跃A新版WithFoot,
         爬墙,
+        TZC_3,
+        TZC_MAIN,
+        TZC_医院_V,
+        TZC_我可是世界冠军,
+        TZC_衔接第一章,
+        技能冷却完毕,
+        存档提示音效,
+        撞碎木墙,
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using GlobalGameManager;
 using PlayerControllers.Refactored;
 using Sirenix.OdinInspector;
 using UIManager;
@@ -60,7 +61,7 @@ namespace SettingPanel
         public const float MinFieldOfView = 40f;
         public const float MaxFieldOfView = 120f;
         public const float MinMouseSensitivity = 0.05f;
-        public const float MaxMouseSensitivity = 10f;
+        public const float MaxMouseSensitivity = 20f;
 
         #endregion
 
@@ -280,7 +281,7 @@ namespace SettingPanel
                 Debug.LogError("SettingsView 未能成功实例化，请检查预制体或特性配置。");
                 return;
             }
-
+            GlobalManager.Instance.gameStateManager.PauseGame();
             _activeView = view;
             view.AssignController(this);
             view.ShowUIPanel(_settingsData);
@@ -295,7 +296,7 @@ namespace SettingPanel
             {
                 return;
             }
-
+            GlobalManager.Instance.gameStateManager.ResumeGame();
             MainUIManager.HideUIComponent<SettingsView>();
             PlayerController.LockAndHideCursor();
         }

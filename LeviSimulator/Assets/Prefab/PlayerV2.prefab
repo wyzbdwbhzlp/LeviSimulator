@@ -433,6 +433,7 @@ MonoBehaviour:
   maxVerticalAngle: 90
   maxTiltAngle: 15
   tiltSpeed: 5
+  speedLineController: {fileID: 0}
 --- !u!1001 &5095154885131528934
 PrefabInstance:
   m_ObjectHideFlags: 0
