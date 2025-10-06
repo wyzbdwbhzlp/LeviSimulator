@@ -56,7 +56,7 @@ namespace SceneInteractionObject
         private void OnInteractButtonPressed()
         {
             MainUIManager.ShowHUDComponent<FeedbackBannerHUD>().UpdateHUDData("游戏进度已保存");
-            AudioEventHandler.CallPlayOneShotFor2D(AudioNames.存档);
+            AudioEventHandler.CallPlayOneShotFor2D(AudioNames.存档提示音效);
             EventBroadcaster.CallUpdatePlayerCheckPoint(_player.transform.position, _player.transform.rotation);
             EventBroadcaster.CallPlayerSaved(_player.transform.position, _player.transform.rotation);
             LogUtil.Log("游戏进度已保存");

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.Audio;
 using UnityEngine;
 using Utilities;
 
@@ -59,6 +60,8 @@ public class BrokenWall : MonoBehaviour
             // 开启整体重力
             rb.isKinematic = false;
             rb.useGravity = true;
+            
+            AudioEventHandler.CallPlayOneShotFor3D(AudioNames.撞碎木墙, transform.position);
 
             if (flashPoints != null)
             {

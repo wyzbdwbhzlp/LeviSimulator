@@ -1,10 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Game.Audio;
 using GlobalGameManager;
+using HUD;
 using PlayerControllers.Refactored.Core;
 using PlayerControllers.Refactored.Data;
 using Sirenix.OdinInspector;
+using UIManager;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Utilities;
@@ -131,6 +134,7 @@ namespace PlayerControllers.Refactored.Systems
                 _playerController.MovementSystem.ApplyDash(CalculateDashVelocity());
                 _playerController.RuntimeData.IsDashing= true;
                 StartCoroutine(DashTimerCoroutine(_skillConfig.DashDuration));
+                MainUIManager.ShowHUDComponent<CameraSpeedLineHUD>();
                 LogUtil.Log($"使用冲刺成功，目前剩余次数:{currentDashCount}");
             }
             else
@@ -142,6 +146,7 @@ namespace PlayerControllers.Refactored.Systems
         {
             yield return new WaitForSeconds(dashDuration);
             _playerController.RuntimeData.IsDashing= false;
+            MainUIManager.HideHUDComponent<CameraSpeedLineHUD>();
             // 冲刺结束后的逻辑（如果有）
         }
         
@@ -200,6 +205,7 @@ namespace PlayerControllers.Refactored.Systems
                 }
 
                 _playerRuntimeData.RecoverDash();
+                AudioEventHandler.CallPlayOneShotFor2D(AudioNames.技能冷却完毕);
                 LogUtil.Log($"冲刺冷却完毕{currentDashCount}");
             }
 
