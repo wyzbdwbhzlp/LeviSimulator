@@ -34,7 +34,7 @@ namespace SceneInteractionObject
             if (other.CompareTag("Player"))
             {
                 var interactionHUD = MainUIManager.ShowHUDComponent<InteractionHUD>();
-                InteractionData interactionData = new InteractionData("按下[E]键保存游戏进度");
+                InteractionData interactionData = new InteractionData("按下[F]键保存游戏进度");
                 interactionHUD.UpdateHUDData(interactionData);
                 _player = other.gameObject;
                 _playerInputSystem = _player.GetComponent<PlayerInputSystem>();
