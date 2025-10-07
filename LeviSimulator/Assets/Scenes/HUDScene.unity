@@ -240,6 +240,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CollectibleEchoCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 7330433785730069992, guid: 899b826ec90548aaae9237e6ff5f8bc8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8960229461671063579, guid: 899b826ec90548aaae9237e6ff5f8bc8, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -495,6 +499,10 @@ PrefabInstance:
       propertyPath: m_hasFontAssetChanged
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2978461010053567261, guid: f3be5d57c22ce0743a5ec120286ceb28, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 4773752976750215794, guid: f3be5d57c22ce0743a5ec120286ceb28, type: 3}
       propertyPath: canvasGroup
       value: 
@@ -506,6 +514,14 @@ PrefabInstance:
     - target: {fileID: 8245679158682402248, guid: f3be5d57c22ce0743a5ec120286ceb28, type: 3}
       propertyPath: m_Name
       value: MainHUDCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 8672908876910016577, guid: f3be5d57c22ce0743a5ec120286ceb28, type: 3}
+      propertyPath: m_BlockingMask.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8672908876910016577, guid: f3be5d57c22ce0743a5ec120286ceb28, type: 3}
+      propertyPath: m_IgnoreReversedGraphics
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
