@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u6309<E>\u4EA4\u4E92"
+  m_text: "\u6309<F>\u4EA4\u4E92"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 07564f23ff0e9934fb255ea551fc8049, type: 2}
   m_sharedMaterial: {fileID: 3809146651984257718, guid: 07564f23ff0e9934fb255ea551fc8049, type: 2}
