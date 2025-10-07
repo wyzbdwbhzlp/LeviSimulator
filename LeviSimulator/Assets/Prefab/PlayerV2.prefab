@@ -433,7 +433,7 @@ MonoBehaviour:
   maxVerticalAngle: 90
   maxTiltAngle: 15
   tiltSpeed: 5
-  speedLineController: {fileID: 0}
+  speedLineHUD: {fileID: 0}
 --- !u!1001 &5095154885131528934
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -721,5 +721,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineRenderer: {fileID: 6496558927388689036}
-  validGrappleCableMaterial: {fileID: 2100000, guid: 909644c43a7fa54468636304247ce097, type: 2}
-  invalidGrappleCableMaterial: {fileID: 2100000, guid: e55e118f2bbaed2449217bb7b7d2d807, type: 2}
+  validGrappleCableMaterial: {fileID: 2100000, guid: 001b0c757cb7e704c857dc7575faca32, type: 2}
+  invalidGrappleCableMaterial: {fileID: 2100000, guid: 001b0c757cb7e704c857dc7575faca32, type: 2}
