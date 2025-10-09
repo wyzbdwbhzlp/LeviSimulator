@@ -7276,15 +7276,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3707939358761700794, guid: ba7d17d2819f43546ac57d29cc9027b0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 20.77
+      value: 23.5
       objectReference: {fileID: 0}
     - target: {fileID: 3707939358761700794, guid: ba7d17d2819f43546ac57d29cc9027b0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 35.6
+      value: 41.99
       objectReference: {fileID: 0}
     - target: {fileID: 3707939358761700794, guid: ba7d17d2819f43546ac57d29cc9027b0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7.69
+      value: -6.74
       objectReference: {fileID: 0}
     - target: {fileID: 3707939358761700794, guid: ba7d17d2819f43546ac57d29cc9027b0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7455,7 +7455,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3707939358761700794, guid: ba7d17d2819f43546ac57d29cc9027b0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 28.82
+      value: 35.27
       objectReference: {fileID: 0}
     - target: {fileID: 3707939358761700794, guid: ba7d17d2819f43546ac57d29cc9027b0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -10977,6 +10977,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextScene: 2
+  markAsCompleted: 1
+  requirePreviousLevelCompleted: 0
+  previousLevel: 1
+  doorObject: {fileID: 0}
 --- !u!1 &2043605915 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7037556225350230095, guid: a4ac419c5f600a245814784bfb82207a, type: 3}
