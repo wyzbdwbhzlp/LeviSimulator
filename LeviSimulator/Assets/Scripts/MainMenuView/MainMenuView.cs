@@ -12,7 +12,18 @@ namespace MainMenuView
             var gm = GlobalManager.Instance;
             if (gm != null)
             {
-                gm.sceneLoadManager.LoadScene(SceneEnum.Level1);
+                var levelCompletionStatus = gm.LevelCompletionStatus;
+                if (levelCompletionStatus.TryGetValue(SceneEnum.Level1, out var value))
+                {
+                    if (value == false)
+                    {
+                        gm.sceneLoadManager.LoadScene(SceneEnum.Level1);
+                    }
+                    else
+                    {
+                        gm.sceneLoadManager.LoadScene(SceneEnum.Home);
+                    }
+                }
             }
         }
         
