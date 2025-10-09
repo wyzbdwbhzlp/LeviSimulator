@@ -18,8 +18,10 @@ namespace GlobalGameManager
 
         private const SceneEnum LoadingSceneEnum = SceneEnum.LoadingScene; // Loading场景
         private const SceneEnum HUDScene= SceneEnum.HUDScene; // HUD场景
+        [SerializeField] private SceneEnum currentScene = SceneEnum.SampleScene;
         private bool _isLoading = false;
         public bool IsLoading => _isLoading;
+        public SceneEnum CurrentScene => currentScene;
 
         private static readonly SceneEnum[] TheLevelScenes = new SceneEnum[]// 游戏关卡场景
         {
@@ -30,6 +32,7 @@ namespace GlobalGameManager
             SceneEnum.Level5end,
             SceneEnum.Home
         };
+        public SceneEnum[] GetTheLevelScenes() => TheLevelScenes.ToArray();
 
 
         public void LoadScene(SceneEnum sceneEnum, bool useLoadingScreen = true)
@@ -88,6 +91,7 @@ namespace GlobalGameManager
                     }
                 }
             }
+            
             // 加载目标场景（Additive），并在准备好后切换
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(targetSceneName, LoadSceneMode.Additive);
             asyncLoad.allowSceneActivation = false;
@@ -104,7 +108,12 @@ namespace GlobalGameManager
                 }
                 yield return null;
             }
-
+            
+            if(TheLevelScenes.Contains(sceneEnum))
+            {
+                currentScene = sceneEnum;// 更新当前场景
+            }
+                
             // 设为激活场景，保证输入/光照等依赖正确
             var targetScene = SceneManager.GetSceneByName(targetSceneName);
             if (targetScene.IsValid())
