@@ -8559,7 +8559,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2413087473742158327, guid: 7e22082783c7e1640b43f345a08c6498, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.087041
+      value: -4.1
       objectReference: {fileID: 0}
     - target: {fileID: 2413087473742158327, guid: 7e22082783c7e1640b43f345a08c6498, type: 3}
       propertyPath: m_LocalPosition.z
@@ -12286,6 +12286,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextScene: 2
+  markAsCompleted: 1
+  requirePreviousLevelCompleted: 0
+  previousLevel: 1
+  doorObject: {fileID: 0}
 --- !u!65 &1861900448
 BoxCollider:
   m_ObjectHideFlags: 0
