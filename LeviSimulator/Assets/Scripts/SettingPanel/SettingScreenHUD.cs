@@ -232,6 +232,7 @@ namespace SettingPanel
             {
                 sfxSlider.SetValueWithoutNotify(data.SfxVolume);
                 ApplyMixerVolume("SFXVolume", data.SfxVolume);
+                ApplyMixerVolume("UIVolume", data.SfxVolume);
             }
             if (fovSlider != null)
             {
