@@ -42,7 +42,9 @@ namespace GlobalGameManager
         public MainUIManager mainUIManager;
         public TimeManager timeManager;
         public AudioHub audioHub;
-        
+        [Header("通关记录")]
+        private Dictionary<SceneEnum, bool> _levelCompletionStatus = new Dictionary<SceneEnum, bool>();
+        public IReadOnlyDictionary<SceneEnum, bool> LevelCompletionStatus => _levelCompletionStatus;
 
         private void Awake()
         {
@@ -51,6 +53,12 @@ namespace GlobalGameManager
                 _instance = this;
                 DontDestroyOnLoad(gameObject);
                 InitializeManagers();
+                var levelScenes= sceneLoadManager.GetTheLevelScenes();
+                foreach (var scene in levelScenes)
+                {
+                    _levelCompletionStatus[scene] = false; 
+                }
+                
             }
             else if (_instance != this)
             {
@@ -98,6 +106,19 @@ namespace GlobalGameManager
                 sceneLoadManager.LoadScene(SceneEnum.HUDScene, false);
                 // 然后加载初始游戏场景
                 sceneLoadManager.LoadScene(initialScene);
+            }
+        }
+        public void CompetedLevel()
+        {
+            var scene= sceneLoadManager.CurrentScene;
+            if (_levelCompletionStatus.ContainsKey(scene))
+            {
+                _levelCompletionStatus[scene] = true;
+                LogUtil.Log($"关卡 {scene} 已标记为通关");
+            }
+            else
+            {
+                LogUtil.LogWarning($"关卡 {scene} 不在记录列表中，无法标记为通关");
             }
         }
     }
