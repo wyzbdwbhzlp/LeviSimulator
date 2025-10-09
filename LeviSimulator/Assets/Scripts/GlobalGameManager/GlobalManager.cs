@@ -64,6 +64,7 @@ namespace GlobalGameManager
             {
                 Destroy(gameObject);
             }
+            LoadLevelCompletionStatus();
         }
 
         private void InitializeManagers()
@@ -114,12 +115,37 @@ namespace GlobalGameManager
             if (_levelCompletionStatus.ContainsKey(scene))
             {
                 _levelCompletionStatus[scene] = true;
+                SaveLevelCompletionStatusWhenExitGame();
                 LogUtil.Log($"关卡 {scene} 已标记为通关");
             }
             else
             {
                 LogUtil.LogWarning($"关卡 {scene} 不在记录列表中，无法标记为通关");
             }
+        }
+        private void SaveLevelCompletionStatusWhenExitGame()
+        {
+            // 在这里实现保存逻辑，例如保存到文件或玩家偏好设置
+            foreach (var entry in _levelCompletionStatus)
+            {
+                PlayerPrefs.SetInt(entry.Key.ToString(), entry.Value ? 1 : 0);
+            }
+            PlayerPrefs.Save();
+            LogUtil.Log("关卡通关状态已保存");
+        }
+        private void OnApplicationQuit()
+        {
+            SaveLevelCompletionStatusWhenExitGame();
+        }
+        private void LoadLevelCompletionStatus()
+        {
+            var levelScenes= sceneLoadManager.GetTheLevelScenes();
+            foreach (var scene in levelScenes)
+            {
+                int status = PlayerPrefs.GetInt(scene.ToString(), 0);
+                _levelCompletionStatus[scene] = status == 1;
+            }
+            LogUtil.Log("关卡通关状态已加载");
         }
     }
 }
