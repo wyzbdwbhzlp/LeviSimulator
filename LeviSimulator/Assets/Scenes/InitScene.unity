@@ -355,7 +355,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fb681439143c2e4ba2e447742889639, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialScene: 1
+  initialScene: 13
   sceneLoadManager: {fileID: 0}
   playerSpawnManager: {fileID: 925723588}
   gameStateManager: {fileID: 925723587}

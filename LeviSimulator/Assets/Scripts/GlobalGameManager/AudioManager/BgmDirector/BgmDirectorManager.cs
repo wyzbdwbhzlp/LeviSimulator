@@ -96,6 +96,9 @@ namespace Game.Audio
         {
             switch (sceneEnum)
             {
+                case SceneEnum.MainMenu:
+                    HandleBgmDirectorTrigger(BgmDirectorTriggerPointEnum.OnMainMenu);
+                    break;
                 case SceneEnum.Home:
                     HandleBgmDirectorTrigger(BgmDirectorTriggerPointEnum.OnHome);
                     break;
