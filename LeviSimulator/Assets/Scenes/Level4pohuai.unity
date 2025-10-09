@@ -9161,7 +9161,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6aea3007945460e82c6b4cba7ec2361, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextScene: 9
+  nextScene: 2
+  markAsCompleted: 1
+  requirePreviousLevelCompleted: 0
+  previousLevel: 1
+  doorObject: {fileID: 0}
 --- !u!4 &1862328287 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3707939358761700794, guid: ba7d17d2819f43546ac57d29cc9027b0, type: 3}

@@ -13357,7 +13357,7 @@ Transform:
   m_GameObject: {fileID: 1659020037}
   serializedVersion: 2
   m_LocalRotation: {x: -0.00059581734, y: -0.9980319, z: 0.008982766, w: -0.062059283}
-  m_LocalPosition: {x: 11.4900055, y: 50.58746, z: 423.96777}
+  m_LocalPosition: {x: 22.1, y: 59.13, z: 423.96777}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15032,7 +15032,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6aea3007945460e82c6b4cba7ec2361, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextScene: 9
+  nextScene: 2
+  markAsCompleted: 1
+  requirePreviousLevelCompleted: 0
+  previousLevel: 1
+  doorObject: {fileID: 0}
 --- !u!65 &1861900448
 BoxCollider:
   m_ObjectHideFlags: 0
