@@ -12,7 +12,7 @@ namespace PlayerControllers.Refactored.Data
         [LabelText("冲刺距离")]
         [SerializeField] private float dashDistance = 10f;
         [LabelText("冲刺冷却时间")]
-        [SerializeField] private float dashCooldown = 5f;
+        [SerializeField] private float dashCooldown = 15f;
         [LabelText("冲刺最大存储数")] [SerializeField]
         private int maxDashCount = 1;
         [SerializeField, Range(0f, 1f)][LabelText("冲刺方向保留")]
