@@ -25,9 +25,9 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: d69619afa148fd846ad10738642839aa, type: 3}
   bgmDirectorDataList:
   - _triggerPoint: 0
-    _triggerAction: 1
+    _triggerAction: 0
     _context:
-      bgmName: TZC_MAIN
+      bgmName: "TZC \u8854\u63A5\u7B2C\u4E00\u7AE0"
       bgmFadeDuration: 3
       bgmStartTimeSeconds: 0
       onBgmStart:

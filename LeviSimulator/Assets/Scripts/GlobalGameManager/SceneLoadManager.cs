@@ -30,8 +30,7 @@ namespace GlobalGameManager
             SceneEnum.Level3bianhuan,
             SceneEnum.Level4pohuai,
             SceneEnum.Level5end,
-            SceneEnum.Home,
-            SceneEnum.MainMenu
+            SceneEnum.Home
         };
         public SceneEnum[] GetTheLevelScenes() => TheLevelScenes.ToArray();
 
