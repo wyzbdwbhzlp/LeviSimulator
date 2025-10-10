@@ -1220,10 +1220,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: SkillCoolDownHUD
       objectReference: {fileID: 0}
-    - target: {fileID: 4870176541048482910, guid: 39211684a8db09648b6a33d30cfefb14, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
