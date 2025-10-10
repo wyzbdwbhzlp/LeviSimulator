@@ -4,9 +4,9 @@ using UnityEngine;
 public class WallDissolveController : MonoBehaviour
 {
     [Header("周期设置")]
-    public float visibleDuration = 3f;   // 墙出现持续时间
+    public float visibleDuration = 8f;   // 墙出现持续时间
     public float hiddenDuration = 2f;    // 墙消失持续时间
-    public float smokeHiddenDuration = 2f;
+    public float smokeHiddenDuration = 8f;
     public float smokeVisibleDuration = 1f;
 
     [Header("对象设置")]
